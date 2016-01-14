@@ -6,7 +6,7 @@ A CloudFoundry service broker to ease exposition of static credentials in the CF
 
 This broker is aimed at service providers which would expose an existing service with static credentials.
 
-# Usage
+# Usage overview
 
 ```
 # Download the binary release of this broker
@@ -43,6 +43,8 @@ $ cf enable-service-access mybrokername
 # register as a private service broker for one space or one org
 [pending doc]
 ```
+
+# Config reference
 
 ## Catalog
 
@@ -101,7 +103,7 @@ Limitations of this approach:
 
 ## Why not implementing a service broker using the community SDKs ?
 
-Mature SDKs are available for Java through [spring-cloud-cloudfoundry-service-broker](https://github.com/spring-cloud/spring-cloud-cloudfoundry-service-broker) or [cf-java-component](https://github.com/cloudfoundry-community/cf-java-component/tree/master/cf-service-broker) (see associated [intro video](https://www.youtube.com/watch?v=AcpdO_AfEH0#t=11m43s) , ruby, go to ease implementing the [service broker REST API](http://docs.cloudfoundry.org/services/api.html)
+Mature SDKs are available for Java through [spring-cloud-cloudfoundry-service-broker](https://github.com/spring-cloud/spring-cloud-cloudfoundry-service-broker) or [cf-java-component](https://github.com/cloudfoundry-community/cf-java-component/tree/master/cf-service-broker) (see associated [intro video](https://www.youtube.com/watch?v=AcpdO_AfEH0#t=11m43s) , ruby, go to ease implementing the [service broker REST API](http://docs.cloudfoundry.org/services/api.html). See [examples implementation](http://docs.cloudfoundry.org/services/examples.html)
 
 Proof-of-concept SDK have been contributed for [PHP](https://github.com/cloudfoundry-community/php-cf-service-broker)
 
@@ -116,3 +118,13 @@ Possible implementation/inspirations:
 - [cf-java-component](https://github.com/cloudfoundry-community/cf-java-component/tree/master/cf-service-broker) and SPEL expressions to lookup environment variables, inspiration in cf-service-broker-smtp:
    - https://github.com/Orange-OpenSource/elpaaso-brokers/blob/master/cf-service-broker-smtp%2Fsrc%2Fmain%2Fjava%2Fcom%2Forange%2Fclara%2Fcloud%2Fcfbrokers%2Fsmtp%2FMain.java#L28
    - https://github.com/Orange-OpenSource/elpaaso-brokers/blob/master/cf-service-broker-smtp%2Fsrc%2Fmain%2Fjava%2Fcom%2Forange%2Fclara%2Fcloud%2Fcfbrokers%2Fsmtp%2FSmtpServiceBroker.java#L48-L91
+
+# Future work/backlog
+
+* UI
+
+As a service-provider, in order to be informed of the number of service instances, with which org/space they are bound to, I need a UI to display current service instances/service keys along with the corresponding org/space name
+
+As a service-provider, in order to notify my customers of changes in my services,  I need a UI to display current service instances/service keys along with the corresponding org/space name to feed into the notifications services
+
+
