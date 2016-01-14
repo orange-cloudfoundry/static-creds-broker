@@ -30,7 +30,7 @@ applications:
     SERVICES_ID_NAME: MyService
     SERVICES_ID_DESCRIPTION: My existing service
     SERVICES_ID_METADATA_LONGDESCRIPTION: A long description for my service
-    CREDENTIALS_URI: mysql://USERNAME:PASSWORD@HOSTNAME:PORT/NAME
+    SERVICES_ID_CREDENTIALS_URI: mysql://USERNAME:PASSWORD@HOSTNAME:PORT/NAME
 # deploy the broker    
 $ cf push 
 
@@ -74,9 +74,9 @@ A number of catalog variables are not configureable, the broker always return th
 ## Bound credentials
 
 The returned credentials are identical for all bound service instances and configured by the following environment variables, with at least one define.
-* CREDENTIALS_URI String. Recommended see http://docs.cloudfoundry.org/services/binding-credentials.html
-* CREDENTIALS_HOSTNAME String. Optional
-* CREDENTIALS_MYOWNKEY String or JSON hash. Allow
+* SERVICES_ID_CREDENTIALS_URI String. Recommended see http://docs.cloudfoundry.org/services/binding-credentials.html
+* SERVICES_ID_CREDENTIALS_HOSTNAME String. Optional
+* SERVICES_ID_CREDENTIALS_MYOWNKEY String or JSON hash. Allow
 
 This is mapped to [spring-cloud-cloudfoundry-service-broker](https://github.com/spring-cloud/spring-cloud-cloudfoundry-service-broker/blob/master/src%2Fmain%2Fjava%2Forg%2Fspringframework%2Fcloud%2Fservicebroker%2Fmodel%2FCreateServiceInstanceBindingResponse.java#L35) 
 
@@ -120,6 +120,10 @@ Possible implementation/inspirations:
    - https://github.com/Orange-OpenSource/elpaaso-brokers/blob/master/cf-service-broker-smtp%2Fsrc%2Fmain%2Fjava%2Fcom%2Forange%2Fclara%2Fcloud%2Fcfbrokers%2Fsmtp%2FSmtpServiceBroker.java#L48-L91
 
 # Future work/backlog
+
+* Support for multiple services in a single broker
+
+As described, a single set of credentials is returned by the broker. In order to save RAM, multiple ID can be returned
 
 * UI
 
