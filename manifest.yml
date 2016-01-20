@@ -1,0 +1,12 @@
+---
+applications:
+- name: spring-broker
+  instances: 1
+
+  env:
+    SECURITY_PASSWORD: p
+    SERVICES_ID_NAME: MyService
+    SERVICES_ID_DESCRIPTION: My existing service
+    SERVICES_ID_METADATA_LONGDESCRIPTION: A long description for my service
+    SERVICES_ID_CREDENTIALS_URI: mysql://USERNAME:PASSWORD@HOSTNAME:PORT/NAME
+    PLAN_NAME: plan1
