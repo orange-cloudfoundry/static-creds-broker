@@ -2,19 +2,29 @@ package hello;
 
 import cf.spring.servicebroker.*;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+import java.sql.Array;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.apache.tomcat.util.http.fileupload.ThresholdingOutputStream;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.ElementType;
 
 @Configuration
 @EnableAutoConfiguration
 @EnableServiceBroker(username = "user", password = "#{ systemEnvironment['SECURITY_PASSWORD'] }")
 @ServiceBroker(@Service(id = "000d5d66-e95b-4c19-beaf-064becbd3ada", name = "#{ systemEnvironment['SERVICES_ID_NAME'] }", 
 	description = "#{ systemEnvironment['SERVICES_ID_DESCRIPTION'] }", bindable = "#{ systemEnvironment['SERVICES_ID_BINDEABLE'] ?: 'true'}",
-	tags = "#{ systemEnvironment['SERVICES_ID_TAGS'] ?: {}}", // T(java.util.Arrays).asList()
+//	tags = ("#{ systemEnvironment['SERVICES_ID_TAGS'] ?: new String[]{'t1','t2'}}"), // T(java.util.Arrays).asList()
+//	tags =	("#{new String[] {'apple', 'orange', 'coconut'}}"),
 //	tags = new SpelExpressionParser().parseExpression("#{ {'orange', 'coconut'} }").getValue(String.class),
+//	tags = ("#{systemEnvironment['SERVICES_ID_TAGS']}".split(",")),
 	metadata = {
 			@Metadata(field = Metadata.DISPLAY_NAME, value = { "#{ systemEnvironment['SERVICES_ID_METADATA_DISPLAYNAME'] ?: systemEnvironment['SERVICES_ID_NAME']}" }),
 			@Metadata(field = Metadata.IMAGE_URL, value = { "#{ systemEnvironment['SERVICES_ID_METADATA_IMAGEURL'] ?: '' }"}),
@@ -47,11 +57,13 @@ public class Broker {
 
 	@Bind
 	public BindResponse bind(BindRequest request) {
-//		System.out.println("Binding " + request.getServiceInstanceGuid() + " to " + request.getApplicationGuid());
+		System.out.println("Binding " + request.getServiceInstanceGuid() + " to " + request.getApplicationGuid());
 		Map<String, String> credentialsMap = new HashMap<>();
-//		credentialsMap.put("uri", "#{ systemEnvironment['SERVICES_ID_CREDENTIALS_URI'] }");
-//		credentialsMap.put("hostname", "#{ systemEnvironment['SERVICES_ID_CREDENTIALS_HOSTNAME'] ?: 'hostname'}");
-//		credentialsMap.put("myownkey", "#{ systemEnvironment['SERVICES_ID_CREDENTIALS_MYOWNKEY'] ?: 'myownkey'}");
+//		@Value("#{ systemEnvironment['SERVICES_ID_CREDENTIALS_URI'] }")
+//		String uri;
+//		credentialsMap.put("uri", uri);
+		credentialsMap.put("hostname", "#{ systemEnvironment['SERVICES_ID_CREDENTIALS_HOSTNAME'] ?: 'hostname'}");
+		credentialsMap.put("myownkey", "#{ systemEnvironment['SERVICES_ID_CREDENTIALS_MYOWNKEY'] ?: 'myownkey'}");
 		return new BindResponse(credentialsMap); 
 	}
 
@@ -62,5 +74,6 @@ public class Broker {
 
 	public static void main(String[] args) {
 		SpringApplication.run(Broker.class, args);
+//		getClass().getAnnotation(Service.class).tags()// = new String[] {"apple", "orange"};
 	}
 }
