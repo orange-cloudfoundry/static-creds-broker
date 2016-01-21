@@ -20,20 +20,45 @@ public class CatalogConfig {
 	private String description = "";
 	@Value("#{ systemEnvironment['SERVICES_ID_BINDEABLE'] ?: true}")
 	private boolean bindable;
+	@Value("#{ systemEnvironment['SERVICES_ID_TAGS'] }")
+	private String tagstr;
+	
+	@Value("#{ systemEnvironment['SERVICES_ID_METADATA_DISPLAYNAME'] ?: systemEnvironment['SERVICES_ID_NAME']}")
+	private String meta_displayname;
+	@Value("#{ systemEnvironment['SERVICES_ID_METADATA_IMAGEURL'] ?: ''}")
+	private String meta_imageurl;
+	@Value("#{ systemEnvironment['SERVICES_ID_METADATA_SUPPORTURL'] ?: ''}")
+	private String meta_supporturl;
+	@Value("#{ systemEnvironment['SERVICES_ID_METADATA_DOCUMENTATIONURL'] ?: ''}")
+	private String meta_documentationurl;
+	@Value("#{ systemEnvironment['SERVICES_ID_METADATA_PROVIDERDISPLAYNAME'] ?: ''}")
+	private String meta_providerdisplayname;
+	@Value("#{ systemEnvironment['SERVICES_ID_METADATA_LONGDESCRIPTION'] ?: ''}")
+	private String meta_longdescription;
+
+	
 	@Value("#{ systemEnvironment['PLAN_NAME'] ?: 'default' }")
 	private String plan_name;
 	@Value("#{ systemEnvironment['PLAN_DESCRIPTION'] ?: 'Default plan' }")
 	private String plan_description;
 	@Value("#{ systemEnvironment['PLAN_FREE'] ?: true}")
 	private boolean plan_free;
-	@Value("#{ systemEnvironment['SERVICES_ID_TAGS'] }")
-	private String tagstr;
+	@Value("#{ systemEnvironment['PLAN_METADATA'] ?: '{}'}")
+	private String plan_metadata;
+	
+	
 	
 	@Bean
 	public Catalog catalog(){
 		List<ServiceDefinition> serviceDefinitions = new ArrayList<ServiceDefinition>();
 		String service_id = "000d5d66-e95b-4c19-beaf-064becbd3ada";
 		Map<String, Object> service_metadata = new HashMap<String, Object>();
+		service_metadata.put("displayName", meta_displayname);
+		service_metadata.put("imageUrl", meta_imageurl);
+		service_metadata.put("longDescription", meta_longdescription);
+		service_metadata.put("providerDisplayName", meta_providerdisplayname);
+		service_metadata.put("documentationUrl", meta_documentationurl);
+		service_metadata.put("supportUrl", meta_supporturl);
 		
 		String plan_id = "101d240e-c36f-46e8-b35f-97d2f69bd185";
 		Map<String, Object> plan_metadata = new HashMap<String, Object>();
