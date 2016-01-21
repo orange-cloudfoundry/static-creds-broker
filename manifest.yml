@@ -4,7 +4,7 @@ applications:
   instances: 1
 
   env:
-    SECURITY_PASSWORD: p
+    SECURITY_PASSWORD: mypwd
     SERVICES_ID_NAME: MyService
     SERVICES_ID_DESCRIPTION: My existing service
     SERVICES_ID_METADATA_LONGDESCRIPTION: A long description for my service

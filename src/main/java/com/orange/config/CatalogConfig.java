@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.servicebroker.model.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 
+@EnableGlobalMethodSecurity
 @Configuration
 public class CatalogConfig {
 	@Value("#{ systemEnvironment['SERVICES_ID_NAME'] }")
@@ -45,8 +47,6 @@ public class CatalogConfig {
 	private boolean plan_free;
 	@Value("#{ systemEnvironment['PLAN_METADATA'] ?: '{}'}")
 	private String plan_metadata;
-	
-	
 	
 	@Bean
 	public Catalog catalog(){
