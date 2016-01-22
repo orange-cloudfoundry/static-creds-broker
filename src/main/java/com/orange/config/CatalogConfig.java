@@ -57,7 +57,23 @@ public class CatalogConfig {
 	public Catalog catalog(){
 		List<ServiceDefinition> serviceDefinitions = new ArrayList<ServiceDefinition>();
 		String service_id = "000d5d66-e95b-4c19-beaf-064becbd3ada";
+		Map<String, Object> service_metadata = getServiceMetadata();
+		List<String> tags = new ArrayList<String>();
+		if (tagstr != null) {
+			tags = Arrays.asList(tagstr.split(","));
+		}
 
+		String plan_id = "101d240e-c36f-46e8-b35f-97d2f69bd185";
+		Map<String, Object> plan_metadata = getPlanMetadata();
+		Plan plan = new Plan(plan_id, plan_name, plan_description, plan_metadata, plan_free);
+		
+		ServiceDefinition service = new ServiceDefinition(service_id, name, description, bindable, false, Collections.singletonList(plan), tags, service_metadata, null, null);
+		serviceDefinitions.add(service);
+		Catalog catalog = new Catalog(serviceDefinitions);
+		return catalog;
+	}
+	
+	private Map<String, Object> getServiceMetadata(){
 		Map<String, Object> service_metadata = new HashMap<String, Object>();
 		service_metadata.put("displayName", meta_displayname);
 		service_metadata.put("imageUrl", meta_imageurl);
@@ -65,12 +81,10 @@ public class CatalogConfig {
 		service_metadata.put("providerDisplayName", meta_providerdisplayname);
 		service_metadata.put("documentationUrl", meta_documentationurl);
 		service_metadata.put("supportUrl", meta_supporturl);
-
-		String plan_id = "101d240e-c36f-46e8-b35f-97d2f69bd185";
-		List<String> tags = new ArrayList<String>();
-		if (tagstr != null) {
-			tags = Arrays.asList(tagstr.split(","));
-		}
+		return service_metadata;
+	}
+	
+	private Map<String, Object> getPlanMetadata(){
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> plan_metadata = new HashMap<>();
 		try {
@@ -79,10 +93,6 @@ public class CatalogConfig {
 		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | IOException e) {
 			e.printStackTrace();
 		}
-		Plan plan = new Plan(plan_id, plan_name, plan_description, plan_metadata, plan_free);
-		ServiceDefinition service = new ServiceDefinition(service_id, name, description, bindable, false, Collections.singletonList(plan), tags, service_metadata, null, null);
-		serviceDefinitions.add(service);
-		Catalog catalog = new Catalog(serviceDefinitions);
-		return catalog;
+		return plan_metadata;
 	}
 }
