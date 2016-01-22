@@ -21,7 +21,9 @@ public class CredentialsConfig {
 	@Bean
 	public Credentials credentials(){
 		Map<String, Object> credentials = new HashMap<String, Object>();
-		credentials.put("uri", credentials_uri);
+		if (credentials_uri != null) {
+			credentials.put("uri", credentials_uri);
+		}
 		if (credentials_hostname != null) {
 			credentials.put("hostname", credentials_hostname);
 		}
