@@ -2,6 +2,7 @@ package com.orange.config;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,14 +57,14 @@ public class CatalogConfig {
 	@Bean
 	public Catalog catalog(){
 		List<ServiceDefinition> serviceDefinitions = new ArrayList<ServiceDefinition>();
-		String service_id = "000d5d66-e95b-4c19-beaf-064becbd3ada";
+		String service_id = UUID.randomUUID().toString(); // "000d5d66-e95b-4c19-beaf-064becbd3ada";
 		Map<String, Object> service_metadata = getServiceMetadata();
 		List<String> tags = new ArrayList<String>();
 		if (tagstr != null) {
 			tags = Arrays.asList(tagstr.split(","));
 		}
 
-		String plan_id = "101d240e-c36f-46e8-b35f-97d2f69bd185";
+		String plan_id = UUID.randomUUID().toString(); //"101d240e-c36f-46e8-b35f-97d2f69bd185";
 		Map<String, Object> plan_metadata = getPlanMetadata();
 		Plan plan = new Plan(plan_id, plan_name, plan_description, plan_metadata, plan_free);
 		
