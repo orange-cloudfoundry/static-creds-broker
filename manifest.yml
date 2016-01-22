@@ -10,3 +10,4 @@ applications:
     SERVICES_ID_METADATA_LONGDESCRIPTION: A long description for my service
     SERVICES_ID_CREDENTIALS_URI: mysql://USERNAME:PASSWORD@HOSTNAME:PORT/NAME
     PLAN_NAME: plan1
+    PLAN_METADATA: '{"bullets":["20 GB of messages","20 connections"],"costs":[{"amount":{"usd":99.0,"eur":49.0},"unit":"MONTHLY"},{"amount":{"usd":0.99,"eur":0.49},"unit":"1GB of messages over 20GB"}],"displayName":"Big Bunny"}'
