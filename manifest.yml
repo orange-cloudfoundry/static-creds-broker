@@ -1,6 +1,6 @@
 ---
 applications:
-- name: spring-broker
+- name: static-creds-broker
   instances: 1
 
   env:
