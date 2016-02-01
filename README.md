@@ -131,4 +131,5 @@ As a service-provider, in order to be informed of the number of service instance
 
 As a service-provider, in order to notify my customers of changes in my services,  I need a UI to display current service instances/service keys along with the corresponding org/space name to feed into the notifications services
 
-
+* Multi-site support: per site credentials
+   * The service broker is deployed on 3 sites with the same environement variabels. Some credentials are returned identically on all 3 sites, some credentials are returned differently depending on sites (overriding default values)
