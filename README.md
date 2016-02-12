@@ -76,7 +76,8 @@ A number of catalog variables are not configureable, the broker always return th
 The returned credentials are identical for all bound service instances and configured by the following environment variables, with at least one define.
 * SERVICES_ID_CREDENTIALS_URI String. Recommended see http://docs.cloudfoundry.org/services/binding-credentials.html
 * SERVICES_ID_CREDENTIALS_HOSTNAME String. Optional
-* SERVICES_ID_CREDENTIALS_MYOWNKEY String or JSON hash. Allow
+* SERVICES_ID_CREDENTIALS_MYOWNKEY String or JSON hash. 
+* SERVICES_ID_CREDENTIALS: a String holding a Json hash potentially compound the same format as 'cf cups', e.g. ```'{\"username\":\"admin\",\"password\":\"pa55woRD\"}'````
 
 This is mapped to [spring-cloud-cloudfoundry-service-broker](https://github.com/spring-cloud/spring-cloud-cloudfoundry-service-broker/blob/master/src%2Fmain%2Fjava%2Forg%2Fspringframework%2Fcloud%2Fservicebroker%2Fmodel%2FCreateServiceInstanceBindingResponse.java#L35) 
 
@@ -131,4 +132,5 @@ As a service-provider, in order to be informed of the number of service instance
 
 As a service-provider, in order to notify my customers of changes in my services,  I need a UI to display current service instances/service keys along with the corresponding org/space name to feed into the notifications services
 
-
+* Multi-site support: per site credentials
+   * The service broker is deployed on 3 sites with the same environement variabels. Some credentials are returned identically on all 3 sites, some credentials are returned differently depending on sites (overriding default values)
