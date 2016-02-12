@@ -24,3 +24,4 @@ applications:
     SERVICES_ID_CREDENTIALS_URI: mysql://USERNAME:PASSWORD@HOSTNAME:PORT/NAME
     SERVICES_ID_CREDENTIALS_HOSTNAME: us-cdbr-east-03.cleardb.com
     SERVICES_ID_CREDENTIALS_MYOWNKEY: '{"client_id": "client_id_1", "client_password": "client_pwd_1"}' #self defined credential key, value format json hash
+    SERVICES_ID_CREDENTIALS: '{"username":"admin","password":"pa55woRD"}' #if same key defined SERVICES_ID_CREDENTIALS_MYOWNKEY, value will replace that in SERVICES_ID_CREDENTIALS_MYOWNKEY

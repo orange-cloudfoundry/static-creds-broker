@@ -20,6 +20,9 @@ public class CredentialsConfig {
 	private String credentials_hostname;
 	@Value("#{ systemEnvironment['SERVICES_ID_CREDENTIALS_MYOWNKEY'] }")
 	private String credentials_myownkey_str;
+	@Value("#{ systemEnvironment['SERVICES_ID_CREDENTIALS'] }")
+	private String credentials_str;
+	
 	
 	@Bean
 	public Credentials credentials(){
@@ -31,10 +34,12 @@ public class CredentialsConfig {
 			credentials.put("hostname", credentials_hostname);
 		}
 		if (credentials_myownkey_str != null) {
-			if (!credentials_myownkey_str.startsWith("{")) { // my_own_key is no a json hash
+			// my_own_key is a simple string
+			if (!credentials_myownkey_str.startsWith("{")) { 
 				credentials.put("myownkey", credentials_myownkey_str);
 			}
-			else {
+			//my_own_key is a json hash
+			else { 
 				Map<String, Object> myownkey_map = new HashMap<>();
 				ObjectMapper mapper = new ObjectMapper();
 				try {
@@ -43,6 +48,17 @@ public class CredentialsConfig {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+			}
+		}
+		//a String holding a Json hash potentially compound the same format as 'cf cups'
+		if (credentials_str != null) { 
+			Map<String, Object> credentials_map = new HashMap<>();
+			ObjectMapper mapper = new ObjectMapper();
+			try {
+				credentials_map = mapper.readValue(credentials_str, new TypeReference<Map<String, String>>(){});
+				credentials.putAll(credentials_map);
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 		return new Credentials(credentials);
