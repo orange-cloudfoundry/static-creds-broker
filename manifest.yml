@@ -23,4 +23,4 @@ applications:
     PLAN_FREE: false
     SERVICES_ID_CREDENTIALS_URI: mysql://USERNAME:PASSWORD@HOSTNAME:PORT/NAME
     SERVICES_ID_CREDENTIALS_HOSTNAME: us-cdbr-east-03.cleardb.com
-    SERVICES_ID_CREDENTIALS_MYOWNKEY: mykey
+    SERVICES_ID_CREDENTIALS_MYOWNKEY: '{"client_id": "client_id_1", "client_password": "client_pwd_1"}' #self defined credential key, value format json hash
