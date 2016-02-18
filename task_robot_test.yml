@@ -1,0 +1,11 @@
+---
+platform: linux
+image: docker:///tao1101/robotframework_cloudfoundry-client
+
+inputs:
+  - name: static-creds-broker
+    path: .
+
+run:
+  path: robot
+  args: ["--pythonpath", "./acceptance/", "./acceptance/"]
