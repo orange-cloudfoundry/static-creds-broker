@@ -17,3 +17,7 @@ hs_err_pid*
 .settings/
 
 target/
+
+# ignore acceptance.cfg which contains personal info for accessing cf
+acceptance.cfg
+acceptance.cfg.bak
