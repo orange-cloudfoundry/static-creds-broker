@@ -19,5 +19,13 @@ hs_err_pid*
 target/
 
 # ignore acceptance.cfg which contains personal info for accessing cf
-acceptance.cfg
-acceptance.cfg.bak
+acceptance.*
+!acceptance.tmpl.*
+
+# ignore python bytecode
+*.pyc
+
+# ignore generated test reports
+log.html
+output.xml
+report.html
