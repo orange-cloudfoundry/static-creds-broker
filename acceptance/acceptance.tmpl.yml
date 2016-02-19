@@ -1,0 +1,13 @@
+---
+# Information for the cf client (endpoint, ssl, cf login...)
+cf_target_endpoint: __cf_target_endpoint__
+skip_ssl_verification: __skip_ssl_verification__
+cf_username: __cf_username__
+cf_password: __cf_password__
+#The test informations (org, space, ...)
+organization_name: __organization_name__
+space_name: __space_name__
+service_name: 	__service_name__
+plan_name: __plan_name__
+application_name: __application_name__
+service_instance_name: __service_instance_name__
