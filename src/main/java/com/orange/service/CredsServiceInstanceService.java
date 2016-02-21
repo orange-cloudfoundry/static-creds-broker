@@ -29,7 +29,7 @@ public class CredsServiceInstanceService implements ServiceInstanceService {
 	@Override
 	public GetLastServiceOperationResponse getLastOperation(GetLastServiceOperationRequest arg0) {
 		//TODO check id -> succeeded or failed
-		return new GetLastServiceOperationResponse(OperationState.SUCCEEDED);
+		return new GetLastServiceOperationResponse().withOperationState(OperationState.SUCCEEDED);
 	}
 
 	@Override
