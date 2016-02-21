@@ -51,7 +51,7 @@
 			<artifactId>spring-cloud-cloudfoundry-service-broker</artifactId>
 			<version>1.0.0.BUILD-SNAPSHOT</version>
 			<classifier>tests</classifier>
-			<!-- <scope>test</scope> -->
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
