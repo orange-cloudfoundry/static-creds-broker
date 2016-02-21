@@ -55,7 +55,7 @@ public class CatalogConfig {
 	@Bean
 	public Catalog catalog(){
 		List<ServiceDefinition> serviceDefinitions = new ArrayList<ServiceDefinition>();
-		String service_id = UUID.randomUUID().toString(); // "000d5d66-e95b-4c19-beaf-064becbd3ada";
+		String service_id = UUID.nameUUIDFromBytes(name.getBytes()).toString(); // "000d5d66-e95b-4c19-beaf-064becbd3ada";
 		Map<String, Object> service_metadata = getServiceMetadata();
 		List<String> tags = new ArrayList<String>();
 		if (tagstr != null) {
