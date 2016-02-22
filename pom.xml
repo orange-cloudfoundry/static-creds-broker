@@ -14,7 +14,7 @@
 	</parent>
 	
 	<properties>
-		<springCloudServiceBrokerVersion>1.0.0.BUILD-SNAPSHOT</springCloudServiceBrokerVersion>
+		<springCloudServiceBrokerVersion>1.0.0.RC1</springCloudServiceBrokerVersion>
 	</properties>
 
 	<build>
