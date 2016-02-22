@@ -1,7 +1,6 @@
 package com.orange.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.servicebroker.model.CreateServiceInstanceAppBindingResponse;
 import org.springframework.cloud.servicebroker.model.CreateServiceInstanceBindingRequest;
 import org.springframework.cloud.servicebroker.model.CreateServiceInstanceBindingResponse;
 import org.springframework.cloud.servicebroker.model.DeleteServiceInstanceBindingRequest;
@@ -21,7 +20,7 @@ public class CredsServiceInstanceBindingService implements ServiceInstanceBindin
 
 	@Override
 	public CreateServiceInstanceBindingResponse createServiceInstanceBinding(CreateServiceInstanceBindingRequest arg0) {
-		return new CreateServiceInstanceAppBindingResponse().withCredentials(credentials.getCredentials());
+		return new CreateServiceInstanceBindingResponse(credentials.getCredentials());
 	}
 
 	@Override
