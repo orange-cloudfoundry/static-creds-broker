@@ -34,13 +34,13 @@ applications:
 # deploy the broker    
 $ cf push 
 
-# register the broker system-wise (required cloudcontroller.admin)
+# Register the broker system-wise (required cloudcontroller.admin)
 # refer to http://docs.cloudfoundry.org/services/managing-service-brokers.html#register-brokre
 $ cf create-service-broker mybrokername someuser somethingsecure http://mybroker.example.com/
 $ cf enable-service-access mybrokername
 
 
-# register as a private service broker for one space or one org
+# Alternatively, register as a private service broker for one space or one org
 # get the CF cli 6.16 or the latest edge binaries from https://github.com/cloudfoundry/cli#downloads
 # cf create-service-broker SERVICE_BROKER USERNAME PASSWORD URL [--space-scoped]
 $ cf create-service-broker MyService user MySecurePwd http://mybroker.my-admin-domain.cf.io --space-scoped
