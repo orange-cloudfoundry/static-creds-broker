@@ -10,10 +10,10 @@ This broker is aimed at service providers which would expose an existing service
 
 ```
 # Download the binary release of this broker
-$ curl -O https://github.com/Orange-OpenSource/static-creds-broker/.../release/.../latest/static-cred.war
+$ curl -O https://github.com/Orange-OpenSource/static-creds-broker/releases/download/v1.0/static-creds-broker-1.0.war
 
 # Configure the broker through environment variables, possibly captured in a manifest
-$ curl -O https://github.com/Orange-OpenSource/static-creds-broker/[..]/manifest.yml 
+$ curl -O https://raw.githubusercontent.com/Orange-OpenSource/static-creds-broker/master/manifest.yml 
 
 $ vi manifest.yml
 ---
@@ -23,7 +23,7 @@ applications:
   instances: 1
   host: mybroker
   domain: my-admin-domain.cf.io
-  path: static-cred.war 
+  path: static-creds-broker-1.0.war 
 
   env:
     SECURITY_PASSWORD: MySecurePwd
