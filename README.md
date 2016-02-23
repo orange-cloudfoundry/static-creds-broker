@@ -39,11 +39,19 @@ $ cf push
 $ cf create-service-broker mybrokername someuser somethingsecure http://mybroker.example.com/
 $ cf enable-service-access mybrokername
 
-
 # Alternatively, register as a private service broker for one space or one org
 # get the CF cli 6.16 or the latest edge binaries from https://github.com/cloudfoundry/cli#downloads
 # cf create-service-broker SERVICE_BROKER USERNAME PASSWORD URL [--space-scoped]
 $ cf create-service-broker MyService user MySecurePwd http://mybroker.my-admin-domain.cf.io --space-scoped
+
+# Check presence of the service in the marketplace, and proper description of its plan
+$ cf m
+$ cf m -s MyService
+
+# Create a service instance and service key to check proper binding of the static credentials
+$ cf cs MyService myplan static-creds-instance
+$ cf create-service-key static-creds-instance static-service-key
+$ cf service-key static-creds-instance static-service-key
 ```
 
 # Config reference
