@@ -59,11 +59,11 @@ $ cf service-key static-creds-instance static-service-key
 ## Catalog
 
 The catalog exposed by the broker is controlled by environment variables matching the [service broker catalog endpoint response](http://docs.cloudfoundry.org/services/api.html#catalog-mgmt). 
-* SERVICES_ID_NAME (mandatory String, no default)
+* SERVICES_ID_NAME (mandatory String, no default): the technical name of the service which should be unique among the cloudfoundry installation to register with (among orgs and spaces).
 * SERVICES_ID_DESCRIPTION (mandatory String, no default)
 * SERVICES_ID_BINDEABLE (default is "true"). Useful for service keys.
 * SERVICES_ID_TAGS (array-of-strings, default is ```[]```)
-* SERVICES_ID_METADATA_DISPLAYNAME (String, default is SERVICES_ID_NAME)
+* SERVICES_ID_METADATA_DISPLAYNAME (String, default is SERVICES_ID_NAME). The user-facing name of the service.
 * SERVICES_ID_METADATA_IMAGEURL (String, default is "")
 * SERVICES_ID_METADATA_SUPPORTURL (String, default is "")
 * SERVICES_ID_METADATA_DOCUMENTATIONURL (String, default is "")
