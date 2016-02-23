@@ -121,14 +121,6 @@ Someservice provider teams might find this broker useful because:
 * there is not yet SDK in a programming language the service provider team is confortable with
 * there is not much to program, it's mainly static configuration needed.
 
-# Design/Implementation
-
-Possible implementation/inspirations:
-- [spring-cloud-cloudfoundry-service-broker](https://github.com/spring-cloud/spring-cloud-cloudfoundry-service-broker)
-- [cf-java-component](https://github.com/cloudfoundry-community/cf-java-component/tree/master/cf-service-broker) and SPEL expressions to lookup environment variables, inspiration in cf-service-broker-smtp:
-   - https://github.com/Orange-OpenSource/elpaaso-brokers/blob/master/cf-service-broker-smtp%2Fsrc%2Fmain%2Fjava%2Fcom%2Forange%2Fclara%2Fcloud%2Fcfbrokers%2Fsmtp%2FMain.java#L28
-   - https://github.com/Orange-OpenSource/elpaaso-brokers/blob/master/cf-service-broker-smtp%2Fsrc%2Fmain%2Fjava%2Fcom%2Forange%2Fclara%2Fcloud%2Fcfbrokers%2Fsmtp%2FSmtpServiceBroker.java#L48-L91
-
 # Future work/backlog
 
 * Support for multiple services in a single broker
