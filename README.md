@@ -41,7 +41,9 @@ $ cf enable-service-access mybrokername
 
 
 # register as a private service broker for one space or one org
-[pending doc]
+# get the CF cli 6.16 or the latest edge binaries from https://github.com/cloudfoundry/cli#downloads
+# cf create-service-broker SERVICE_BROKER USERNAME PASSWORD URL [--space-scoped]
+$ cf create-service-broker MyService user MySecurePwd http://mybroker.my-admin-domain.cf.io --space-scoped
 ```
 
 # Config reference
