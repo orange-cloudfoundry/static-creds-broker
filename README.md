@@ -103,13 +103,14 @@ The service broker authenticates calls coming from Cloud Foundry through basic a
 
 [User provided service instances](https://docs.cloudfoundry.org/devguide/services/user-provided.html) is a syntaxic support in CF targetted at application teams to expose static credentials as a service instance.
 
-Limitations of this approach:
+Limitations of the UPS approach:
  * Service providers are not involved/notified when a CUPS is created 
     * making it harder to track who is referencing their service, e.g. to deprecate the service
     * making it harder to charge/bill for service usage
     * making it harder to notify users of changes (e.g. through notification service)
  * Discovery of the service requires out-of-band communication between application teams and service provider team, while the CF marketplace plays this role
     * This includes pointers to documentation, support ...
+  * does not allow for automation, such as opening security groups to access IPs provided in credentials (see https://github.com/Orange-OpenSource/sec-group-brokerchain )
 
 ## Why not implementing a service broker using the community SDKs ?
 
