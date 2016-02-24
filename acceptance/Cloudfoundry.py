@@ -23,13 +23,14 @@ class Cloudfoundry(object):
         if application is None:
             raise AssertionError('Unknown application %s' % application)
         self.application_guid = application['metadata']['guid']
-        service = self.client.service.get_first(label=service_name)
-        if service is None:
+        self.service = self.client.service.get_first(label=service_name)
+        if self.service is None:
             raise AssertionError('Unknown service %s' % application)
         self.service_name = service_name
         self.plan_guid = None
-        for plan in self.client.service_plan.list(service_guid=service['metadata']['guid']):
+        for plan in self.client.service_plan.list(service_guid=self.service['metadata']['guid']):
             if plan['entity']['name'] == plan_name:
+                self.plan = plan
                 self.plan_guid = plan['metadata']['guid']
                 break
         if self.plan_guid is None:
@@ -197,3 +198,12 @@ class Cloudfoundry(object):
         if parameters is not None and not isinstance(parameters, dict):
             raise AssertionError('create instance parameters should be a dictionary, got %s - %s'
                                  % (type(parameters), parameters))
+
+    def get_service_info(self):
+        logging.info(self.service['entity'])
+        return self.service['entity']
+
+    def get_plan_info(self):
+        logging.info(self.plan['entity'])
+        return self.plan['entity']
+        

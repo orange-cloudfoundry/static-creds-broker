@@ -1,9 +1,12 @@
 ---
+# this file is used to pass credentials to the concourse pipeline
 # Information for the cf client (endpoint, ssl, cf login...)
 cf_target_endpoint: __cf_target_endpoint__
 skip_ssl_verification: __skip_ssl_verification__
 cf_username: __cf_username__
 cf_password: __cf_password__
+# informations about your broker deployment (manifest path)
+manifest_path: __manifest_path__
 #The test informations (org, space, ...)
 organization_name: __organization_name__
 space_name: __space_name__

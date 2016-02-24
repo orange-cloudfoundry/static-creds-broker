@@ -14,7 +14,6 @@ Force Tags      Service broker
     [Documentation]     Create a service instance
     Create service instance
 
-
 2) bind
     [Documentation]    Bind ${TESTED_APP_NAME} to base service instance
     Bind application

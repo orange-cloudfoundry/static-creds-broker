@@ -12,3 +12,4 @@ CLIENT_SKIP_SSL = os.environ["skip_ssl_verification"].replace("\r","").lower() =
 CLIENT_USER = os.environ["cf_username"].replace("\r","")
 CLIENT_PASSWORD = os.environ["cf_password"].replace("\r","")
 
+MANIFEST_PATH = os.environ["manifest_path"].replace("\r","")
