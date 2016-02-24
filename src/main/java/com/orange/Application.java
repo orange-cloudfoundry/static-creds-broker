@@ -1,6 +1,8 @@
 package com.orange;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.boot.SpringApplication;
@@ -15,6 +17,8 @@ import static org.springframework.cloud.servicebroker.model.BrokerApiVersion.API
 public class Application {
 
 	public static void main(String[] args) {
+		List<String> mandatoryProperties = Arrays.asList("SECURITY_PASSWORD", "SERVICES_ID_NAME", "SERVICES_ID_DESCRIPTION");
+		checkMandatoryPropertiesDefined(mandatoryProperties);
 		SpringApplication app = new SpringApplication(Application.class);
 		app.setDefaultProperties(getSecurityProperties());
 		app.run(args);
@@ -37,24 +41,22 @@ public class Application {
 		Map<String, String> env = System.getenv();
 		String username = env.get("SECURITY_USER");
 		String password = env.get("SECURITY_PASSWORD");
-		Map<String, Object> mandatoryProperties = new HashMap<String, Object>();
-		mandatoryProperties.put("SECURITY_PASSWORD", password);
-		checkMandatoryPropertiesDefined(mandatoryProperties);
 		properties.put("security.user.name", username);
 		properties.put("security.user.password", password);
 		return properties;
 	}
 
 	/**
-	 * check whether mandatory properties contain null value
-	 * @param mandatoryProperties Map<String, Object> which contains property name and its value
-	 * @throws IllegalArgumentException when exist mandatory property whose value is null, error message contains missing mandatory property name
+	 * check whether mandatory properties are defined in the system environment 
+	 * @param mandatoryProperties List<String> contains property names
+	 * @throws IllegalArgumentException when find mandatory property not defined in the system environment , error message contains missing mandatory property name
 	 */
-	public static void checkMandatoryPropertiesDefined(Map<String, Object> mandatoryProperties)
+	public static void checkMandatoryPropertiesDefined(List<String> mandatoryProperties)
 			throws IllegalArgumentException {
-		for (Map.Entry<String, Object> mandatoryProperty : mandatoryProperties.entrySet()) {
-			if (mandatoryProperty.getValue() == null) {
-				throw new IllegalArgumentException("Mandatory property: " + mandatoryProperty.getKey() + " missing");
+		Map<String, String> env = System.getenv();
+		for (String mandatoryProperty : mandatoryProperties) {
+			if (env.get(mandatoryProperty) == null) {
+				throw new IllegalArgumentException("Mandatory property: " + mandatoryProperty + " missing");
 			}
 		}
 	}
