@@ -16,13 +16,7 @@ public class Application {
 
 	public static void main(String[] args) {
 		SpringApplication app = new SpringApplication(Application.class);
-		Map<String, Object> properties = new HashMap<String, Object>();
-		Map<String, String> env = System.getenv();
-		String username = env.get("SECURITY_USER");
-		String password = env.get("SECURITY_PASSWORD");
-		properties.put("security.user.name", username);
-		properties.put("security.user.password", password);
-		app.setDefaultProperties(properties);
+		app.setDefaultProperties(getSecurityProperties());
 		app.run(args);
 //		SpringApplication.run(Application.class, args);
 	}
@@ -30,5 +24,15 @@ public class Application {
 	@Bean
 	public BrokerApiVersion brokerApiVersion() {
 		return new BrokerApiVersion(API_VERSION_ANY);
+	}
+	
+	public static Map<String, Object> getSecurityProperties(){
+		Map<String, Object> properties = new HashMap<String, Object>();
+		Map<String, String> env = System.getenv();
+		String username = env.get("SECURITY_USER");
+		String password = env.get("SECURITY_PASSWORD");
+		properties.put("security.user.name", username);
+		properties.put("security.user.password", password);
+		return properties;
 	}
 }
