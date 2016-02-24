@@ -13,6 +13,7 @@ import org.springframework.cloud.servicebroker.model.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.orange.Application;
 import com.orange.model.PlanMetadata;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -24,7 +25,7 @@ public class CatalogConfig {
 	@Value("#{ systemEnvironment['SERVICES_ID_NAME'] }")
 	private String name;
 	@Value("#{ systemEnvironment['SERVICES_ID_DESCRIPTION'] }")
-	private String description = "";
+	private String description;
 	@Value("#{ systemEnvironment['SERVICES_ID_BINDEABLE'] ?: true}")
 	private boolean bindable;
 	@Value("#{ systemEnvironment['SERVICES_ID_TAGS'] }")
@@ -54,6 +55,10 @@ public class CatalogConfig {
 
 	@Bean
 	public Catalog catalog(){
+		Map<String, Object> mandatoryProperties = new HashMap<String, Object>();
+		mandatoryProperties.put("SERVICES_ID_NAME", name);
+		mandatoryProperties.put("SERVICES_ID_DESCRIPTION", description);
+		Application.checkMandatoryPropertiesDefined(mandatoryProperties);
 		List<ServiceDefinition> serviceDefinitions = new ArrayList<ServiceDefinition>();
 		String service_id = UUID.nameUUIDFromBytes(name.getBytes()).toString(); // "000d5d66-e95b-4c19-beaf-064becbd3ada";
 		Map<String, Object> service_metadata = getServiceMetadata();

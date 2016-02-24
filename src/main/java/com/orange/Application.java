@@ -46,10 +46,9 @@ public class Application {
 	}
 
 	/**
-	 * throw IllegalArgumentException when the mandatory property
-	 * (SECURITY_PASSWORD) is not set
-	 * 
-	 * @throws IllegalArgumentException
+	 * check whether mandatory properties contain null value
+	 * @param mandatoryProperties Map<String, Object> which contains property name and its value
+	 * @throws IllegalArgumentException when exist mandatory property whose value is null, error message contains missing mandatory property name
 	 */
 	public static void checkMandatoryPropertiesDefined(Map<String, Object> mandatoryProperties)
 			throws IllegalArgumentException {
