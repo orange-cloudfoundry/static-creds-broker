@@ -69,7 +69,7 @@ public class CatalogConfig {
 		for (Map.Entry<String, String> entry : env.entrySet()) {
 			String key = entry.getKey();
 			// no _ means it's not targeted sys env key
-			if (!key.startsWith("SERVICES_"))
+			if (!key.startsWith("SERVICES_") || key.contains("_CREDENTIALS"))
 				continue;
 			int indexNoPrefix = "SERVICES_".length();
 			String noPrefix = key.substring(indexNoPrefix);
