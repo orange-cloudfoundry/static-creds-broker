@@ -1,5 +1,7 @@
 package com.orange.service;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.servicebroker.model.CreateServiceInstanceBindingRequest;
 import org.springframework.cloud.servicebroker.model.CreateServiceInstanceBindingResponse;
@@ -7,20 +9,27 @@ import org.springframework.cloud.servicebroker.model.DeleteServiceInstanceBindin
 import org.springframework.cloud.servicebroker.service.ServiceInstanceBindingService;
 import org.springframework.stereotype.Service;
 
-import com.orange.model.Credentials;
+import com.orange.model.CredentialsMap;
 
 @Service
 public class CredsServiceInstanceBindingService implements ServiceInstanceBindingService{
-	private Credentials credentials;
+	private CredentialsMap credentialsMap;
 
 	@Autowired
-	public CredsServiceInstanceBindingService(Credentials credentials) {
-		this.credentials = credentials;
+	public CredsServiceInstanceBindingService(CredentialsMap credentialsMap) {
+		this.credentialsMap = credentialsMap;
 	}
 
 	@Override
-	public CreateServiceInstanceBindingResponse createServiceInstanceBinding(CreateServiceInstanceBindingRequest arg0) {
-		return new CreateServiceInstanceBindingResponse(credentials.getCredentials());
+	public CreateServiceInstanceBindingResponse createServiceInstanceBinding(CreateServiceInstanceBindingRequest request) {
+		String serviceGUID = request.getServiceDefinitionId();
+		for (String service_id : credentialsMap.getServiceIds()) {
+			String guid = UUID.nameUUIDFromBytes(service_id.getBytes()).toString();
+			if (guid.equals(serviceGUID)) {
+				return new CreateServiceInstanceBindingResponse(credentialsMap.getCredentials(service_id));
+			}
+		}
+		return new CreateServiceInstanceBindingResponse();
 	}
 
 	@Override
