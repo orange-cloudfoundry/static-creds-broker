@@ -17,7 +17,7 @@ import static org.springframework.cloud.servicebroker.model.BrokerApiVersion.API
 public class Application {
 
 	public static void main(String[] args) {
-		List<String> mandatoryProperties = Arrays.asList("SECURITY_PASSWORD", "SERVICES_ID_NAME", "SERVICES_ID_DESCRIPTION");
+		List<String> mandatoryProperties = Arrays.asList("SECURITY_PASSWORD"); 
 		checkMandatoryPropertiesDefined(mandatoryProperties);
 		SpringApplication app = new SpringApplication(Application.class);
 		app.setDefaultProperties(getSecurityProperties());
