@@ -26,8 +26,7 @@ import java.io.IOException;
 
 @Configuration
 public class CatalogConfig {
-	// service properties names (which is also the suffix of the
-	// service properties defined in the system environment variables)
+	// service properties names (which is also the suffix of the system environment variables)
 	// NOTE: order of the list is important
 	private static final List<String> propertiesNames = Arrays.asList("METADATA_DISPLAYNAME", "METADATA_IMAGEURL",
 			"METADATA_SUPPORTURL", "METADATA_DOCUMENTATIONURL", "METADATA_PROVIDERDISPLAYNAME",
@@ -67,7 +66,7 @@ public class CatalogConfig {
 
 	/**
 	 * get the services properties values from system environment variables
-	 * service property name pattern: SERVICE_{serviceID}_{suffix}
+	 * service property name pattern: SERVICE_{serviceID}_{servicePropertyName}
 	 */
 	private void parseServicesProperties() {
 		Map<String, String> env = System.getenv();
@@ -86,6 +85,12 @@ public class CatalogConfig {
 		}
 	}
 
+	/**
+	 * add a service property, if the serviceID is not yet added to the servicesMap, its associated mandatory properties(service name and description) will be checked
+	 * @param serviceID
+	 * @param servicePropertyName
+	 * @param servicePropertyValue
+	 */
 	private void addServiceProperty(String serviceID, String servicePropertyName, String servicePropertyValue) {
 		Service service = servicesMap.get(serviceID);
 		if (service == null) {
@@ -100,6 +105,11 @@ public class CatalogConfig {
 		service.setProperty(servicePropertyName, servicePropertyValue);
 	}
 
+	/**
+	 * Used to get the service id and service property name from a system env variable key (without part "SERVICES_")
+	 * @param noPrefix The suffix(without part "SERVICES_") of a system env variable key
+	 * @return A string array with two elements: service id and service property name
+	 */
 	private static String[] splitServiceIDandPropertyName(String noPrefix) {
 		for (String propertiesName : propertiesNames) {
 			String suffix = "_" + propertiesName;
@@ -111,6 +121,9 @@ public class CatalogConfig {
 		return null;
 	}
 
+	/**
+	 * for the optional properties not defined in the system env variables, set its default values
+	 */
 	public void setServicesPropertiesDefaults() {
 		for (Service service : servicesMap.values()) {
 			for (String propertyName : propertiesNames) {
