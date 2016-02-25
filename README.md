@@ -96,6 +96,13 @@ The service broker authenticates calls coming from Cloud Foundry through basic a
 * SECURITY_USER: String default is "user"
 * SECURITY_PASSWORD: String (mandatory, no default)
 
+# Troubleshoot Deployment Problems
+If the deployment of the broker fails, you could find the error message using cf cli:
+```
+$ cf logs <app_name> --recent | findstr Caused
+# or more complete error information with:
+$ cf logs <app_name> --recent | findstr ERR
+```
 
 # FAQ
 
