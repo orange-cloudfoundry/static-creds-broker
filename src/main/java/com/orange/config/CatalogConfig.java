@@ -37,8 +37,9 @@ public class CatalogConfig {
 		setServicesPropertiesDefaults();
 		checkServicesNameNotDuplicated();
 		List<ServiceDefinition> serviceDefinitions = new ArrayList<ServiceDefinition>();
-		for (Service service : servicesMap.values()) {
-			String service_GUID = UUID.nameUUIDFromBytes(service.get(ServicePropertyName.NAME).getBytes()).toString(); // "000d5d66-e95b-4c19-beaf-064becbd3ada";
+		for (Map.Entry<String, Service> servicesMapEntry : servicesMap.entrySet()) {
+			Service service = servicesMapEntry.getValue();
+			String service_GUID = UUID.nameUUIDFromBytes(servicesMapEntry.getKey().getBytes()).toString(); // "000d5d66-e95b-4c19-beaf-064becbd3ada";
 			Map<String, Object> service_metadata = getServiceMetadata(service);
 			List<String> tags = new ArrayList<String>();
 			if (service.get(ServicePropertyName.TAGS) != null) {
