@@ -5,13 +5,13 @@ import java.util.Map;
 
 public class Service {
 
-	private Map<String, String> serviceProperties = new HashMap<>();
+	private Map<ServicePropertyName, String> serviceProperties = new HashMap<>();
 	
-	public String get(String propertyName) {
+	public String get(ServicePropertyName propertyName) {
 		return serviceProperties.get(propertyName);
 	}
 	
-	public void setProperty(String propertyName, String propertyValue) {
+	public void setProperty(ServicePropertyName propertyName, String propertyValue) {
 		this.serviceProperties.put(propertyName, propertyValue);
 	}
 
