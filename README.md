@@ -91,7 +91,7 @@ A number of catalog variables are not configureable, the broker always return th
 The returned credentials are identical for all bound service instances of a specific service and configured by the following environment variables, with at least one define.
 * SERVICES_{SERVICE_ID}_CREDENTIALS_URI String. Recommended see http://docs.cloudfoundry.org/services/binding-credentials.html
 * SERVICES_{SERVICE_ID}_CREDENTIALS_HOSTNAME String. Optional
-* SERVICES_{SERVICE_ID}_CREDENTIALS_{MYOWNKEY} String. It is for flat custom keys. Note, it's case sensitive. For example. you could specify =SERVICES_{SERVICE_ID}_CREDENTIALS_ACCESS_KEY: azert=, the returned credentials will contain a key named "ACCESS_KEY" ```{..., "ACCESS_KEY":"azert", ...}```
+* SERVICES_{SERVICE_ID}\_CREDENTIALS\_{MYOWNKEY} String. It is for flat custom keys. Note, it's case sensitive. For example. you could specify =SERVICES_{SERVICE_ID}_CREDENTIALS_ACCESS_KEY: azert=, the returned credentials will contain a key named "ACCESS_KEY" ```{..., "ACCESS_KEY":"azert", ...}```
 * SERVICES_{SERVICE_ID}_CREDENTIALS: a String holding a Json hash potentially compound the same format as 'cf cups', e.g. ```'{"username":"admin","password":"pa55woRD"}'````
 
 This is mapped to [spring-cloud-cloudfoundry-service-broker](https://github.com/spring-cloud/spring-cloud-cloudfoundry-service-broker/blob/master/src%2Fmain%2Fjava%2Forg%2Fspringframework%2Fcloud%2Fservicebroker%2Fmodel%2FCreateServiceInstanceBindingResponse.java#L35) 
