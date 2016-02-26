@@ -110,9 +110,6 @@ $ cf logs <app_name> --recent | findstr Caused
 $ cf logs <app_name> --recent | findstr ERR
 ```
 
-If the register of the broker fails with the error message: ```Service broker catalog is invalid: Service ids must be unique.```
-Try to change the {SERVICE_ID}, then redo the deployment and the register of the service broker.
-
 # FAQ
 
 ## Why not using CUPS ?
