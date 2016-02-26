@@ -2,10 +2,8 @@ package com.orange.config;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,11 +13,9 @@ import org.springframework.cloud.servicebroker.model.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.orange.Application;
 import com.orange.model.PlanMetadata;
-import com.orange.model.Service;
 import com.orange.model.ServicePropertyName;
-
+import com.orange.model.ServicesMap;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.beanutils.PropertyUtils;
 
@@ -28,26 +24,25 @@ import java.io.IOException;
 
 @Configuration
 public class CatalogConfig {
-	// map of service id and service
-	private Map<String, Service> servicesMap = new HashMap<>();
-
+	private ServicesMap servicesMap = new ServicesMap();
+	
 	@Bean
 	public Catalog catalog() {
 		parseServicesProperties();
-		setServicesPropertiesDefaults();
-		checkServicesNameNotDuplicated();
+		servicesMap.setServicesPropertiesDefaults();
+		servicesMap.checkServicesNameNotDuplicated();
 		List<ServiceDefinition> serviceDefinitions = new ArrayList<ServiceDefinition>();
-		for (Service service : servicesMap.values()) {
+		for (Map<ServicePropertyName, String> service : servicesMap.getAllServicesProperties()) {
 			String service_name = service.get(ServicePropertyName.NAME);
 			String service_GUID = UUID.nameUUIDFromBytes(service_name.getBytes()).toString(); // generate service_guid from service_name which is also required to be unique across cf
-			Map<String, Object> service_metadata = getServiceMetadata(service);
+			Map<String, Object> service_metadata = parseServiceMetadata(service);
 			List<String> tags = new ArrayList<String>();
 			if (service.get(ServicePropertyName.TAGS) != null) {
 				tags = Arrays.asList(service.get(ServicePropertyName.TAGS).split(","));
 			}
 			String service_plan_name = service_name + " PLAN"; // + TODO change to + plan_name after support multiple plans.
 			String plan_GUID = UUID.nameUUIDFromBytes(service_plan_name.getBytes()).toString(); // generate service_guid from service_name + plan_name
-			Map<String, Object> plan_metadata = getPlanMetadata(service);
+			Map<String, Object> plan_metadata = parsePlanMetadata(service.get(ServicePropertyName.PLAN_METADATA));
 			Plan plan = new Plan(plan_GUID, service.get(ServicePropertyName.PLAN_NAME), service.get(ServicePropertyName.PLAN_DESCRIPTION), plan_metadata,
 					Boolean.valueOf(service.get(ServicePropertyName.PLAN_FREE)));
 
@@ -78,28 +73,8 @@ public class CatalogConfig {
 			if (serviceIDandPropertyName == null)
 				continue;
 			String serviceID = serviceIDandPropertyName.getKey();
-			addServiceProperty(serviceID, serviceIDandPropertyName.getValue(), entry.getValue());
+			servicesMap.addServiceProperty(serviceID, serviceIDandPropertyName.getValue(), entry.getValue());
 		}
-	}
-
-	/**
-	 * add a service property, if the serviceID is not yet added to the servicesMap, its associated mandatory properties(service name and description) will be checked
-	 * @param serviceID
-	 * @param servicePropertyName
-	 * @param servicePropertyValue
-	 */
-	private void addServiceProperty(String serviceID, ServicePropertyName servicePropertyName, String servicePropertyValue) {
-		Service service = servicesMap.get(serviceID);
-		if (service == null) {
-			// when parsing a new id, check its mandatory properties
-			List<String> mandatoryProperties = Arrays.asList("SERVICES_" + serviceID + "_NAME",
-					"SERVICES_" + serviceID + "_DESCRIPTION");
-			Application.checkMandatoryPropertiesDefined(mandatoryProperties);
-			// if mandatory properties defined, add it into map
-			service = new Service();
-			servicesMap.put(serviceID, service);
-		}
-		service.setProperty(servicePropertyName, servicePropertyValue);
 	}
 
 	/**
@@ -118,48 +93,8 @@ public class CatalogConfig {
 		return null;
 	}
 
-	/**
-	 * for the optional properties not defined in the system env variables, set its default values
-	 */
-	public void setServicesPropertiesDefaults() {
-		for (Service service : servicesMap.values()) {
-			for (ServicePropertyName propertyName : ServicePropertyName.values()) {
-				if (service.get(propertyName) != null) {
-					continue;
-				}
-				switch (propertyName) {
-					case BINDEABLE:
-					case PLAN_FREE:
-						service.setProperty(propertyName, "true");
-						break;
-					case METADATA_DISPLAYNAME:
-						service.setProperty(propertyName, service.get(ServicePropertyName.NAME));
-						break;
-					case METADATA_IMAGEURL:
-					case METADATA_SUPPORTURL:
-					case METADATA_DOCUMENTATIONURL:
-					case METADATA_PROVIDERDISPLAYNAME:
-					case METADATA_LONGDESCRIPTION:
-						service.setProperty(propertyName, "");
-						break;
-					case PLAN_NAME:
-						service.setProperty(propertyName, "default");
-						break;
-					case PLAN_DESCRIPTION:
-						service.setProperty(propertyName, "Default plan");
-						break;
-					case PLAN_METADATA:
-						service.setProperty(propertyName, "{}");
-						break;
-					default:
-						break;
-				}
 
-			}
-		}
-	}
-
-	private static Map<String, Object> getServiceMetadata(Service service) {
+	private static Map<String, Object> parseServiceMetadata(Map<ServicePropertyName, String> service) {
 		Map<String, Object> service_metadata = new HashMap<String, Object>();
 		service_metadata.put("displayName", service.get(ServicePropertyName.METADATA_DISPLAYNAME));
 		service_metadata.put("imageUrl", service.get(ServicePropertyName.METADATA_IMAGEURL));
@@ -170,11 +105,11 @@ public class CatalogConfig {
 		return service_metadata;
 	}
 
-	private static Map<String, Object> getPlanMetadata(Service service) {
+	private static Map<String, Object> parsePlanMetadata(String planMetadataStr) {
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> plan_metadata = new HashMap<>();
 		try {
-			plan_metadata = PropertyUtils.describe(mapper.readValue(service.get(ServicePropertyName.PLAN_METADATA), PlanMetadata.class));
+			plan_metadata = PropertyUtils.describe(mapper.readValue(planMetadataStr, PlanMetadata.class));
 			plan_metadata.remove("class");
 		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | IOException e) {
 			e.printStackTrace();
@@ -182,13 +117,4 @@ public class CatalogConfig {
 		return plan_metadata;
 	}
 	
-	private void checkServicesNameNotDuplicated() throws IllegalArgumentException {
-		Set<String> serviceNames = new HashSet<>();
-		for (Service service : servicesMap.values()) {
-			String name = service.get(ServicePropertyName.NAME);
-			if (!serviceNames.add(name)) {
-				throw new IllegalArgumentException("Duplicated service name is not allowed: " + name);
-			}
-		}
-	}
 }
