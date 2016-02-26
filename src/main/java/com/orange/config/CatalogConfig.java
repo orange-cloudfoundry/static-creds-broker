@@ -37,17 +37,16 @@ public class CatalogConfig {
 		setServicesPropertiesDefaults();
 		checkServicesNameNotDuplicated();
 		List<ServiceDefinition> serviceDefinitions = new ArrayList<ServiceDefinition>();
-		for (Map.Entry<String, Service> servicesMapEntry : servicesMap.entrySet()) {
-			String service_id = servicesMapEntry.getKey();
-			Service service = servicesMapEntry.getValue();
-			String service_GUID = UUID.nameUUIDFromBytes(service_id.getBytes()).toString(); // "000d5d66-e95b-4c19-beaf-064becbd3ada";
+		for (Service service : servicesMap.values()) {
+			String service_name = service.get(ServicePropertyName.NAME);
+			String service_GUID = UUID.nameUUIDFromBytes(service_name.getBytes()).toString(); // generate service_guid from service_name which is also required to be unique across cf
 			Map<String, Object> service_metadata = getServiceMetadata(service);
 			List<String> tags = new ArrayList<String>();
 			if (service.get(ServicePropertyName.TAGS) != null) {
 				tags = Arrays.asList(service.get(ServicePropertyName.TAGS).split(","));
 			}
-			String plan_id = service_id + " PLAN"; // + TODO change to + plan_id after support multiple plans.
-			String plan_GUID = UUID.nameUUIDFromBytes(plan_id.getBytes()).toString(); // "101d240e-c36f-46e8-b35f-97d2f69bd185";
+			String service_plan_name = service_name + " PLAN"; // + TODO change to + plan_name after support multiple plans.
+			String plan_GUID = UUID.nameUUIDFromBytes(service_plan_name.getBytes()).toString(); // generate service_guid from service_name + plan_name
 			Map<String, Object> plan_metadata = getPlanMetadata(service);
 			Plan plan = new Plan(plan_GUID, service.get(ServicePropertyName.PLAN_NAME), service.get(ServicePropertyName.PLAN_DESCRIPTION), plan_metadata,
 					Boolean.valueOf(service.get(ServicePropertyName.PLAN_FREE)));

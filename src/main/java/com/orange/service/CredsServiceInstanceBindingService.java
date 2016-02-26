@@ -24,7 +24,8 @@ public class CredsServiceInstanceBindingService implements ServiceInstanceBindin
 	public CreateServiceInstanceBindingResponse createServiceInstanceBinding(CreateServiceInstanceBindingRequest request) {
 		String serviceGUID = request.getServiceDefinitionId();
 		for (String service_id : credentialsMap.getServiceIds()) {
-			String guid = UUID.nameUUIDFromBytes(service_id.getBytes()).toString();
+			String service_name = getServiceName(service_id);
+			String guid = UUID.nameUUIDFromBytes(service_name.getBytes()).toString();
 			if (guid.equals(serviceGUID)) {
 				return new CreateServiceInstanceBindingResponse(credentialsMap.getCredentials(service_id));
 			}
@@ -34,6 +35,11 @@ public class CredsServiceInstanceBindingService implements ServiceInstanceBindin
 
 	@Override
 	public void deleteServiceInstanceBinding(DeleteServiceInstanceBindingRequest arg0) {
+	}
+	
+	private String getServiceName(String service_id){
+		String envConfigName = "SERVICES_" + service_id + "_NAME";
+		return System.getenv().get(envConfigName);
 	}
 
 }
