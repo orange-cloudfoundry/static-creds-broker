@@ -56,25 +56,30 @@ $ cf service-key static-creds-instance static-service-key
 
 # Config reference
 
+NOTE: {SERVICE_ID} should be replaced be your own service id which is a string used to identify service.
+
+The constraint of {SERVICE_ID}: 
+- not contains "_CREDENTIALS"
+
 ## Catalog
 
 The catalog exposed by the broker is controlled by environment variables matching the [service broker catalog endpoint response](http://docs.cloudfoundry.org/services/api.html#catalog-mgmt). 
-* SERVICES_ID_NAME (mandatory String, no default): the technical name of the service which should be unique among the cloudfoundry installation to register with (among orgs and spaces).
-* SERVICES_ID_DESCRIPTION (mandatory String, no default)
-* SERVICES_ID_BINDEABLE (default is "true"). Useful for service keys.
-* SERVICES_ID_TAGS (array-of-strings, default is ```[]```)
-* SERVICES_ID_METADATA_DISPLAYNAME (String, default is SERVICES_ID_NAME). The user-facing name of the service.
-* SERVICES_ID_METADATA_IMAGEURL (String, default is "")
-* SERVICES_ID_METADATA_SUPPORTURL (String, default is "")
-* SERVICES_ID_METADATA_DOCUMENTATIONURL (String, default is "")
-* SERVICES_ID_METADATA_PROVIDERDISPLAYNAME (String, default is "")
-* SERVICES_ID_METADATA_LONGDESCRIPTION (String, default is "")
+* SERVICES_{SERVICE_ID}_NAME (mandatory String, no default): the technical name of the service which should be unique among the cloudfoundry installation to register with (among orgs and spaces).
+* SERVICES_{SERVICE_ID}_DESCRIPTION (mandatory String, no default)
+* SERVICES_{SERVICE_ID}_BINDEABLE (default is "true"). Useful for service keys.
+* SERVICES_{SERVICE_ID}_TAGS (array-of-strings, default is ```[]```)
+* SERVICES_{SERVICE_ID}_METADATA_DISPLAYNAME (String, default is SERVICES_ID_NAME). The user-facing name of the service.
+* SERVICES_{SERVICE_ID}_METADATA_IMAGEURL (String, default is "")
+* SERVICES_{SERVICE_ID}_METADATA_SUPPORTURL (String, default is "")
+* SERVICES_{SERVICE_ID}_METADATA_DOCUMENTATIONURL (String, default is "")
+* SERVICES_{SERVICE_ID}_METADATA_PROVIDERDISPLAYNAME (String, default is "")
+* SERVICES_{SERVICE_ID}_METADATA_LONGDESCRIPTION (String, default is "")
 
 A single plan is supported. Use the following environment variables to configure it, or let the default values apply:
-* PLAN_NAME (String, default is "default")
-* PLAN_DESCRIPTION (String, default is "Default plan")
-* PLAN_METADATA (String holding a JSON object, default is "{}")
-* PLAN_FREE (String, default is "true")
+* SERVICES_{SERVICE_ID}_PLAN_NAME (String, default is "default")
+* SERVICES_{SERVICE_ID}_PLAN_DESCRIPTION (String, default is "Default plan")
+* SERVICES_{SERVICE_ID}_PLAN_METADATA (String holding a JSON object, default is "{}")
+* SERVICES_{SERVICE_ID}_PLAN_FREE (String, default is "true")
 
 A number of catalog variables are not configureable, the broker always return the following default value:
 * requires: ```[]``` (empty array)
@@ -83,10 +88,11 @@ A number of catalog variables are not configureable, the broker always return th
 
 ## Bound credentials
 
-The returned credentials are identical for all bound service instances and configured by the following environment variables, with at least one define.
-* SERVICES_ID_CREDENTIALS_URI String. Recommended see http://docs.cloudfoundry.org/services/binding-credentials.html
-* SERVICES_ID_CREDENTIALS_HOSTNAME String. Optional
-* SERVICES_ID_CREDENTIALS: a String holding a Json hash potentially compound the same format as 'cf cups', e.g. ```'{"username":"admin","password":"pa55woRD"}'````
+The returned credentials are identical for all bound service instances of a specific service and configured by the following environment variables, with at least one define.
+* SERVICES_{SERVICE_ID}_CREDENTIALS_URI String. Recommended see http://docs.cloudfoundry.org/services/binding-credentials.html
+* SERVICES_{SERVICE_ID}_CREDENTIALS_HOSTNAME String. Optional
+* SERVICES_{SERVICE_ID}_CREDENTIALS_{MYOWNKEY} String. It is for flat custom keys. Note, it's case sensitive. For example. you could specify =SERVICES_{SERVICE_ID}_CREDENTIALS_ACCESS_KEY: azert=, the returned credentials will contain a key named "ACCESS_KEY" ```{..., "ACCESS_KEY":"azert", ...}```
+* SERVICES_{SERVICE_ID}_CREDENTIALS: a String holding a Json hash potentially compound the same format as 'cf cups', e.g. ```'{"username":"admin","password":"pa55woRD"}'````
 
 This is mapped to [spring-cloud-cloudfoundry-service-broker](https://github.com/spring-cloud/spring-cloud-cloudfoundry-service-broker/blob/master/src%2Fmain%2Fjava%2Forg%2Fspringframework%2Fcloud%2Fservicebroker%2Fmodel%2FCreateServiceInstanceBindingResponse.java#L35) 
 
@@ -103,6 +109,9 @@ $ cf logs <app_name> --recent | findstr Caused
 # or more complete error information with:
 $ cf logs <app_name> --recent | findstr ERR
 ```
+
+If the register of the broker fails with the error message: ```Service broker catalog is invalid: Service ids must be unique.```
+Try to change the {SERVICE_ID}, then redo the deployment and the register of the service broker.
 
 # FAQ
 
