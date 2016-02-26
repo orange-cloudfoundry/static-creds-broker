@@ -10,6 +10,7 @@ import org.springframework.cloud.servicebroker.service.ServiceInstanceBindingSer
 import org.springframework.stereotype.Service;
 
 import com.orange.model.CredentialsMap;
+import com.orange.util.ParserSystemEnvironment;
 
 @Service
 public class CredsServiceInstanceBindingService implements ServiceInstanceBindingService{
@@ -39,7 +40,7 @@ public class CredsServiceInstanceBindingService implements ServiceInstanceBindin
 	
 	private String getServiceName(String service_id){
 		String envConfigName = "SERVICES_" + service_id + "_NAME";
-		return System.getenv().get(envConfigName);
+		return ParserSystemEnvironment.get(envConfigName);
 	}
 
 }

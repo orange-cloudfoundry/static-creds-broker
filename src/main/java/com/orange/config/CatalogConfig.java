@@ -1,26 +1,27 @@
 package com.orange.config;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.HashMap;
-import java.util.AbstractMap;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
-import org.springframework.cloud.servicebroker.model.*;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.springframework.cloud.servicebroker.model.Catalog;
+import org.springframework.cloud.servicebroker.model.Plan;
+import org.springframework.cloud.servicebroker.model.ServiceDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orange.model.PlanMetadata;
 import com.orange.model.ServicePropertyName;
 import com.orange.model.ServicesMap;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.beanutils.PropertyUtils;
-
-import java.lang.reflect.InvocationTargetException;
-import java.io.IOException;
+import com.orange.util.ParserSystemEnvironment;
 
 @Configuration
 public class CatalogConfig {
@@ -28,7 +29,7 @@ public class CatalogConfig {
 	
 	@Bean
 	public Catalog catalog() {
-		parseServicesProperties();
+		ParserSystemEnvironment.parseServicesProperties();
 		servicesMap.setServicesPropertiesDefaults();
 		servicesMap.checkServicesNameNotDuplicated();
 		List<ServiceDefinition> serviceDefinitions = new ArrayList<ServiceDefinition>();
@@ -55,44 +56,6 @@ public class CatalogConfig {
 		Catalog catalog = new Catalog(serviceDefinitions);
 		return catalog;
 	}
-
-	/**
-	 * get the services properties values from system environment variables
-	 * service property name pattern: SERVICE_{serviceID}_{servicePropertyName}
-	 */
-	private void parseServicesProperties() {
-		Map<String, String> env = System.getenv();
-		for (Map.Entry<String, String> entry : env.entrySet()) {
-			String key = entry.getKey();
-			// no _ means it's not targeted sys env key
-			if (!key.startsWith("SERVICES_") || key.contains("_CREDENTIALS"))
-				continue;
-			int indexNoPrefix = "SERVICES_".length();
-			String noPrefix = key.substring(indexNoPrefix);
-			Map.Entry<String, ServicePropertyName> serviceIDandPropertyName = splitServiceIDandPropertyName(noPrefix);
-			if (serviceIDandPropertyName == null)
-				continue;
-			String serviceID = serviceIDandPropertyName.getKey();
-			servicesMap.addServiceProperty(serviceID, serviceIDandPropertyName.getValue(), entry.getValue());
-		}
-	}
-
-	/**
-	 * Used to get the service id and service property name from a system env variable key (without part "SERVICES_")
-	 * @param noPrefix The suffix(without part "SERVICES_") of a system env variable key
-	 * @return A string array with two elements: service id and service property name
-	 */
-	private static Map.Entry<String, ServicePropertyName> splitServiceIDandPropertyName(String noPrefix) {
-		for (ServicePropertyName propertyName : ServicePropertyName.values()) {
-			String suffix = "_" + propertyName.toString();
-			if (noPrefix.endsWith(suffix)) {
-				String serviceID = noPrefix.substring(0, noPrefix.lastIndexOf(suffix));
-				return new AbstractMap.SimpleEntry<String, ServicePropertyName>(serviceID, propertyName);
-			}
-		}
-		return null;
-	}
-
 
 	private static Map<String, Object> parseServiceMetadata(Map<ServicePropertyName, String> service) {
 		Map<String, Object> service_metadata = new HashMap<String, Object>();

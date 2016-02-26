@@ -7,8 +7,10 @@ import java.util.Set;
 
 import com.orange.Application;
 
+/**
+ * map of service id (String) and credentials (Map<String, Object>)
+ */
 public class CredentialsMap {
-	// map of service id and credentials
 	private Map<String, Map<String, Object>> credentialsMap = new HashMap<>();
 
 	public void addCredential(String serviceID, String credentialName, Object credentialValue) {
