@@ -45,10 +45,11 @@ public class CatalogConfig {
 			PlansMap plansMap = ParserSystemEnvironment.parsePlansProperties(serviceID);
 			List<Plan> plans = new ArrayList<>();
 			for (Map<PlanPropertyName, String> planProperties : plansMap.getAllPlansProperties()) {
-				String service_plan_name = service_name + " " + planProperties.get(PlanPropertyName.NAME);
-				String plan_GUID = UUID.nameUUIDFromBytes(service_plan_name.getBytes()).toString(); // generate service_guid from service_name + plan_name
+				String plan_name = planProperties.get(PlanPropertyName.NAME);
+				List<String> service_plan = Arrays.asList(service_name, plan_name);
+				String plan_GUID = UUID.nameUUIDFromBytes(service_plan.toString().getBytes()).toString(); // generate service_guid from service_name + plan_name
 				Map<String, Object> plan_metadata = parsePlanMetadata(planProperties.get(PlanPropertyName.METADATA));
-				Plan plan = new Plan(plan_GUID, planProperties.get(PlanPropertyName.NAME), planProperties.get(PlanPropertyName.DESCRIPTION), plan_metadata,
+				Plan plan = new Plan(plan_GUID, plan_name, planProperties.get(PlanPropertyName.DESCRIPTION), plan_metadata,
 						Boolean.valueOf(planProperties.get(PlanPropertyName.FREE)));
 				plans.add(plan);
 			}

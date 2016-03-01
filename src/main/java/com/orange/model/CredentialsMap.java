@@ -2,43 +2,63 @@ package com.orange.model;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
-import com.orange.util.ParserSystemEnvironment;
-
 /**
- * map of service id (String) and credentials (Map<String, Object>)
+ * map of servicePlan (String) and credentials (Map<String, Object>)
+ * servicePlan is the combination identification of service and plan
+ * identification could be "id" named in env. variables or name
  */
 public class CredentialsMap {
-	private Map<String, Map<String, Object>> credentialsMap = new HashMap<>();
+	private Map<List<String>, Map<String, Object>> credentialsMap = new HashMap<>();
 
-	public void addCredential(String serviceID, String credentialName, Object credentialValue) {
+	/**
+	 * 
+	 * @param serviceID
+	 * @param planID null if the credential is for all plans of the service
+	 * @param credentialName
+	 * @param credentialValue
+	 */
+	public void addCredential(String serviceID, String planID, String credentialName, Object credentialValue) {
 		Map<String, Object> credentialsToAdd = new HashMap<>();
 		credentialsToAdd.put(credentialName, credentialValue);
-		addCredentials(serviceID, credentialsToAdd);
-	}
-	
-	public void addCredentials(String serviceID, Map<String, Object> credentialsToAdd) {
-		Map<String, Object> credentials = credentialsMap.get(serviceID);
-		if (credentials == null) {
-			ParserSystemEnvironment.checkMandatoryPropertiesDefined(
-					Arrays.asList("SERVICES_" + serviceID + "_NAME", "SERVICES_" + serviceID + "_DESCRIPTION"));
-			credentials = new HashMap<>();
-		}
-		credentials.putAll(credentialsToAdd);
-		credentialsMap.put(serviceID, credentials);
-	}
-
-	public Map<String, Object> getCredentials(String serviceID) {
-		return credentialsMap.get(serviceID);
+		addCredentials(serviceID, planID, credentialsToAdd);
 	}
 	
 	/**
-	 * get all service ids which has credentials defined
+	 * 
+	 * @param serviceID
+	 * @param planID null if the credential is for all plans of the service
+	 * @param credentialsToAdd
+	 */
+	public void addCredentials(String serviceID, String planID, Map<String, Object> credentialsToAdd) {
+		List<String> servicePlan;
+		if (planID == null) {
+			servicePlan = Arrays.asList(serviceID);
+		}
+		else {
+			servicePlan = Arrays.asList(serviceID, planID);
+		}
+		Map<String, Object> credentials = credentialsMap.get(servicePlan);
+		if (credentials == null) {
+			credentials = new HashMap<>();
+		}
+		credentials.putAll(credentialsToAdd);
+		credentialsMap.put(servicePlan, credentials);
+	}
+	
+	public Map<String, Object> getCredentials(String serviceID, String planID) {
+		return credentialsMap.get(Arrays.asList(serviceID, planID));
+	}
+	
+	/**
+	 * get all keys which has credentials defined 
 	 * @return
 	 */
-	public Set<String> getServiceIds(){
-		return credentialsMap.keySet();
+	public Set<Entry<List<String>,Map<String,Object>>> getEntrySet(){
+		return credentialsMap.entrySet();
 	}
 }
