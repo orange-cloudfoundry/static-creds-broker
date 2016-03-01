@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +18,8 @@ import org.springframework.context.annotation.Configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orange.model.PlanMetadata;
+import com.orange.model.PlanPropertyName;
+import com.orange.model.PlansMap;
 import com.orange.model.ServicePropertyName;
 import com.orange.model.ServicesMap;
 import com.orange.util.ParserSystemEnvironment;
@@ -29,11 +30,11 @@ public class CatalogConfig {
 	
 	@Bean
 	public Catalog catalog() {
-		ParserSystemEnvironment.parseServicesProperties();
-		servicesMap.setServicesPropertiesDefaults();
-		servicesMap.checkServicesNameNotDuplicated();
+		servicesMap = ParserSystemEnvironment.parseServicesProperties();
 		List<ServiceDefinition> serviceDefinitions = new ArrayList<ServiceDefinition>();
-		for (Map<ServicePropertyName, String> service : servicesMap.getAllServicesProperties()) {
+		for (Map.Entry<String, Map<ServicePropertyName, String>> entry : servicesMap.geEntrySet()) {
+			String serviceID = entry.getKey();
+			Map<ServicePropertyName, String> service = entry.getValue();
 			String service_name = service.get(ServicePropertyName.NAME);
 			String service_GUID = UUID.nameUUIDFromBytes(service_name.getBytes()).toString(); // generate service_guid from service_name which is also required to be unique across cf
 			Map<String, Object> service_metadata = parseServiceMetadata(service);
@@ -41,16 +42,19 @@ public class CatalogConfig {
 			if (service.get(ServicePropertyName.TAGS) != null) {
 				tags = Arrays.asList(service.get(ServicePropertyName.TAGS).split(","));
 			}
-			String service_plan_name = service_name + " PLAN"; // + TODO change to + plan_name after support multiple plans.
-			String plan_GUID = UUID.nameUUIDFromBytes(service_plan_name.getBytes()).toString(); // generate service_guid from service_name + plan_name
-			Map<String, Object> plan_metadata = parsePlanMetadata(service.get(ServicePropertyName.PLAN_METADATA));
-			Plan plan = new Plan(plan_GUID, service.get(ServicePropertyName.PLAN_NAME), service.get(ServicePropertyName.PLAN_DESCRIPTION), plan_metadata,
-					Boolean.valueOf(service.get(ServicePropertyName.PLAN_FREE)));
-
+			PlansMap plansMap = ParserSystemEnvironment.parsePlansProperties(serviceID);
+			List<Plan> plans = new ArrayList<>();
+			for (Map<PlanPropertyName, String> planProperties : plansMap.getAllPlansProperties()) {
+				String service_plan_name = service_name + " " + planProperties.get(PlanPropertyName.NAME);
+				String plan_GUID = UUID.nameUUIDFromBytes(service_plan_name.getBytes()).toString(); // generate service_guid from service_name + plan_name
+				Map<String, Object> plan_metadata = parsePlanMetadata(planProperties.get(PlanPropertyName.METADATA));
+				Plan plan = new Plan(plan_GUID, planProperties.get(PlanPropertyName.NAME), planProperties.get(PlanPropertyName.DESCRIPTION), plan_metadata,
+						Boolean.valueOf(planProperties.get(PlanPropertyName.FREE)));
+				plans.add(plan);
+			}
 			ServiceDefinition serviceDefinition = new ServiceDefinition(service_GUID, service.get(ServicePropertyName.NAME),
 					service.get(ServicePropertyName.DESCRIPTION), Boolean.valueOf(service.get(ServicePropertyName.BINDEABLE)), false,
-					Collections.singletonList(plan), tags, service_metadata, null, null);
-
+					plans, tags, service_metadata, null, null);
 			serviceDefinitions.add(serviceDefinition);
 		}
 		Catalog catalog = new Catalog(serviceDefinitions);

@@ -10,6 +10,8 @@ import com.orange.model.ServicesMap;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orange.model.CredentialsMap;
+import com.orange.model.PlanPropertyName;
+import com.orange.model.PlansMap;
 import com.orange.model.ServicePropertyName;
 
 public class ParserSystemEnvironment {
@@ -59,7 +61,7 @@ public class ParserSystemEnvironment {
 		for (Map.Entry<String, String> entry : env.entrySet()) {
 			String key = entry.getKey();
 			// not targeted sys env key
-			if (!key.startsWith("SERVICES_") || key.contains("_CREDENTIALS"))
+			if (!key.startsWith("SERVICES_") || key.contains("_CREDENTIALS") || key.contains("_PLAN_"))
 				continue;
 			int indexNoPrefix = "SERVICES_".length();
 			String noPrefix = key.substring(indexNoPrefix);
@@ -69,9 +71,11 @@ public class ParserSystemEnvironment {
 			String serviceID = serviceIDandPropertyName.getKey();
 			servicesMap.addServiceProperty(serviceID, serviceIDandPropertyName.getValue(), entry.getValue());
 		}
+		servicesMap.checkServicesNameNotDuplicated();
+		servicesMap.setServicesPropertiesDefaults();
 		return servicesMap;
 	}
-
+	
 	/**
 	 * Used to get the service id and service property name from a system env
 	 * variable key (without part "SERVICES_")
@@ -88,6 +92,44 @@ public class ParserSystemEnvironment {
 			if (noPrefix.endsWith(suffix)) {
 				String serviceID = noPrefix.substring(0, noPrefix.lastIndexOf(suffix));
 				return new AbstractMap.SimpleEntry<String, ServicePropertyName>(serviceID, propertyName);
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * get the plans properties values from system environment variables
+	 * plan property name pattern: SERVICES_{SERVICE_ID}_PLAN_{PLAN_ID}_{planPropertyName}
+	 * ex. SERVICES_API_DIRECTORY_PLAN_1_NAME
+	 * @return a map of plan id (String) and plan properties definitions (Map<PlanPropertyName, String>)
+	 */
+	public static PlansMap parsePlansProperties(String serviceID) {
+		PlansMap plansMap = new PlansMap();
+		Map<String, String> env = System.getenv();
+		for (Map.Entry<String, String> entry : env.entrySet()) {
+			String key = entry.getKey();
+			String prefix = "SERVICES_" + serviceID + "_PLAN_";
+			if (!key.startsWith(prefix))
+				continue;
+			int indexNoPrefix = prefix.length();
+			String noPrefix = key.substring(indexNoPrefix);
+			Map.Entry<String, PlanPropertyName> planIDandPropertyName = splitPlanIDandPropertyName(noPrefix);
+			if (planIDandPropertyName == null)
+				continue;
+			String planID = planIDandPropertyName.getKey();
+			plansMap.addPlanProperty(planID, planIDandPropertyName.getValue(), entry.getValue());
+		}
+		plansMap.checkPlansNameNotDuplicated();
+		plansMap.setPlansPropertiesDefaults();
+		return plansMap;
+	}
+	
+	private static Map.Entry<String, PlanPropertyName> splitPlanIDandPropertyName(String noPrefix) {
+		for (PlanPropertyName propertyName : PlanPropertyName.values()) {
+			String suffix = "_" + propertyName.toString();
+			if (noPrefix.endsWith(suffix)) {
+				String planID = noPrefix.substring(0, noPrefix.lastIndexOf(suffix));
+				return new AbstractMap.SimpleEntry<String, PlanPropertyName>(planID, propertyName);
 			}
 		}
 		return null;

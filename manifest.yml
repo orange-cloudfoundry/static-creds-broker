@@ -11,13 +11,20 @@ applications:
     SERVICES_TRIPADVISOR_METADATA_LONGDESCRIPTION: A long description for my service
     SERVICES_TRIPADVISOR_CREDENTIALS_URI: http://....
     SERVICES_TRIPADVISOR_CREDENTIALS_ACCESS_KEY: AZERT23456664DFDSFSDFDSF
-    SERVICES_TRIPADVISOR_PLAN_NAME: default
     
     SERVICES_API_DIRECTORY_NAME: API_DIRECTORY_test_Service
     SERVICES_API_DIRECTORY_DESCRIPTION: My existing service
     SERVICES_API_DIRECTORY_METADATA_LONGDESCRIPTION: A long description for my service
-    SERVICES_API_DIRECTORY_CREDENTIALS_URI: http://....
-    SERVICES_API_DIRECTORY_CREDENTIALS_ACCESS_KEY: AZERT23456664DFDSFSDFDSF
+    SERVICES_API_DIRECTORY_CREDENTIALS_HOSTNAME: http://company.com
+    SERVICES_API_DIRECTORY_PLAN_1_NAME: dev
+    # SERVICES_API_DIRECTORY_PLAN_1_CREDENTIALS_URI: http://mydev-api.org
+    # SERVICES_API_DIRECTORY_PLAN_1_CREDENTIALS_ACCESS_KEY: AZERT23456664DFDSFSDFDSF
+    SERVICES_API_DIRECTORY_PLAN_2_NAME: preprod
+    # SERVICES_API_DIRECTORY_PLAN_2_CREDENTIALS_URI: http://mypreprod-api.org
+    # SERVICES_API_DIRECTORY_PLAN_2_CREDENTIALS_ACCESS_KEY: AZERT23456664DFDSFSDFDSF
+    SERVICES_API_DIRECTORY_PLAN_3_NAME: prod
+    # SERVICES_API_DIRECTORY_PLAN_3_CREDENTIALS_URI: http://myprod-api.org
+    # SERVICES_API_DIRECTORY_PLAN_3_CREDENTIALS_ACCESS_KEY: AZERT23456664DFDSFSDFDSF
 
     SERVICES_ID_NAME: static-creds-service-test
     SERVICES_ID_DESCRIPTION: static-creds service for test
@@ -29,10 +36,10 @@ applications:
     SERVICES_ID_METADATA_DOCUMENTATIONURL: https://github.com/tao-xinxiu/static-creds-broker
     SERVICES_ID_METADATA_PROVIDERDISPLAYNAME: provider display name
     SERVICES_ID_METADATA_LONGDESCRIPTION: A long description for my service
-    SERVICES_ID_PLAN_NAME: myplan
-    SERVICES_ID_PLAN_DESCRIPTION: The description of the plan
-    #SERVICES_ID_PLAN_METADATA: '{"bullets":["20 GB of messages","20 connections"],"costs":[{"amount":{"usd":99.0,"eur":49.0},"unit":"MONTHLY"},{"amount":{"usd":0.99,"eur":0.49},"unit":"1GB of messages over 20GB"}],"displayName":"Big Bunny"}'
-    #SERVICES_ID_PLAN_FREE: false
+    SERVICES_ID_PLAN_1_NAME: myplan
+    SERVICES_ID_PLAN_1_DESCRIPTION: The description of the plan
+    #SERVICES_ID_PLAN_1_METADATA: '{"bullets":["20 GB of messages","20 connections"],"costs":[{"amount":{"usd":99.0,"eur":49.0},"unit":"MONTHLY"},{"amount":{"usd":0.99,"eur":0.49},"unit":"1GB of messages over 20GB"}],"displayName":"Big Bunny"}'
+    #SERVICES_ID_PLAN_1_FREE: false
     SERVICES_ID_CREDENTIALS_uri: mysql://USERNAME:PASSWORD@HOSTNAME:PORT/NAME
     SERVICES_ID_CREDENTIALS_HOSTNAME: us-cdbr-east-03.cleardb.com
     SERVICES_ID_CREDENTIALS: '{"username":"admin","password":"pa55woRD"}' #if same key defined SERVICES_ID_CREDENTIALS_MYOWNKEY, value will replace that in SERVICES_ID_CREDENTIALS_MYOWNKEY

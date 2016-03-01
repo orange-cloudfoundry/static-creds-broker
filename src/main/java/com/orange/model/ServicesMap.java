@@ -23,6 +23,10 @@ public class ServicesMap {
 	public Collection<Map<ServicePropertyName, String>> getAllServicesProperties() {
 		return servicesMap.values();
 	}
+	
+	public Set<Map.Entry<String, Map<ServicePropertyName, String>>> geEntrySet(){
+		return servicesMap.entrySet();
+	}
 
 	/**
 	 * get services properties of a specified service
@@ -62,7 +66,7 @@ public class ServicesMap {
 					continue;
 				}
 				switch (propertyName) {
-					case BINDEABLE: case PLAN_FREE:
+					case BINDEABLE: 
 						service.put(propertyName, "true");
 						break;
 					case METADATA_DISPLAYNAME:
@@ -70,15 +74,6 @@ public class ServicesMap {
 						break;
 					case METADATA_IMAGEURL: case METADATA_SUPPORTURL: case METADATA_DOCUMENTATIONURL: case METADATA_PROVIDERDISPLAYNAME: case METADATA_LONGDESCRIPTION:
 						service.put(propertyName, "");
-						break;
-					case PLAN_NAME:
-						service.put(propertyName, "default");
-						break;
-					case PLAN_DESCRIPTION:
-						service.put(propertyName, "Default plan");
-						break;
-					case PLAN_METADATA:
-						service.put(propertyName, "{}");
 						break;
 					default:
 						break;
