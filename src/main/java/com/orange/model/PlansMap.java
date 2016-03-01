@@ -30,8 +30,24 @@ public class PlansMap {
 		return plansMap.get(planID);
 	}
 	
+	/**
+	 * get all plan ids defined in the map
+	 * @return
+	 */
 	public Set<String> getIDs(){
 		return plansMap.keySet();
+	}
+	
+	/**
+	 * get all plan names defined in the map
+	 * @return
+	 */
+	public Set<String> getNames(){
+		Set<String> names = new HashSet<>();
+		for (Map<PlanPropertyName, String> planProperties : getAllPlansProperties()) {
+			names.add(planProperties.get(PlanPropertyName.NAME));
+		}
+		return names;
 	}
 	
 	public void addPlanProperty(String planID, PlanPropertyName planPropertyName, String planPropertyValue) {

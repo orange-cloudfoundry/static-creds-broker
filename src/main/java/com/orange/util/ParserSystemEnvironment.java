@@ -2,17 +2,18 @@ package com.orange.util;
 
 import java.io.IOException;
 import java.util.AbstractMap;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.orange.model.ServicesMap;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orange.model.CredentialsMap;
 import com.orange.model.PlanPropertyName;
 import com.orange.model.PlansMap;
 import com.orange.model.ServicePropertyName;
+import com.orange.model.ServicesMap;
 
 public class ParserSystemEnvironment {
 	/**
@@ -75,7 +76,7 @@ public class ParserSystemEnvironment {
 		servicesMap.setServicesPropertiesDefaults();
 		return servicesMap;
 	}
-	
+
 	/**
 	 * Used to get the service id and service property name from a system env
 	 * variable key (without part "SERVICES_")
@@ -96,12 +97,15 @@ public class ParserSystemEnvironment {
 		}
 		return null;
 	}
-	
+
 	/**
-	 * get the plans properties values from system environment variables
-	 * plan property name pattern: SERVICES_{SERVICE_ID}_PLAN_{PLAN_ID}_{planPropertyName}
-	 * ex. SERVICES_API_DIRECTORY_PLAN_1_NAME
-	 * @return a map of plan id (String) and plan properties definitions (Map<PlanPropertyName, String>)
+	 * get the plans properties values from system environment variables plan
+	 * property name pattern:
+	 * SERVICES_{SERVICE_ID}_PLAN_{PLAN_ID}_{planPropertyName} ex.
+	 * SERVICES_API_DIRECTORY_PLAN_1_NAME
+	 * 
+	 * @return a map of plan id (String) and plan properties definitions
+	 *         (Map<PlanPropertyName, String>)
 	 */
 	public static PlansMap parsePlansProperties(String serviceID) {
 		PlansMap plansMap = new PlansMap();
@@ -123,7 +127,7 @@ public class ParserSystemEnvironment {
 		plansMap.setPlansPropertiesDefaults();
 		return plansMap;
 	}
-	
+
 	private static Map.Entry<String, PlanPropertyName> splitPlanIDandPropertyName(String noPrefix) {
 		for (PlanPropertyName propertyName : PlanPropertyName.values()) {
 			String suffix = "_" + propertyName.toString();
@@ -136,29 +140,33 @@ public class ParserSystemEnvironment {
 	}
 
 	/**
-	 * get the services credential properties values from system environment
-	 * variables service credential property name pattern:
-	 * SERVICES_{serviceID}_CREDENTIALS or
-	 * SERVICES_{serviceID}_CREDENTIALS_{credentialPropertyName} ex.
-	 * SERVICES_TRIPADVISOR_CREDENTIALS_URI, SERVICES_TRIPADVISOR_CREDENTIALS
-	 * 
-	 * @return a map of service id (String) and credentials (Map<String,
-	 *         Object>)
+	 * get the services credential properties values from system environment variables
+	 * - credential for whole service 
+	 * 	 property name pattern: SERVICES_{serviceID}_CREDENTIALS 
+	 *    						or SERVICES_{serviceID}_CREDENTIALS_{credentialPropertyName} 
+	 * 	 ex. SERVICES_TRIPADVISOR_CREDENTIALS, SERVICES_TRIPADVISOR_CREDENTIALS_URI
+	 * - credential for specific plan
+	 *   property name pattern: SERVICES_{serviceID}_PLAN_{planID}_CREDENTIALS 
+	 *   						or SERVICES_{serviceID}_PLAN_{planID}_CREDENTIALS_{credentialPropertyName} 
+	 * 	 ex. SERVICES_TRIPADVISOR_PLAN_1_CREDENTIALS, SERVICES_TRIPADVISOR_PLAN_1_CREDENTIALS_URI
+	 * @return a map of service id (String) and credentials (Map<String, Object>)
 	 */
 	public static CredentialsMap parseCredentialsProperties() {
 		CredentialsMap credentialsMap = new CredentialsMap();
 		Map<String, String> env = System.getenv();
 		for (Map.Entry<String, String> entry : env.entrySet()) {
-			String[] serviceIDandCredentialName = getServiceIDandCredentialName(entry.getKey());
-			if (serviceIDandCredentialName == null) {
+			String[] serviceIDplanIDandCredentialName = getServiceIDPlanIDandCredentialName(entry.getKey());
+			if (serviceIDplanIDandCredentialName == null) {
 				continue;
 			}
-			// no credential name means its value is a json hash string which
-			// contains multiple credentials
-			if (serviceIDandCredentialName.length == 1) {
-				credentialsMap.addCredentials(serviceIDandCredentialName[0], parseCredentialsJSON(entry.getValue()));
+			String serviceID = serviceIDplanIDandCredentialName[0];
+			checkMandatoryPropertiesDefined(Arrays.asList("SERVICES_" + serviceID + "_NAME", "SERVICES_" + serviceID + "_DESCRIPTION"));
+			// credentialName is null means credential value is a json hash string which contains multiple credentials
+			if (serviceIDplanIDandCredentialName[2] == null) {
+				credentialsMap.addCredentials(serviceID, serviceIDplanIDandCredentialName[1],
+						parseCredentialsJSON(entry.getValue()));
 			} else {
-				credentialsMap.addCredential(serviceIDandCredentialName[0], serviceIDandCredentialName[1],
+				credentialsMap.addCredential(serviceID, serviceIDplanIDandCredentialName[1], serviceIDplanIDandCredentialName[2],
 						entry.getValue());
 			}
 		}
@@ -166,26 +174,39 @@ public class ParserSystemEnvironment {
 	}
 
 	/**
-	 * get the service id and service property name from a system env variable
+	 * get the service id, plan id and service property name from a system env variable
 	 * key which starts with "SERVICES_" and contains "_CREDENTIALS"
 	 * 
-	 * @param key ex. SERVICES_TRIPADVISOR_CREDENTIALS_URI, SERVICES_TRIPADVISOR_CREDENTIALS
-	 * @return for format SERVICES_{serviceID}_CREDENTIALS_{credentialPropertyName}, returns a string array with two 
-	 * 			elements: a service id and a service credential property name ex. {"TRIPADVISOR", "URI"}.
-	 * 			for format SERVICES_{serviceID}_CREDENTIALS, returns a string array with single element: service id. ex {"TRIPADVISOR"}
+	 * @param key
+	 *        ex. SERVICES_TRIPADVISOR_CREDENTIALS_URI, SERVICES_TRIPADVISOR_CREDENTIALS,
+	 *        	  SERVICES_TRIPADVISOR_PLAN_1_CREDENTIALS, SERVICES_TRIPADVISOR_PLAN_1_CREDENTIALS_URI
+	 * @return returns a string array {serviceID, planID, credentialPropertyName}. 
+	 * 			planID is null, if it's credentials for all plans of this service
+	 *          credentialPropertyName is null, if it ends with "_CREDENTIALS"
 	 */
-	private static String[] getServiceIDandCredentialName(String key) {
+	private static String[] getServiceIDPlanIDandCredentialName(String key) {
 		if (!key.startsWith("SERVICES_") || !key.contains("_CREDENTIALS"))
 			return null;
 		int indexIDStart = "SERVICES_".length();
 		int indexIDEnd = key.indexOf("_CREDENTIALS");
-		String serviceID = key.substring(indexIDStart, indexIDEnd);
+		String servicePlanID = key.substring(indexIDStart, indexIDEnd);
+		String serviceID = null;
+		String planID = null;
+		if (servicePlanID.contains("_PLAN_")) { //ex. serviceID: "TRIPADVISOR_PLAN_1"
+			int indexServiceIDEnd = servicePlanID.indexOf("_PLAN_");
+			serviceID = servicePlanID.substring(0, indexServiceIDEnd);
+			int indexPlanIDStart = serviceID.length() + "_PLAN_".length();
+			planID = servicePlanID.substring(indexPlanIDStart);
+		}
+		else {
+			serviceID = servicePlanID;
+		}
 		if (key.endsWith("_CREDENTIALS")) {
-			return new String[] { serviceID };
+			return new String[] { serviceID, planID, null };
 		} else if (key.contains("_CREDENTIALS_")) {
 			int indexCredential = indexIDEnd + "_CREDENTIALS_".length();
 			String credentialName = key.substring(indexCredential);
-			return new String[] { serviceID, credentialName };
+			return new String[] { serviceID, planID, credentialName };
 		}
 		return null;
 	}
@@ -200,5 +221,13 @@ public class ParserSystemEnvironment {
 			throw new IllegalArgumentException("JSON parsing error: " + credentials_str);
 		}
 		return credentials;
+	}
+
+	public static String getServiceName(String serviceID) {
+		return System.getenv("SERVICES_" + serviceID + "_NAME");
+	}
+
+	public static String getPlanName(String serviceID, String planID) {
+		return System.getenv("SERVICES_" + serviceID + "_PLAN_" + planID + "_NAME");
 	}
 }
