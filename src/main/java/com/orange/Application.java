@@ -12,13 +12,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import static org.springframework.cloud.servicebroker.model.BrokerApiVersion.API_VERSION_ANY;
 
+import com.orange.util.ParserSystemEnvironment;
+
 @EnableGlobalMethodSecurity
 @SpringBootApplication(scanBasePackages = { "com.orange" })
 public class Application {
 
 	public static void main(String[] args) {
 		List<String> mandatoryProperties = Arrays.asList("SECURITY_PASSWORD"); 
-		checkMandatoryPropertiesDefined(mandatoryProperties);
+		ParserSystemEnvironment.checkMandatoryPropertiesDefined(mandatoryProperties);
 		SpringApplication app = new SpringApplication(Application.class);
 		app.setDefaultProperties(getSecurityProperties());
 		app.run(args);
@@ -44,20 +46,5 @@ public class Application {
 		properties.put("security.user.name", username);
 		properties.put("security.user.password", password);
 		return properties;
-	}
-
-	/**
-	 * check whether mandatory properties are defined in the system environment 
-	 * @param mandatoryProperties List<String> contains property names
-	 * @throws IllegalArgumentException when find mandatory property not defined in the system environment , error message contains missing mandatory property name
-	 */
-	public static void checkMandatoryPropertiesDefined(List<String> mandatoryProperties)
-			throws IllegalArgumentException {
-		Map<String, String> env = System.getenv();
-		for (String mandatoryProperty : mandatoryProperties) {
-			if (env.get(mandatoryProperty) == null) {
-				throw new IllegalArgumentException("Mandatory property: " + mandatoryProperty + " missing");
-			}
-		}
 	}
 }

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.orange.Application;
+import com.orange.util.ParserSystemEnvironment;
 
 /**
  * map of service id (String) and service properties definitions (Map<ServicePropertyName, String>)
@@ -48,7 +48,7 @@ public class ServicesMap {
 		if (service == null) {
 			// when parsing a new id, check its mandatory properties
 			List<String> mandatoryProperties = Arrays.asList("SERVICES_" + serviceID + "_NAME", "SERVICES_" + serviceID + "_DESCRIPTION");
-			Application.checkMandatoryPropertiesDefined(mandatoryProperties);
+			ParserSystemEnvironment.checkMandatoryPropertiesDefined(mandatoryProperties);
 			// if mandatory properties defined, add it into map
 			service = new HashMap<>();
 			servicesMap.put(serviceID, service);

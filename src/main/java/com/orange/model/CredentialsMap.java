@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.orange.Application;
+import com.orange.util.ParserSystemEnvironment;
 
 /**
  * map of service id (String) and credentials (Map<String, Object>)
@@ -22,7 +22,7 @@ public class CredentialsMap {
 	public void addCredentials(String serviceID, Map<String, Object> credentialsToAdd) {
 		Map<String, Object> credentials = credentialsMap.get(serviceID);
 		if (credentials == null) {
-			Application.checkMandatoryPropertiesDefined(
+			ParserSystemEnvironment.checkMandatoryPropertiesDefined(
 					Arrays.asList("SERVICES_" + serviceID + "_NAME", "SERVICES_" + serviceID + "_DESCRIPTION"));
 			credentials = new HashMap<>();
 		}
