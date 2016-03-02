@@ -56,10 +56,13 @@ $ cf service-key static-creds-instance static-service-key
 
 # Config reference
 
-NOTE: {SERVICE_ID} should be replaced be your own service id which is a string used to identify service.
+NOTE: 
+- {SERVICE_ID} should be replaced be your own service id which is a string used to identify service. 
+- {PLAN_ID} should be replaced be your own plan id which is a string used to identify different plans defined in a service.
 
-The constraint of {SERVICE_ID}: 
+The constraint of {SERVICE_ID} and {PLAN_ID}: 
 - not contains "_CREDENTIALS"
+- not contains "\_PLAN\_"
 
 ## Catalog
 
@@ -75,11 +78,11 @@ The catalog exposed by the broker is controlled by environment variables matchin
 * SERVICES_{SERVICE_ID}_METADATA_PROVIDERDISPLAYNAME (String, default is "")
 * SERVICES_{SERVICE_ID}_METADATA_LONGDESCRIPTION (String, default is "")
 
-A single plan is supported. Use the following environment variables to configure it, or let the default values apply:
-* SERVICES_{SERVICE_ID}_PLAN_NAME (String, default is "default")
-* SERVICES_{SERVICE_ID}_PLAN_DESCRIPTION (String, default is "Default plan")
-* SERVICES_{SERVICE_ID}_PLAN_METADATA (String holding a JSON object, default is "{}")
-* SERVICES_{SERVICE_ID}_PLAN_FREE (String, default is "true")
+Multiple plans are supported. Use the following environment variables to configure it, or let the default values apply:
+* SERVICES_{SERVICE_ID}\_PLAN\_{PLAN_ID}_NAME (String, default is "default")
+* SERVICES_{SERVICE_ID}\_PLAN\_{PLAN_ID}_DESCRIPTION (String, default is "Default plan")
+* SERVICES_{SERVICE_ID}\_PLAN\_{PLAN_ID}_METADATA (String holding a JSON object, default is "{}")
+* SERVICES_{SERVICE_ID}\_PLAN\_{PLAN_ID}_FREE (String, default is "true")
 
 A number of catalog variables are not configureable, the broker always return the following default value:
 * requires: ```[]``` (empty array)
@@ -88,11 +91,19 @@ A number of catalog variables are not configureable, the broker always return th
 
 ## Bound credentials
 
-The returned credentials are identical for all bound service instances of a specific service and configured by the following environment variables, with at least one define.
+The returned credentials are identical for all bound service instances of a specific plan~~, with at least one define~~.
+
+The credentials could be defined for a service, it will be applied for all plans of the service. It is configured by the following environment variables:
 * SERVICES_{SERVICE_ID}_CREDENTIALS_URI String. Recommended see http://docs.cloudfoundry.org/services/binding-credentials.html
 * SERVICES_{SERVICE_ID}_CREDENTIALS_HOSTNAME String. Optional
-* SERVICES_{SERVICE_ID}\_CREDENTIALS\_{MYOWNKEY} String. It is for flat custom keys. Note, it's case sensitive. For example. you could specify =SERVICES_{SERVICE_ID}_CREDENTIALS_ACCESS_KEY: azert=, the returned credentials will contain a key named "ACCESS_KEY" ```{..., "ACCESS_KEY":"azert", ...}```
-* SERVICES_{SERVICE_ID}_CREDENTIALS: a String holding a Json hash potentially compound the same format as 'cf cups', e.g. ```'{"username":"admin","password":"pa55woRD"}'````
+* SERVICES_{SERVICE_ID}\_CREDENTIALS\_{MYOWNKEY} String. It is for flat custom keys. Note, it's case sensitive. For example. you could specify ```SERVICES_{SERVICE_ID}_CREDENTIALS_ACCESS_KEY: azert```, the returned credentials will contain a key named "ACCESS_KEY" ```{..., "ACCESS_KEY":"azert", ...}```
+* SERVICES_{SERVICE_ID}_CREDENTIALS: a String holding a Json hash potentially compound the same format as 'cf cups', e.g. ```'{"username":"admin","password":"pa55woRD"}'```
+
+The credentials could also be defined for a particular plan, if it contains conflict credential key between the service credentials and plan credentials, the values of the plan credentials will be taken. It is configured by the following environment variables:
+* SERVICES_{SERVICE_ID}\_PLAN\_{PLAN_ID}_CREDENTIALS_URI String. 
+* SERVICES_{SERVICE_ID}\_PLAN\_{PLAN_ID}_CREDENTIALS_HOSTNAME String. Optional
+* SERVICES_{SERVICE_ID}\_PLAN\_{PLAN_ID}\_CREDENTIALS\_{MYOWNKEY} String. It is for flat custom keys, as SERVICES_{SERVICE_ID}\_CREDENTIALS\_{MYOWNKEY}
+* SERVICES_{SERVICE_ID}\_PLAN\_{PLAN_ID}_CREDENTIALS: a String holding a Json hash potentially compound the same format as 'cf cups', e.g. ```'{"username":"admin","password":"pa55woRD"}'```
 
 This is mapped to [spring-cloud-cloudfoundry-service-broker](https://github.com/spring-cloud/spring-cloud-cloudfoundry-service-broker/blob/master/src%2Fmain%2Fjava%2Forg%2Fspringframework%2Fcloud%2Fservicebroker%2Fmodel%2FCreateServiceInstanceBindingResponse.java#L35) 
 
