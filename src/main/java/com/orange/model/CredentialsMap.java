@@ -1,11 +1,7 @@
 package com.orange.model;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  * map of servicePlan (String) and credentials (Map<String, Object>)
@@ -49,16 +45,25 @@ public class CredentialsMap {
 		credentials.putAll(credentialsToAdd);
 		credentialsMap.put(servicePlan, credentials);
 	}
-	
-	public Map<String, Object> getCredentials(String serviceID, String planID) {
-		return credentialsMap.get(Arrays.asList(serviceID, planID));
-	}
-	
+
 	/**
 	 * get all keys which has credentials defined 
 	 * @return
 	 */
 	public Set<Entry<List<String>,Map<String,Object>>> getEntrySet(){
 		return credentialsMap.entrySet();
+	}
+
+	public Map<String, Object> getCredentialsForPlan(String planId) {
+		for (Entry<List<String>,Map<String,Object>> entry : getEntrySet()) {
+			List<String> servicePlanName = entry.getKey();
+			String service_name = servicePlanName.get(0);
+			String plan_name = servicePlanName.get(1);
+			String plan_guid = UUID.nameUUIDFromBytes(Arrays.asList(service_name, plan_name).toString().getBytes()).toString();
+			if (plan_guid.equals(planId)) {
+				return entry.getValue();
+			}
+		}
+		return null;
 	}
 }
