@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,7 +52,8 @@ public class ParserSystemEnvironment {
 
 	/**
 	 * get the services properties values from system environment variables
-	 * service property name pattern: SERVICES_{serviceID}_{servicePropertyName}
+	 * service property name pattern: SERVICES_{SERVICE_ID}_{servicePropertyName}
+	 * {SERVICE_ID} should not contain "_PLAN_" or "_CREDENTIALS"
 	 * ex. SERVICES_TRIPADVISOR_NAME
 	 * 
 	 * @return a map of service id (String) and service properties definitions
@@ -60,17 +63,17 @@ public class ParserSystemEnvironment {
 		ServicesMap servicesMap = new ServicesMap();
 		Map<String, String> env = System.getenv();
 		for (Map.Entry<String, String> entry : env.entrySet()) {
-			String key = entry.getKey();
-			// not targeted sys env key
-			if (!key.startsWith("SERVICES_") || key.contains("_CREDENTIALS") || key.contains("_PLAN_"))
-				continue;
-			int indexNoPrefix = "SERVICES_".length();
-			String noPrefix = key.substring(indexNoPrefix);
-			Map.Entry<String, ServicePropertyName> serviceIDandPropertyName = splitServiceIDandPropertyName(noPrefix);
-			if (serviceIDandPropertyName == null)
-				continue;
-			String serviceID = serviceIDandPropertyName.getKey();
-			servicesMap.addServiceProperty(serviceID, serviceIDandPropertyName.getValue(), entry.getValue());
+			for (ServicePropertyName propertyName : ServicePropertyName.values()) {
+				String serviceIDRegex = "((?!_PLAN_)(?!_CREDENTIALS).)+";
+				String servicePropertyRegex = "^SERVICES_(?<serviceid>" + serviceIDRegex + ")_" + propertyName + "$";
+				Pattern pattern = Pattern.compile(servicePropertyRegex);
+				Matcher matcher = pattern.matcher(entry.getKey());
+				if (matcher.find()) {
+					String serviceID = matcher.group("serviceid");
+					servicesMap.addServiceProperty(serviceID, propertyName, entry.getValue());
+					break;
+				}
+			}
 		}
 		servicesMap.checkServicesNameNotDuplicated();
 		servicesMap.setServicesPropertiesDefaults();
@@ -78,76 +81,46 @@ public class ParserSystemEnvironment {
 	}
 
 	/**
-	 * Used to get the service id and service property name from a system env
-	 * variable key (without part "SERVICES_")
-	 * 
-	 * @param noPrefix
-	 *            The suffix(without part "SERVICES_") of a system env variable
-	 *            key ex.TRIPADVISOR_NAME
-	 * @return A Map.Entry with two elements: a service id and a service
-	 *         property name ex. <"TRIPADVISOR", ServicePropertyName.NAME>
-	 */
-	private static Map.Entry<String, ServicePropertyName> splitServiceIDandPropertyName(String noPrefix) {
-		for (ServicePropertyName propertyName : ServicePropertyName.values()) {
-			String suffix = "_" + propertyName.toString();
-			if (noPrefix.endsWith(suffix)) {
-				String serviceID = noPrefix.substring(0, noPrefix.lastIndexOf(suffix));
-				return new AbstractMap.SimpleEntry<String, ServicePropertyName>(serviceID, propertyName);
-			}
-		}
-		return null;
-	}
-
-	/**
 	 * get the plans properties values from system environment variables plan
 	 * property name pattern:
-	 * SERVICES_{SERVICE_ID}_PLAN_{PLAN_ID}_{planPropertyName} ex.
-	 * SERVICES_API_DIRECTORY_PLAN_1_NAME
+	 * SERVICES_{SERVICE_ID}_PLAN_{PLAN_ID}_{planPropertyName} 
+	 * {PLAN_ID} should not contain "_CREDENTIALS"
+	 * ex. SERVICES_API_DIRECTORY_PLAN_1_NAME
 	 * 
+	 * @param serviceID specify it will search the plans properties values for which service
 	 * @return a map of plan id (String) and plan properties definitions
-	 *         (Map<PlanPropertyName, String>)
+	 *         (Map<PlanPropertyName, String>) for the specified serviceID
 	 */
 	public static PlansMap parsePlansProperties(String serviceID) {
 		PlansMap plansMap = new PlansMap();
 		Map<String, String> env = System.getenv();
 		for (Map.Entry<String, String> entry : env.entrySet()) {
-			String key = entry.getKey();
-			String prefix = "SERVICES_" + serviceID + "_PLAN_";
-			if (!key.startsWith(prefix))
-				continue;
-			int indexNoPrefix = prefix.length();
-			String noPrefix = key.substring(indexNoPrefix);
-			Map.Entry<String, PlanPropertyName> planIDandPropertyName = splitPlanIDandPropertyName(noPrefix);
-			if (planIDandPropertyName == null)
-				continue;
-			String planID = planIDandPropertyName.getKey();
-			plansMap.addPlanProperty(planID, planIDandPropertyName.getValue(), entry.getValue());
+			for (PlanPropertyName propertyName : PlanPropertyName.values()) {
+				String planIDRegex = "((?!_CREDENTIALS).)+";
+				String planPropertyRegex = "^SERVICES_(" + serviceID + ")_PLAN_(?<planid>" + planIDRegex + ")_" + propertyName + "$";
+				Pattern pattern = Pattern.compile(planPropertyRegex);
+				Matcher matcher = pattern.matcher(entry.getKey());
+				if (matcher.find()) {
+					String planID = matcher.group("planid");
+					plansMap.addPlanProperty(planID, propertyName, entry.getValue());
+					break;
+				}
+			}
 		}
 		plansMap.checkPlansNameNotDuplicated();
 		plansMap.setPlansPropertiesDefaults();
 		return plansMap;
 	}
 
-	private static Map.Entry<String, PlanPropertyName> splitPlanIDandPropertyName(String noPrefix) {
-		for (PlanPropertyName propertyName : PlanPropertyName.values()) {
-			String suffix = "_" + propertyName.toString();
-			if (noPrefix.endsWith(suffix)) {
-				String planID = noPrefix.substring(0, noPrefix.lastIndexOf(suffix));
-				return new AbstractMap.SimpleEntry<String, PlanPropertyName>(planID, propertyName);
-			}
-		}
-		return null;
-	}
-
 	/**
 	 * get the services credential properties values from system environment variables
 	 * - credential for whole service 
-	 * 	 property name pattern: SERVICES_{serviceID}_CREDENTIALS 
-	 *    						or SERVICES_{serviceID}_CREDENTIALS_{credentialPropertyName} 
+	 * 	 property name pattern: SERVICES_{SERVICE_ID}_CREDENTIALS 
+	 *    						or SERVICES_{SERVICE_ID}_CREDENTIALS_{credentialPropertyName} 
 	 * 	 ex. SERVICES_TRIPADVISOR_CREDENTIALS, SERVICES_TRIPADVISOR_CREDENTIALS_URI
 	 * - credential for specific plan
-	 *   property name pattern: SERVICES_{serviceID}_PLAN_{planID}_CREDENTIALS 
-	 *   						or SERVICES_{serviceID}_PLAN_{planID}_CREDENTIALS_{credentialPropertyName} 
+	 *   property name pattern: SERVICES_{SERVICE_ID}_PLAN_{PLAN_ID}_CREDENTIALS 
+	 *   						or SERVICES_{SERVICE_ID}_PLAN_{PLAN_ID}_CREDENTIALS_{credentialPropertyName} 
 	 * 	 ex. SERVICES_TRIPADVISOR_PLAN_1_CREDENTIALS, SERVICES_TRIPADVISOR_PLAN_1_CREDENTIALS_URI
 	 * @return a map of service id (String) and credentials (Map<String, Object>)
 	 */
@@ -155,60 +128,56 @@ public class ParserSystemEnvironment {
 		CredentialsMap credentialsMap = new CredentialsMap();
 		Map<String, String> env = System.getenv();
 		for (Map.Entry<String, String> entry : env.entrySet()) {
-			String[] serviceIDplanIDandCredentialName = getServiceIDPlanIDandCredentialName(entry.getKey());
-			if (serviceIDplanIDandCredentialName == null) {
+			String key = entry.getKey();
+			
+			
+			String serviceIDRegex = "((?!_PLAN_)(?!_CREDENTIALS).)+";
+			String serviceCredentialJsonRegex = "^SERVICES_(?<serviceid>" + serviceIDRegex + ")_CREDENTIALS$";
+			Pattern serviceCredentialJsonPattern = Pattern.compile(serviceCredentialJsonRegex);
+			Matcher serviceCredentialJsonMatcher = serviceCredentialJsonPattern.matcher(key);
+			if (serviceCredentialJsonMatcher.find()) {
+				String serviceID = serviceCredentialJsonMatcher.group("serviceid");
+				checkMandatoryPropertiesDefined(Arrays.asList("SERVICES_" + serviceID + "_NAME", "SERVICES_" + serviceID + "_DESCRIPTION"));
+				credentialsMap.addCredentials(serviceID, null, parseCredentialsJSON(entry.getValue()));
 				continue;
 			}
-			String serviceID = serviceIDplanIDandCredentialName[0];
-			checkMandatoryPropertiesDefined(Arrays.asList("SERVICES_" + serviceID + "_NAME", "SERVICES_" + serviceID + "_DESCRIPTION"));
-			// credentialName is null means credential value is a json hash string which contains multiple credentials
-			if (serviceIDplanIDandCredentialName[2] == null) {
-				credentialsMap.addCredentials(serviceID, serviceIDplanIDandCredentialName[1],
-						parseCredentialsJSON(entry.getValue()));
-			} else {
-				credentialsMap.addCredential(serviceID, serviceIDplanIDandCredentialName[1], serviceIDplanIDandCredentialName[2],
-						entry.getValue());
+			
+			String serviceCredentialPropertyRegex = "^SERVICES_(?<serviceid>" + serviceIDRegex + ")_CREDENTIALS_(?<credentialProperty>.+)$";
+			Pattern serviceCredentialPropertyPattern = Pattern.compile(serviceCredentialPropertyRegex);
+			Matcher serviceCredentialPropertyMatcher = serviceCredentialPropertyPattern.matcher(key);
+			if (serviceCredentialPropertyMatcher.find()) {
+				String serviceID = serviceCredentialPropertyMatcher.group("serviceid");
+				String credentialProperty = serviceCredentialPropertyMatcher.group("credentialProperty");
+				checkMandatoryPropertiesDefined(Arrays.asList("SERVICES_" + serviceID + "_NAME", "SERVICES_" + serviceID + "_DESCRIPTION"));
+				credentialsMap.addCredential(serviceID, null, credentialProperty, entry.getValue());
+				continue;
+			}
+			
+			String planIDRegex = "((?!_CREDENTIALS).)+";
+			String planCredentialJsonRegex = "^SERVICES_(?<serviceid>" + serviceIDRegex + ")_PLAN_(?<planid>" + planIDRegex + ")_CREDENTIALS$";
+			Pattern planCredentialJsonPattern = Pattern.compile(planCredentialJsonRegex);
+			Matcher planCredentialJsonMatcher = planCredentialJsonPattern.matcher(key);
+			if (planCredentialJsonMatcher.find()) {
+				String serviceID = planCredentialJsonMatcher.group("serviceid");
+				String planID = planCredentialJsonMatcher.group("planid");
+				checkMandatoryPropertiesDefined(Arrays.asList("SERVICES_" + serviceID + "_NAME", "SERVICES_" + serviceID + "_DESCRIPTION"));
+				credentialsMap.addCredentials(serviceID, planID, parseCredentialsJSON(entry.getValue()));
+				continue;
+			}
+			
+			String planCredentialPropertyRegex = "^SERVICES_(?<serviceid>" + serviceIDRegex + ")_PLAN_(?<planid>" + planIDRegex + ")_CREDENTIALS_(?<credentialProperty>.+)$";
+			Pattern planCredentialPropertyPattern = Pattern.compile(planCredentialPropertyRegex);
+			Matcher planCredentialPropertyMatcher = planCredentialPropertyPattern.matcher(key);
+			if (planCredentialPropertyMatcher.find()) {
+				String serviceID = planCredentialPropertyMatcher.group("serviceid");
+				String planID = planCredentialPropertyMatcher.group("planid");
+				String credentialProperty = planCredentialPropertyMatcher.group("credentialProperty");
+				checkMandatoryPropertiesDefined(Arrays.asList("SERVICES_" + serviceID + "_NAME", "SERVICES_" + serviceID + "_DESCRIPTION"));
+				credentialsMap.addCredential(serviceID, planID, credentialProperty, entry.getValue());
+				continue;
 			}
 		}
 		return credentialsMap;
-	}
-
-	/**
-	 * get the service id, plan id and service property name from a system env variable
-	 * key which starts with "SERVICES_" and contains "_CREDENTIALS"
-	 * 
-	 * @param key
-	 *        ex. SERVICES_TRIPADVISOR_CREDENTIALS_URI, SERVICES_TRIPADVISOR_CREDENTIALS,
-	 *        	  SERVICES_TRIPADVISOR_PLAN_1_CREDENTIALS, SERVICES_TRIPADVISOR_PLAN_1_CREDENTIALS_URI
-	 * @return returns a string array {serviceID, planID, credentialPropertyName}. 
-	 * 			planID is null, if it's credentials for all plans of this service
-	 *          credentialPropertyName is null, if it ends with "_CREDENTIALS"
-	 */
-	private static String[] getServiceIDPlanIDandCredentialName(String key) {
-		if (!key.startsWith("SERVICES_") || !key.contains("_CREDENTIALS"))
-			return null;
-		int indexIDStart = "SERVICES_".length();
-		int indexIDEnd = key.indexOf("_CREDENTIALS");
-		String servicePlanID = key.substring(indexIDStart, indexIDEnd);
-		String serviceID = null;
-		String planID = null;
-		if (servicePlanID.contains("_PLAN_")) { //ex. serviceID: "TRIPADVISOR_PLAN_1"
-			int indexServiceIDEnd = servicePlanID.indexOf("_PLAN_");
-			serviceID = servicePlanID.substring(0, indexServiceIDEnd);
-			int indexPlanIDStart = serviceID.length() + "_PLAN_".length();
-			planID = servicePlanID.substring(indexPlanIDStart);
-		}
-		else {
-			serviceID = servicePlanID;
-		}
-		if (key.endsWith("_CREDENTIALS")) {
-			return new String[] { serviceID, planID, null };
-		} else if (key.contains("_CREDENTIALS_")) {
-			int indexCredential = indexIDEnd + "_CREDENTIALS_".length();
-			String credentialName = key.substring(indexCredential);
-			return new String[] { serviceID, planID, credentialName };
-		}
-		return null;
 	}
 
 	private static Map<String, Object> parseCredentialsJSON(String credentials_str) {
