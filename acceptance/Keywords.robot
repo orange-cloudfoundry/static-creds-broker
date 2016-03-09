@@ -18,12 +18,13 @@ Cloud Foundry config and target
 
 Clean all service broker data
     [Documentation]     Delete the service broker, and deployed broker application if exist.
-    ${result}=  Execute:    cf delete-service-broker ${BROKER_NAME} -f
-    Log     ${result}
-    Should Contain  ${result}   OK
-    ${result}=  Execute:    cf d ${BROKER_APP_NAME} -f
-    Log     ${result}
-    Should Contain  ${result}   OK
+    Unregister service broker
+    Undeploy service broker
+
+Clean up services ${service_instance_name} ${service_key_name} ${TEST_APP_NAME}
+    Delete service key ${service_instance_name} ${service_key_name}
+    Unbind service ${TEST_APP_NAME} ${service_instance_name}
+    Delete service instance ${service_instance_name}
 
 Deploy service broker
     [Documentation]     Deploy the broker as an application on the Cloud Foundry.
@@ -32,8 +33,8 @@ Deploy service broker
     Should Not Contain  ${result}   FAILED
     ${result}=  Execute:     cf a
     Log     ${result}
-    ${BROKER_APP_URL_NOHTTP}=    Remove String Using Regexp     ${BROKER_APP_URL}   (http://|https://)
-    Should Match Regexp  ${result}   ${BROKER_APP_NAME}\\s*started.*${BROKER_APP_URL_NOHTTP}
+    ${broker_app_url_nohttp}=    Remove String Using Regexp     ${BROKER_APP_URL}   (http://|https://)
+    Should Match Regexp  ${result}   ${BROKER_APP_NAME}\\s*started.*${broker_app_url_nohttp}
 
 Undeploy service broker
     [Documentation]     Delete the deployed broker application from the Cloud Foundry.
@@ -56,38 +57,51 @@ Unregister service broker
     Log     ${result}
     Should Contain  ${result}   OK
 
-Create service instance ${SERVICE_NAME} ${PLAN_NAME} ${SERVICE_INSTANCE_NAME}
+Create service instance ${service_name} ${plan_name} ${service_instance_name}
     [Documentation]     Create a service instance.
-	${result}=	Execute:    cf cs ${SERVICE_NAME} ${PLAN_NAME} ${SERVICE_INSTANCE_NAME}
+	${result}=	Execute:    cf cs ${service_name} ${plan_name} ${service_instance_name}
     Log     ${result}
     Should Contain  ${result}   OK
 
-Delete service instance ${SERVICE_INSTANCE_NAME}
+Delete service instance ${service_instance_name}
     [Documentation]     Create a service instance.
-    ${result}=  Execute:    cf ds ${SERVICE_INSTANCE_NAME} -f
+    ${result}=  Execute:    cf ds ${service_instance_name} -f
     Log     ${result}
     Should Contain  ${result}   OK
 
-Create service key ${SERVICE_INSTANCE_NAME} ${SERVICE_KEY_NAME}
+Create service key ${service_instance_name} ${service_key_name}
     [Documentation]     Create a service key.
-    ${result}=  Execute:    cf csk ${SERVICE_INSTANCE_NAME} ${SERVICE_KEY_NAME}
+    ${result}=  Execute:    cf csk ${service_instance_name} ${service_key_name}
     Log     ${result}
     Should Contain  ${result}   OK
 
-Delete service key ${SERVICE_INSTANCE_NAME} ${SERVICE_KEY_NAME}
+Delete service key ${service_instance_name} ${service_key_name}
     [Documentation]     Delete the service key.
-    ${result}=  Execute:    cf dsk ${SERVICE_INSTANCE_NAME} ${SERVICE_KEY_NAME} -f
+    ${result}=  Execute:    cf dsk ${service_instance_name} ${service_key_name} -f
     Log     ${result}
     Should Contain  ${result}   OK
 
-Bind service ${TEST_APP_NAME} ${SERVICE_INSTANCE_NAME}
-    [Documentation]    Bind application [${TEST_APP_NAME}] to the service instance [${SERVICE_INSTANCE_NAME}].
-    ${result}=  Execute:    cf bs ${TEST_APP_NAME} ${SERVICE_INSTANCE_NAME}
+Get service key ${service_instance_name} ${service_key_name}
+    [Documentation]     Create a service key.
+    ${result}=  Execute:    cf service-key ${service_instance_name} ${service_key_name}
+    Log     ${result}
+    [return]     ${result}
+
+Bind service ${TEST_APP_NAME} ${service_instance_name}
+    [Documentation]    Bind application [${TEST_APP_NAME}] to the service instance [${service_instance_name}].
+    ${result}=  Execute:    cf bs ${TEST_APP_NAME} ${service_instance_name}
     Log     ${result}
     Should Contain  ${result}   OK
 
-Unbind service ${TEST_APP_NAME} ${SERVICE_INSTANCE_NAME}
-    [Documentation]    Unbind application [${TEST_APP_NAME}] from the service instance [${SERVICE_INSTANCE_NAME}].
-    ${result}=  Execute:    cf us ${TEST_APP_NAME} ${SERVICE_INSTANCE_NAME} 
+Unbind service ${TEST_APP_NAME} ${service_instance_name}
+    [Documentation]    Unbind application [${TEST_APP_NAME}] from the service instance [${service_instance_name}].
+    ${result}=  Execute:    cf us ${TEST_APP_NAME} ${service_instance_name} 
+    Log     ${result}
+    Should Match Regexp  ${result}   (OK|not found)
+
+Get application environment ${app_name}
+    [Documentation]    Get application [${app_name}] environment variables
+    ${result}=  Execute:    cf env ${app_name}
     Log     ${result}
     Should Contain  ${result}   OK
+    [return]     ${result}

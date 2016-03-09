@@ -6,8 +6,8 @@ Library         Collections
 Force Tags      Service broker
 Library         Staticreds      ${MANIFEST_PATH}
 
-Test Setup      Run Keywords  Cloud Foundry config and target   Clean all service broker data   Deploy service broker   Register service broker
-Test Teardown   Run Keywords  Clean all service broker data
+Suite Setup      Run Keywords  Cloud Foundry config and target   Clean all service broker data   Deploy service broker   Register service broker
+Suite Teardown   Run Keywords  Clean all service broker data
 
 *** Test Cases ***
 Catalog info should match manifest
