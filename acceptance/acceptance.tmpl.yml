@@ -1,6 +1,6 @@
 ---
 # this file is used to pass credentials to the concourse pipeline, it specifies the environment variables which should be defined for running the acceptance test.
-# Information for the cf client (endpoint, ssl, cf login, target organization and space)
+# Information about your cloud foundry environment (endpoint, ssl, cf login, target organization and space)
 cf_target_endpoint: __cf_target_endpoint__
 skip_ssl_verification: __skip_ssl_verification__
 cf_username: __cf_username__
@@ -14,8 +14,11 @@ binary_path: __binary_path__
 broker_username: __broker_username__
 broker_password: __broker_password__
 
-#The names to be used during the test (it should no be conflict with the names which are already in use in your cloud foundry instance)
+# The names to be used during the test (it should no be conflict with the names which are already in use in your cloud foundry instance)
 broker_name: __broker_name__
 broker_app_name: __broker_app_name__
-broker_app_url: __broker_app_url__ #(protocol [http or https] should be specified)
+#(protocol [http or https] should be specified in the url)
+broker_app_url: __broker_app_url__ 
+
+# The test application used to test service binding
 test_application_name: __test_application_name__
