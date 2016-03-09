@@ -60,9 +60,12 @@ NOTE:
 - {SERVICE_ID} should be replaced be your own service id which is a string used to identify service. 
 - {PLAN_ID} should be replaced be your own plan id which is a string used to identify different plans defined in a service.
 
-The constraint of {SERVICE_ID} and {PLAN_ID}: 
+The constraint of {SERVICE_ID}: 
 - not contains "_CREDENTIALS"
 - not contains "\_PLAN\_"
+
+The constraint of {PLAN_ID}: 
+- not contains "_CREDENTIALS"
 
 ## Catalog
 
