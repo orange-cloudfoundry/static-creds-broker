@@ -124,6 +124,20 @@ $ cf logs <app_name> --recent | findstr Caused
 $ cf logs <app_name> --recent | findstr ERR
 ```
 
+# Acceptance Test
+Acceptance tests source code is available in the "acceptance" folder. To run it locally, you should:
+- Install robotframework with ```pip install robotframework```. More details on [robotframework installation](https://code.google.com/archive/p/robotframework/wikis/Installation.wiki)
+- Deploy a test application in your Cloud Foundry environment. (ex. a [static website](https://github.com/cloudfoundry/staticfile-buildpack))
+- Retrieve the content of the "acceptance" folder from the sources to your {ACCEPTANCE_TEST_DIRECTORY}.
+- Set the environment variables required:
+  - copy ```{ACCEPTANCE_TEST_DIRECTORY}/acceptance.tmpl.env``` to ```{ACCEPTANCE_TEST_DIRECTORY}/acceptance.env``` 
+  - fill the information in ```{ACCEPTANCE_TEST_DIRECTORY}/acceptance.env``` 
+  - source it ```source {ACCEPTANCE_TEST_DIRECTORY}/acceptance.env```
+- Run the acceptance test with the command: 
+```
+robot --pythonpath {ACCEPTANCE_TEST_DIRECTORY} {ACCEPTANCE_TEST_DIRECTORY}
+```
+
 # FAQ
 
 ## Why not using CUPS ?
