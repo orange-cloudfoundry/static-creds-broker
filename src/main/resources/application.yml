@@ -1,3 +1,4 @@
+<<<<<<< e174830eba9e1d7805af29bbfd20b6e0069ba780
 <<<<<<< 904b6c3aa0de0a5ef875b2c4ae438f02874c5bb4
 enable: true
 security:
@@ -57,23 +58,24 @@ services:
             # uri: mysql://USERNAME:PASSWORD@HOSTNAME:PORT/NAME
             # HOSTNAME: us-cdbr-east-03.cleardb.com
 =======
+=======
+enable: true
+>>>>>>> read property 'enable' to decide read properties from config file or environment variables; move the checkpassword from Application to CatalogConfig, because can't get properties in main; parseServicesProperties add check before type cast
 # security:
 #     user:
 #         name: hi
 #         password: hipwd
-# services:
-#     TRIPADVISOR:
-#         NAME: TRIPADVISOR_test_Service
-#         DESCRIPTION: My existing TRIPADVISOR service 
+services:
+    TRIPADVISOR:
+        NAME: TRIPADVISOR_test_Service
+        DESCRIPTION: My existing TRIPADVISOR service 
 #       # METADATA:
 #       #     LONGDESCRIPTION: A long description for my service
 #       # CREDENTIALS:
 #       #     URI: http://....
-#     API_DIRECTORY:
-#         NAME: API_DIRECTORY_test_Service
-#         DESCRIPTION: My existing API_DIRECTORY service 
-#     # - name: API_DIRECTORY_test_Service
-#     #   description: My existing service
+    API_DIRECTORY:
+        NAME: API_DIRECTORY_test_Service
+        DESCRIPTION: My existing API_DIRECTORY service 
 #       # METADATA:
 #       #     LONGDESCRIPTION: A long description for my service
 #       # CREDENTIALS:
@@ -97,13 +99,10 @@ services:
 #       #             HOSTNAME: http://prod.company.com
 #     # - name: static-creds-test-service
 #     #   description: static-creds service for test
-#     # ID:
-#     #     NAME: static-creds-service-test
-#     #     DESCRIPTION: static-creds service for test
-#     #     TAGS: 
-#     #         - tag1
-#     #         - tag2
-#     #         - tag3
+    ID:
+        NAME: static-creds-service-test
+        DESCRIPTION: static-creds service for test
+        TAGS: tag1,tag2,tag3
 #     #     METADATA:
 #     #         DISPLAYNAME: displayname for my service
 #     #         IMAGEURL: https://upload.wikimedia.org/wikipedia/commons/c/c8/Orange_logo.svg
