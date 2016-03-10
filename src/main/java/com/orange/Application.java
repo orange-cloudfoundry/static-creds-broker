@@ -10,14 +10,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import static org.springframework.cloud.servicebroker.model.BrokerApiVersion.API_VERSION_ANY;
 
-import com.orange.util.ParserSystemEnvironment;
-
 @EnableGlobalMethodSecurity
 @SpringBootApplication(scanBasePackages = { "com.orange" })
 public class Application {
-
 	public static void main(String[] args) {
-		new ParserSystemEnvironment().checkPasswordDefined();
 		SpringApplication.run(Application.class, args);
 	}
 

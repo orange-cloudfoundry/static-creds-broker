@@ -14,64 +14,65 @@ import com.orange.model.ServicesMap;
 @Configuration
 @ConfigurationProperties
 public class ParserApplicationProperties implements ParserProperties{
-	private Map<String, Object> servicesConfig = new HashMap<>();
+	private Map<String, Object> services = new HashMap<>();
 
 	public Map<String, Object> getServices() {
-		return servicesConfig;
+		return services;
 	}
 
 	public void setServices(Map<String, Object> services) {
-		this.servicesConfig = services;
+		this.services = services;
 	}
 	
 	@Override
 	public ServicesMap parseServicesProperties() {
 		ServicesMap servicesMap = new ServicesMap();
-		for (Map.Entry<String, Object> entry : servicesConfig.entrySet()) {
-			Map<String, Object> serviceProperty = (Map<String, Object>) entry.getValue();
-			for (ServicePropertyName servicePropertyName : ServicePropertyName.values()) {
-				Object servicePropertyValue = serviceProperty.get(servicePropertyName.toString());
-				if (servicePropertyValue != null) {
-					servicesMap.addServiceProperty(entry.getKey(), servicePropertyName, servicePropertyValue.toString(), this);
+		for (Map.Entry<String, Object> entry : services.entrySet()) {
+			if (entry.getValue() instanceof Map<?, ?>) {
+				Map<?, ?> serviceProperty = (Map<?, ?>) entry.getValue();
+				for (ServicePropertyName servicePropertyName : ServicePropertyName.values()) {
+					Object servicePropertyValue = serviceProperty.get(servicePropertyName.toString());
+					if (servicePropertyValue != null) {
+						servicesMap.addServiceProperty(entry.getKey(), servicePropertyName, servicePropertyValue.toString(), this);
+					}
 				}
 			}
 		}
+		System.out.println(servicesMap.getAllServicesProperties());
 		return servicesMap;
 	}
 
 	@Override
 	public PlansMap parsePlansProperties(String serviceID) {
 		// TODO Auto-generated method stub
-		return null;
+		return new PlansMap();
 	}
 
 	@Override
 	public CredentialsMap parseCredentialsProperties() {
 		// TODO Auto-generated method stub
-		return null;
+		return new CredentialsMap();
 	}
 
 	@Override
 	public String getServiceName(String serviceID) {
 		// TODO Auto-generated method stub
-		return null;
+		return "";
 	}
 
 	@Override
 	public String getPlanName(String serviceID, String planID) {
 		// TODO Auto-generated method stub
-		return null;
+		return "";
 	}
 
 	@Override
 	public void checkPasswordDefined() throws IllegalArgumentException {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void checkServiceMandatoryPropertiesDefined(String serviceID) throws IllegalArgumentException {
 		// TODO Auto-generated method stub
-		
 	}
 }
