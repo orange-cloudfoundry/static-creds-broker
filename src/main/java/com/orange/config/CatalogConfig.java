@@ -22,15 +22,18 @@ import com.orange.model.PlanPropertyName;
 import com.orange.model.PlansMap;
 import com.orange.model.ServicePropertyName;
 import com.orange.model.ServicesMap;
+import com.orange.util.ParserProperties;
 import com.orange.util.ParserSystemEnvironment;
 
 @Configuration
 public class CatalogConfig {
 	private ServicesMap servicesMap = new ServicesMap();
-	
+//	@Autowired
+//	private ParserApplicationProperties parserApplicationProperties;
 	@Bean
 	public Catalog catalog() {
-		servicesMap = ParserSystemEnvironment.parseServicesProperties();
+		ParserProperties parserProperties = new ParserSystemEnvironment();
+		servicesMap = parserProperties.parseServicesProperties();
 		List<ServiceDefinition> serviceDefinitions = new ArrayList<ServiceDefinition>();
 		for (Map.Entry<String, Map<ServicePropertyName, String>> entry : servicesMap.geEntrySet()) {
 			String serviceID = entry.getKey();
@@ -42,7 +45,7 @@ public class CatalogConfig {
 			if (service.get(ServicePropertyName.TAGS) != null) {
 				tags = Arrays.asList(service.get(ServicePropertyName.TAGS).split(","));
 			}
-			PlansMap plansMap = ParserSystemEnvironment.parsePlansProperties(serviceID);
+			PlansMap plansMap = parserProperties.parsePlansProperties(serviceID);
 			List<Plan> plans = new ArrayList<>();
 			for (Map<PlanPropertyName, String> planProperties : plansMap.getAllPlansProperties()) {
 				String plan_name = planProperties.get(PlanPropertyName.NAME);

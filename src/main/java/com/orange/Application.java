@@ -20,7 +20,7 @@ public class Application {
 
 	public static void main(String[] args) {
 		List<String> mandatoryProperties = Arrays.asList("SECURITY_USER_PASSWORD"); 
-		ParserSystemEnvironment.checkMandatoryPropertiesDefined(mandatoryProperties);
+		new ParserSystemEnvironment().checkMandatoryPropertiesDefined(mandatoryProperties);
 		SpringApplication.run(Application.class, args);
 	}
 

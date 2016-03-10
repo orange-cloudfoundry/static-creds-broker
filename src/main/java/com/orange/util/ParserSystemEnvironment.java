@@ -1,7 +1,6 @@
 package com.orange.util;
 
 import java.io.IOException;
-import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -17,18 +16,7 @@ import com.orange.model.PlansMap;
 import com.orange.model.ServicePropertyName;
 import com.orange.model.ServicesMap;
 
-public class ParserSystemEnvironment {
-	/**
-	 * Gets the value of the specified environment variable.
-	 * 
-	 * @param key
-	 *            the name of the environment variable
-	 * @return
-	 */
-	public static String get(String key) {
-		return System.getenv(key);
-	}
-
+public class ParserSystemEnvironment implements ParserProperties{
 	/**
 	 * check whether mandatory properties are defined in the system environment
 	 * 
@@ -40,7 +28,7 @@ public class ParserSystemEnvironment {
 	 *             environment , error message contains missing mandatory
 	 *             property name
 	 */
-	public static void checkMandatoryPropertiesDefined(List<String> mandatoryProperties)
+	public void checkMandatoryPropertiesDefined(List<String> mandatoryProperties)
 			throws IllegalArgumentException {
 		Map<String, String> env = System.getenv();
 		for (String mandatoryProperty : mandatoryProperties) {
@@ -59,7 +47,7 @@ public class ParserSystemEnvironment {
 	 * @return a map of service id (String) and service properties definitions
 	 *         (Map<ServicePropertyName, String>)
 	 */
-	public static ServicesMap parseServicesProperties() {
+	public ServicesMap parseServicesProperties() {
 		ServicesMap servicesMap = new ServicesMap();
 		Map<String, String> env = System.getenv();
 		for (Map.Entry<String, String> entry : env.entrySet()) {
@@ -70,7 +58,7 @@ public class ParserSystemEnvironment {
 				Matcher matcher = pattern.matcher(entry.getKey());
 				if (matcher.find()) {
 					String serviceID = matcher.group("serviceid");
-					servicesMap.addServiceProperty(serviceID, propertyName, entry.getValue());
+					servicesMap.addServiceProperty(serviceID, propertyName, entry.getValue(), this);
 					break;
 				}
 			}
@@ -91,7 +79,7 @@ public class ParserSystemEnvironment {
 	 * @return a map of plan id (String) and plan properties definitions
 	 *         (Map<PlanPropertyName, String>) for the specified serviceID
 	 */
-	public static PlansMap parsePlansProperties(String serviceID) {
+	public PlansMap parsePlansProperties(String serviceID) {
 		PlansMap plansMap = new PlansMap();
 		Map<String, String> env = System.getenv();
 		for (Map.Entry<String, String> entry : env.entrySet()) {
@@ -124,7 +112,7 @@ public class ParserSystemEnvironment {
 	 * 	 ex. SERVICES_TRIPADVISOR_PLAN_1_CREDENTIALS, SERVICES_TRIPADVISOR_PLAN_1_CREDENTIALS_URI
 	 * @return a map of service id (String) and credentials (Map<String, Object>)
 	 */
-	public static CredentialsMap parseCredentialsProperties() {
+	public CredentialsMap parseCredentialsProperties() {
 		CredentialsMap credentialsMap = new CredentialsMap();
 		Map<String, String> env = System.getenv();
 		for (Map.Entry<String, String> entry : env.entrySet()) {
@@ -180,7 +168,7 @@ public class ParserSystemEnvironment {
 		return credentialsMap;
 	}
 
-	private static Map<String, Object> parseCredentialsJSON(String credentials_str) {
+	private Map<String, Object> parseCredentialsJSON(String credentials_str) {
 		Map<String, Object> credentials = new HashMap<>();
 		ObjectMapper mapper = new ObjectMapper();
 		try {
@@ -192,11 +180,11 @@ public class ParserSystemEnvironment {
 		return credentials;
 	}
 
-	public static String getServiceName(String serviceID) {
+	public String getServiceName(String serviceID) {
 		return System.getenv("SERVICES_" + serviceID + "_NAME");
 	}
 
-	public static String getPlanName(String serviceID, String planID) {
+	public String getPlanName(String serviceID, String planID) {
 		return System.getenv("SERVICES_" + serviceID + "_PLAN_" + planID + "_NAME");
 	}
 }
