@@ -211,8 +211,6 @@ public class ParserSystemEnvironment extends ParserProperties {
 		return credentialsMap;
 	}
 
-	
-
 	@Override
 	public String getServiceName(String serviceID) {
 		return environment.get("SERVICES_" + serviceID + "_NAME");
