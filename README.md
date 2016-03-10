@@ -26,7 +26,7 @@ applications:
   path: static-creds-broker-1.0.war 
 
   env:
-    SECURITY_PASSWORD: MySecurePwd
+    SECURITY_USER_PASSWORD: MySecurePwd
     SERVICES_ID_NAME: MyService
     SERVICES_ID_DESCRIPTION: My existing service
     SERVICES_ID_METADATA_LONGDESCRIPTION: A long description for my service
@@ -113,8 +113,8 @@ This is mapped to [spring-cloud-cloudfoundry-service-broker](https://github.com/
 ## Authentication
 
 The service broker authenticates calls coming from Cloud Foundry through basic auth (see [more context](http://docs.cloudfoundry.org/services/api.html#authentication)) controlled by the following two environment variables
-* SECURITY_USER: String default is "user"
-* SECURITY_PASSWORD: String (mandatory, no default)
+* SECURITY_USER_NAME: String default is "user"
+* SECURITY_USER_PASSWORD: String (mandatory, no default)
 
 # Troubleshoot Deployment Problems
 If the deployment of the broker fails, you could find the error message using cf cli:

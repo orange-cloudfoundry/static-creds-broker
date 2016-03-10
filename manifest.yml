@@ -5,7 +5,7 @@ applications:
 
   env:
     # mandatory variables
-    SECURITY_PASSWORD: mypwd
+    SECURITY_USER_PASSWORD: mypwd
     SERVICES_TRIPADVISOR_NAME: TRIPADVISOR_test_Service
     SERVICES_TRIPADVISOR_DESCRIPTION: My existing service
     SERVICES_TRIPADVISOR_METADATA_LONGDESCRIPTION: A long description for my service

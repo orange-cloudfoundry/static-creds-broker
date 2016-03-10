@@ -19,32 +19,13 @@ import com.orange.util.ParserSystemEnvironment;
 public class Application {
 
 	public static void main(String[] args) {
-		List<String> mandatoryProperties = Arrays.asList("SECURITY_PASSWORD"); 
+		List<String> mandatoryProperties = Arrays.asList("SECURITY_USER_PASSWORD"); 
 		ParserSystemEnvironment.checkMandatoryPropertiesDefined(mandatoryProperties);
-		SpringApplication app = new SpringApplication(Application.class);
-		app.setDefaultProperties(getSecurityProperties());
-		app.run(args);
-//		SpringApplication.run(Application.class, args);
+		SpringApplication.run(Application.class, args);
 	}
 
 	@Bean
 	public BrokerApiVersion brokerApiVersion() {
 		return new BrokerApiVersion(API_VERSION_ANY);
-	}
-
-	/**
-	 * get SecurityProperties for system environment variables
-	 * 
-	 * @return SecurityProperties which contains security.user.name and
-	 *         security.user.password
-	 */
-	public static Map<String, Object> getSecurityProperties() {
-		Map<String, Object> properties = new HashMap<String, Object>();
-		Map<String, String> env = System.getenv();
-		String username = env.get("SECURITY_USER");
-		String password = env.get("SECURITY_PASSWORD");
-		properties.put("security.user.name", username);
-		properties.put("security.user.password", password);
-		return properties;
 	}
 }
