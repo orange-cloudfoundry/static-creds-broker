@@ -1,22 +1,29 @@
 package com.orange.util;
 
-import java.util.List;
-
 import com.orange.model.CredentialsMap;
 import com.orange.model.PlansMap;
 import com.orange.model.ServicesMap;
 
 public interface ParserProperties {
 	/**
-	 * check whether mandatory properties are defined
+	 * check whether mandatory property password are defined
 	 * 
-	 * @param mandatoryProperties
-	 *            List<String> contains properties which should be defined
 	 * @throws IllegalArgumentException
 	 *             when find mandatory property not defined, error message
 	 *             contains missing mandatory property name
 	 */
-	public void checkMandatoryPropertiesDefined(List<String> mandatoryProperties) throws IllegalArgumentException;
+	public void checkPasswordDefined() throws IllegalArgumentException;
+
+	/**
+	 * check whether service mandatory properties(id and description) are
+	 * defined
+	 * 
+	 * @param serviceID
+	 * @throws IllegalArgumentException
+	 *             when find mandatory property not defined, error message
+	 *             contains missing mandatory property name
+	 */
+	public void checkServiceMandatoryPropertiesDefined(String serviceID) throws IllegalArgumentException;
 
 	/**
 	 * get the services properties values
@@ -41,8 +48,8 @@ public interface ParserProperties {
 	 * get the services credential properties values: credential may for whole
 	 * service or for specific plan :
 	 * 
-	 * @return a map of servicePlanID (List<String>) and credentials (Map<String,
-	 *         Object>)
+	 * @return a map of servicePlanID (List<String>) and credentials
+	 *         (Map<String, Object>)
 	 */
 	public CredentialsMap parseCredentialsProperties();
 

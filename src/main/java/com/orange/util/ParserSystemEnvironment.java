@@ -16,7 +16,34 @@ import com.orange.model.PlansMap;
 import com.orange.model.ServicePropertyName;
 import com.orange.model.ServicesMap;
 
-public class ParserSystemEnvironment implements ParserProperties{
+public class ParserSystemEnvironment implements ParserProperties {
+	/**
+	 * check whether mandatory property password are defined
+	 * 
+	 * @throws IllegalArgumentException
+	 *             when find mandatory property not defined, error message
+	 *             contains missing mandatory property name
+	 */
+	@Override
+	public void checkPasswordDefined() throws IllegalArgumentException {
+		checkMandatoryPropertiesDefined(Arrays.asList("SECURITY_PASSWORD"));
+	}
+
+	/**
+	 * check whether service mandatory properties(id and description) are
+	 * defined
+	 * 
+	 * @param serviceID
+	 * @throws IllegalArgumentException
+	 *             when find mandatory property not defined, error message
+	 *             contains missing mandatory property name
+	 */
+	@Override
+	public void checkServiceMandatoryPropertiesDefined(String serviceID) throws IllegalArgumentException {
+		checkMandatoryPropertiesDefined(
+				Arrays.asList("SERVICES_" + serviceID + "_NAME", "SERVICES_" + serviceID + "_DESCRIPTION"));
+	}
+
 	/**
 	 * check whether mandatory properties are defined in the system environment
 	 * 
@@ -28,8 +55,7 @@ public class ParserSystemEnvironment implements ParserProperties{
 	 *             environment , error message contains missing mandatory
 	 *             property name
 	 */
-	public void checkMandatoryPropertiesDefined(List<String> mandatoryProperties)
-			throws IllegalArgumentException {
+	private void checkMandatoryPropertiesDefined(List<String> mandatoryProperties) throws IllegalArgumentException {
 		Map<String, String> env = System.getenv();
 		for (String mandatoryProperty : mandatoryProperties) {
 			if (env.get(mandatoryProperty) == null) {
@@ -40,13 +66,14 @@ public class ParserSystemEnvironment implements ParserProperties{
 
 	/**
 	 * get the services properties values from system environment variables
-	 * service property name pattern: SERVICES_{SERVICE_ID}_{servicePropertyName}
-	 * {SERVICE_ID} should not contain "_PLAN_" or "_CREDENTIALS"
-	 * ex. SERVICES_TRIPADVISOR_NAME
+	 * service property name pattern:
+	 * SERVICES_{SERVICE_ID}_{servicePropertyName} {SERVICE_ID} should not
+	 * contain "_PLAN_" or "_CREDENTIALS" ex. SERVICES_TRIPADVISOR_NAME
 	 * 
 	 * @return a map of service id (String) and service properties definitions
 	 *         (Map<ServicePropertyName, String>)
 	 */
+	@Override
 	public ServicesMap parseServicesProperties() {
 		ServicesMap servicesMap = new ServicesMap();
 		Map<String, String> env = System.getenv();
@@ -71,21 +98,24 @@ public class ParserSystemEnvironment implements ParserProperties{
 	/**
 	 * get the plans properties values from system environment variables plan
 	 * property name pattern:
-	 * SERVICES_{SERVICE_ID}_PLAN_{PLAN_ID}_{planPropertyName} 
-	 * {PLAN_ID} should not contain "_CREDENTIALS"
-	 * ex. SERVICES_API_DIRECTORY_PLAN_1_NAME
+	 * SERVICES_{SERVICE_ID}_PLAN_{PLAN_ID}_{planPropertyName} {PLAN_ID} should
+	 * not contain "_CREDENTIALS" ex. SERVICES_API_DIRECTORY_PLAN_1_NAME
 	 * 
-	 * @param serviceID specify it will search the plans properties values for which service
+	 * @param serviceID
+	 *            specify it will search the plans properties values for which
+	 *            service
 	 * @return a map of plan id (String) and plan properties definitions
 	 *         (Map<PlanPropertyName, String>) for the specified serviceID
 	 */
+	@Override
 	public PlansMap parsePlansProperties(String serviceID) {
 		PlansMap plansMap = new PlansMap();
 		Map<String, String> env = System.getenv();
 		for (Map.Entry<String, String> entry : env.entrySet()) {
 			for (PlanPropertyName propertyName : PlanPropertyName.values()) {
 				String planIDRegex = "((?!_CREDENTIALS).)+";
-				String planPropertyRegex = "^SERVICES_(" + serviceID + ")_PLAN_(?<planid>" + planIDRegex + ")_" + propertyName + "$";
+				String planPropertyRegex = "^SERVICES_(" + serviceID + ")_PLAN_(?<planid>" + planIDRegex + ")_"
+						+ propertyName + "$";
 				Pattern pattern = Pattern.compile(planPropertyRegex);
 				Matcher matcher = pattern.matcher(entry.getKey());
 				if (matcher.find()) {
@@ -101,66 +131,72 @@ public class ParserSystemEnvironment implements ParserProperties{
 	}
 
 	/**
-	 * get the services credential properties values from system environment variables
-	 * - credential for whole service 
-	 * 	 property name pattern: SERVICES_{SERVICE_ID}_CREDENTIALS 
-	 *    						or SERVICES_{SERVICE_ID}_CREDENTIALS_{credentialPropertyName} 
-	 * 	 ex. SERVICES_TRIPADVISOR_CREDENTIALS, SERVICES_TRIPADVISOR_CREDENTIALS_URI
-	 * - credential for specific plan
-	 *   property name pattern: SERVICES_{SERVICE_ID}_PLAN_{PLAN_ID}_CREDENTIALS 
-	 *   						or SERVICES_{SERVICE_ID}_PLAN_{PLAN_ID}_CREDENTIALS_{credentialPropertyName} 
-	 * 	 ex. SERVICES_TRIPADVISOR_PLAN_1_CREDENTIALS, SERVICES_TRIPADVISOR_PLAN_1_CREDENTIALS_URI
-	 * @return a map of service id (String) and credentials (Map<String, Object>)
+	 * get the services credential properties values from system environment
+	 * variables - credential for whole service property name pattern:
+	 * SERVICES_{SERVICE_ID}_CREDENTIALS or
+	 * SERVICES_{SERVICE_ID}_CREDENTIALS_{credentialPropertyName} ex.
+	 * SERVICES_TRIPADVISOR_CREDENTIALS, SERVICES_TRIPADVISOR_CREDENTIALS_URI -
+	 * credential for specific plan property name pattern:
+	 * SERVICES_{SERVICE_ID}_PLAN_{PLAN_ID}_CREDENTIALS or
+	 * SERVICES_{SERVICE_ID}_PLAN_{PLAN_ID}_CREDENTIALS_{credentialPropertyName}
+	 * ex. SERVICES_TRIPADVISOR_PLAN_1_CREDENTIALS,
+	 * SERVICES_TRIPADVISOR_PLAN_1_CREDENTIALS_URI
+	 * 
+	 * @return a map of service id (String) and credentials (Map<String,
+	 *         Object>)
 	 */
+	@Override
 	public CredentialsMap parseCredentialsProperties() {
 		CredentialsMap credentialsMap = new CredentialsMap();
 		Map<String, String> env = System.getenv();
 		for (Map.Entry<String, String> entry : env.entrySet()) {
 			String key = entry.getKey();
-			
-			
+
 			String serviceIDRegex = "((?!_PLAN_)(?!_CREDENTIALS).)+";
 			String serviceCredentialJsonRegex = "^SERVICES_(?<serviceid>" + serviceIDRegex + ")_CREDENTIALS$";
 			Pattern serviceCredentialJsonPattern = Pattern.compile(serviceCredentialJsonRegex);
 			Matcher serviceCredentialJsonMatcher = serviceCredentialJsonPattern.matcher(key);
 			if (serviceCredentialJsonMatcher.find()) {
 				String serviceID = serviceCredentialJsonMatcher.group("serviceid");
-				checkMandatoryPropertiesDefined(Arrays.asList("SERVICES_" + serviceID + "_NAME", "SERVICES_" + serviceID + "_DESCRIPTION"));
+				checkServiceMandatoryPropertiesDefined(serviceID);
 				credentialsMap.addCredentials(serviceID, null, parseCredentialsJSON(entry.getValue()));
 				continue;
 			}
-			
-			String serviceCredentialPropertyRegex = "^SERVICES_(?<serviceid>" + serviceIDRegex + ")_CREDENTIALS_(?<credentialProperty>.+)$";
+
+			String serviceCredentialPropertyRegex = "^SERVICES_(?<serviceid>" + serviceIDRegex
+					+ ")_CREDENTIALS_(?<credentialProperty>.+)$";
 			Pattern serviceCredentialPropertyPattern = Pattern.compile(serviceCredentialPropertyRegex);
 			Matcher serviceCredentialPropertyMatcher = serviceCredentialPropertyPattern.matcher(key);
 			if (serviceCredentialPropertyMatcher.find()) {
 				String serviceID = serviceCredentialPropertyMatcher.group("serviceid");
 				String credentialProperty = serviceCredentialPropertyMatcher.group("credentialProperty");
-				checkMandatoryPropertiesDefined(Arrays.asList("SERVICES_" + serviceID + "_NAME", "SERVICES_" + serviceID + "_DESCRIPTION"));
+				checkServiceMandatoryPropertiesDefined(serviceID);
 				credentialsMap.addCredential(serviceID, null, credentialProperty, entry.getValue());
 				continue;
 			}
-			
+
 			String planIDRegex = "((?!_CREDENTIALS).)+";
-			String planCredentialJsonRegex = "^SERVICES_(?<serviceid>" + serviceIDRegex + ")_PLAN_(?<planid>" + planIDRegex + ")_CREDENTIALS$";
+			String planCredentialJsonRegex = "^SERVICES_(?<serviceid>" + serviceIDRegex + ")_PLAN_(?<planid>"
+					+ planIDRegex + ")_CREDENTIALS$";
 			Pattern planCredentialJsonPattern = Pattern.compile(planCredentialJsonRegex);
 			Matcher planCredentialJsonMatcher = planCredentialJsonPattern.matcher(key);
 			if (planCredentialJsonMatcher.find()) {
 				String serviceID = planCredentialJsonMatcher.group("serviceid");
 				String planID = planCredentialJsonMatcher.group("planid");
-				checkMandatoryPropertiesDefined(Arrays.asList("SERVICES_" + serviceID + "_NAME", "SERVICES_" + serviceID + "_DESCRIPTION"));
+				checkServiceMandatoryPropertiesDefined(serviceID);
 				credentialsMap.addCredentials(serviceID, planID, parseCredentialsJSON(entry.getValue()));
 				continue;
 			}
-			
-			String planCredentialPropertyRegex = "^SERVICES_(?<serviceid>" + serviceIDRegex + ")_PLAN_(?<planid>" + planIDRegex + ")_CREDENTIALS_(?<credentialProperty>.+)$";
+
+			String planCredentialPropertyRegex = "^SERVICES_(?<serviceid>" + serviceIDRegex + ")_PLAN_(?<planid>"
+					+ planIDRegex + ")_CREDENTIALS_(?<credentialProperty>.+)$";
 			Pattern planCredentialPropertyPattern = Pattern.compile(planCredentialPropertyRegex);
 			Matcher planCredentialPropertyMatcher = planCredentialPropertyPattern.matcher(key);
 			if (planCredentialPropertyMatcher.find()) {
 				String serviceID = planCredentialPropertyMatcher.group("serviceid");
 				String planID = planCredentialPropertyMatcher.group("planid");
 				String credentialProperty = planCredentialPropertyMatcher.group("credentialProperty");
-				checkMandatoryPropertiesDefined(Arrays.asList("SERVICES_" + serviceID + "_NAME", "SERVICES_" + serviceID + "_DESCRIPTION"));
+				checkServiceMandatoryPropertiesDefined(serviceID);
 				credentialsMap.addCredential(serviceID, planID, credentialProperty, entry.getValue());
 				continue;
 			}
@@ -180,10 +216,12 @@ public class ParserSystemEnvironment implements ParserProperties{
 		return credentials;
 	}
 
+	@Override
 	public String getServiceName(String serviceID) {
 		return System.getenv("SERVICES_" + serviceID + "_NAME");
 	}
 
+	@Override
 	public String getPlanName(String serviceID, String planID) {
 		return System.getenv("SERVICES_" + serviceID + "_PLAN_" + planID + "_NAME");
 	}

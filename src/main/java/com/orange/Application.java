@@ -1,8 +1,6 @@
 package com.orange;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.boot.SpringApplication;
@@ -19,8 +17,7 @@ import com.orange.util.ParserSystemEnvironment;
 public class Application {
 
 	public static void main(String[] args) {
-		List<String> mandatoryProperties = Arrays.asList("SECURITY_USER_PASSWORD"); 
-		new ParserSystemEnvironment().checkMandatoryPropertiesDefined(mandatoryProperties);
+		new ParserSystemEnvironment().checkPasswordDefined();
 		SpringApplication.run(Application.class, args);
 	}
 

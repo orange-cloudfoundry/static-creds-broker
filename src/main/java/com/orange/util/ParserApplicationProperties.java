@@ -1,7 +1,6 @@
 package com.orange.util;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -41,11 +40,6 @@ public class ParserApplicationProperties implements ParserProperties{
 	}
 
 	@Override
-	public void checkMandatoryPropertiesDefined(List<String> mandatoryProperties) throws IllegalArgumentException {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
 	public PlansMap parsePlansProperties(String serviceID) {
 		// TODO Auto-generated method stub
 		return null;
@@ -67,5 +61,17 @@ public class ParserApplicationProperties implements ParserProperties{
 	public String getPlanName(String serviceID, String planID) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void checkPasswordDefined() throws IllegalArgumentException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void checkServiceMandatoryPropertiesDefined(String serviceID) throws IllegalArgumentException {
+		// TODO Auto-generated method stub
+		
 	}
 }
