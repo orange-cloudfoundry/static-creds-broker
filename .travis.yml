@@ -4,7 +4,7 @@ jdk:
 - oraclejdk8
 after_success:
 - mkdir to-release
-- cp target/static-creds-broker-1.1.war to-release
+- cp target/static-creds-broker-1.2.war to-release
 - cp manifest.yml to-release/
 - zip -r static-creds-broker ./to-release/*
 deploy:
