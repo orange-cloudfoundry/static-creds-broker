@@ -3,10 +3,10 @@ sudo: true
 jdk:
 - oraclejdk8
 after_success:
-- mkdir to-release
-- cp target/static-creds-broker-1.2.war to-release
-- cp manifest.yml to-release/
-- zip -r static-creds-broker ./to-release/*
+- mkdir static-creds-broker
+- cp target/static-creds-broker-1.2.war static-creds-broker
+- cp manifest.yml static-creds-broker/
+- zip -r static-creds-broker ./static-creds-broker/*
 deploy:
   provider: releases
   skip_cleanup: true
