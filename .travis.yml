@@ -1,3 +1,18 @@
 language: java
+sudo: true
 jdk:
 - oraclejdk8
+after_success:
+- mkdir to-release
+- cp target/static-creds-broker-1.1.war to-release
+- cp manifest.yml to-release/
+- zip -r static-creds-broker ./to-release/*
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key:
+    secure: ogsTiY2N1h0Xjqo3NCLrB4kvmsPpqgdIL7K28bysIpKTfEL3lhItWstJUB5SWq6V1Bt40cImr0tgAzbNMVKzUn/Ytjr9vR1c+VPZMh8kadqOcuFsGokuFvTjjmeArcQ97vK1b5E7860mi+TAoaktgOrHKaSjrT7aSbGr1eAao+5J3EqhCcAmRR13/eW2rMgglWUM1lFQ11ET3cGi3JgOQVhb/axwWQqzu+AJPJoELAPkRnJ+y3i+I0WiM86B/mk0V7LmhAnuXPD/xcQuLqn8CihSxP564aATz8KnvGisSlSo0gZVQ1y0B2ubvl4XOOKZiSgTZhHrI/ukQGjKAHoF0m//Zi9fbkpV4rs8lWAJKzjBRoCmGnAtSp6TTJ7IoP3o7o7s4Nq0Q5JYcBt26X74GbHo+afAvCNUV/2QhlrzRWzOH81jZFWDifBSDOsjWeMZBxUTwqKDIaMPO0h9c3NCZshvcBlt65CWroMyNxWVyFNygZ1k8oJRhu8aur3JOoUSM1z0qlo8gSOPW/hww1wZDIaShuuWe+OSzq5dkd3TwirFaMnHoTqV3H32Iz3fLVT5KX1rvIr77aONj8ETJQhjPXeBoSadhe2n16AkRITdn5EAhkv24O/G2KdoMgfGf+dcMYDCbrzOevA+XTSKeUP/KtNaTLrVzE3SFsfU63sglXk=
+  file: static-creds-broker.zip
+  on:
+    repo: Orange-OpenSource/static-creds-broker
+    tags: true
