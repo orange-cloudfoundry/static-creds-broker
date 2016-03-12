@@ -7,15 +7,15 @@ services:
     TRIPADVISOR:
         NAME: TRIPADVISOR_test_Service
         DESCRIPTION: My existing TRIPADVISOR service 
-#       # METADATA:
-#       #     LONGDESCRIPTION: A long description for my service
+        METADATA:
+            LONGDESCRIPTION: A long description for my service
 #       # CREDENTIALS:
 #       #     URI: http://....
     API_DIRECTORY:
         NAME: API_DIRECTORY_test_Service
         DESCRIPTION: My existing API_DIRECTORY service 
-#       # METADATA:
-#       #     LONGDESCRIPTION: A long description for my service
+        METADATA:
+            LONGDESCRIPTION: A long description for my service
 #       # CREDENTIALS:
 #       #     HOSTNAME: http://company.com
 #       # PLAN:
@@ -35,19 +35,17 @@ services:
 #       #             URI: http://myprod-api.org
 #       #             ACCESS_KEY: prodAZERT23456664DFDSFSDFDSF
 #       #             HOSTNAME: http://prod.company.com
-#     # - name: static-creds-test-service
-#     #   description: static-creds service for test
     ID:
         NAME: static-creds-service-test
         DESCRIPTION: static-creds service for test
         TAGS: tag1,tag2,tag3
-#     #     METADATA:
-#     #         DISPLAYNAME: displayname for my service
-#     #         IMAGEURL: https://upload.wikimedia.org/wikipedia/commons/c/c8/Orange_logo.svg
-#     #         SUPPORTURL: https://github.com/tao-xinxiu/static-creds-broker
-#     #         DOCUMENTATIONURL: https://github.com/tao-xinxiu/static-creds-broker
-#     #         PROVIDERDISPLAYNAME: provider display name
-#     #         LONGDESCRIPTION: A long description for my services
+        METADATA:
+            DISPLAYNAME: displayname for my service
+            IMAGEURL: https://upload.wikimedia.org/wikipedia/commons/c/c8/Orange_logo.svg
+            SUPPORTURL: https://github.com/tao-xinxiu/static-creds-broker
+            DOCUMENTATIONURL: https://github.com/tao-xinxiu/static-creds-broker
+            PROVIDERDISPLAYNAME: provider display name
+            LONGDESCRIPTION: A long description for my services
 #     #     PLAN:
 #     #         1:
 #     #             NAME: myplan

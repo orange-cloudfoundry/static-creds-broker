@@ -6,10 +6,7 @@ import java.util.Map;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import com.orange.model.CredentialsMap;
-import com.orange.model.PlansMap;
-import com.orange.model.ServicePropertyName;
-import com.orange.model.ServicesMap;
+import com.orange.model.*;
 
 @Configuration
 @ConfigurationProperties
@@ -29,23 +26,42 @@ public class ParserApplicationProperties implements ParserProperties{
 		ServicesMap servicesMap = new ServicesMap();
 		for (Map.Entry<String, Object> entry : services.entrySet()) {
 			if (entry.getValue() instanceof Map<?, ?>) {
-				Map<?, ?> serviceProperty = (Map<?, ?>) entry.getValue();
+				Map<?, ?> serviceProperties = (Map<?, ?>) entry.getValue();
 				for (ServicePropertyName servicePropertyName : ServicePropertyName.values()) {
-					Object servicePropertyValue = serviceProperty.get(servicePropertyName.toString());
-					if (servicePropertyValue != null) {
-						servicesMap.addServiceProperty(entry.getKey(), servicePropertyName, servicePropertyValue.toString(), this);
+					if (servicePropertyName.toString().contains("METADATA_")) {
+						if (serviceProperties.get("METADATA") instanceof Map<?, ?>) {
+							Map<?, ?> serviceMetadataProperties = (Map<?, ?>) serviceProperties.get("METADATA");
+							String metadataPropertyName = servicePropertyName.toString().substring("METADATA_".length());
+							Object metadataPropertyValue = serviceMetadataProperties.get(metadataPropertyName);
+							if (metadataPropertyValue != null) {
+								servicesMap.addServiceProperty(entry.getKey(), servicePropertyName, metadataPropertyValue.toString(), this);
+							}
+						}
+					}
+					else {
+						Object propertyValue = serviceProperties.get(servicePropertyName.toString());
+						if (propertyValue != null) {
+							servicesMap.addServiceProperty(entry.getKey(), servicePropertyName, propertyValue.toString(), this);
+						}
 					}
 				}
 			}
 		}
-		System.out.println(servicesMap.getAllServicesProperties());
+		servicesMap.checkServicesNameNotDuplicated();
+		servicesMap.setServicesPropertiesDefaults();
 		return servicesMap;
 	}
 
 	@Override
 	public PlansMap parsePlansProperties(String serviceID) {
-		// TODO Auto-generated method stub
-		return new PlansMap();
+		PlansMap plansMap = new PlansMap();
+//		Object serviceProperties = services.get(serviceID);
+//		if (serviceProperties instanceof Map<?, ?>) {
+////			Map<?, ?> servicePropertiesMap = 
+//		}
+		plansMap.checkPlansNameNotDuplicated();
+		plansMap.setPlansPropertiesDefaults();
+		return plansMap;
 	}
 
 	@Override
