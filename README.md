@@ -16,7 +16,6 @@ $ curl -O -L $LATEST_RELEASE_URL
 
 # Unzip the zip release of this broker. The zip contains binary release and manifest file.
 $ unzip static-creds-broker.zip
-$ cd to-release
 
 # Configure the broker through environment variables, possibly captured in a CF CLI manifest file
 # A sample default example manifest file is provided, adapt it to your environment (in particular set the domain)
@@ -29,7 +28,7 @@ applications:
   instances: 1
   host: mybroker
   domain: my-admin-domain.cf.io
-  path: static-creds-broker-1.1.war 
+  path: static-creds-broker-<LATEST_RELEASE_VERSION>.war 
 
   env:
     SECURITY_USER_PASSWORD: MySecurePwd
@@ -38,7 +37,7 @@ applications:
     SERVICES_ID_METADATA_LONGDESCRIPTION: A long description for my service
     SERVICES_ID_CREDENTIALS_URI: mysql://USERNAME:PASSWORD@HOSTNAME:PORT/NAME
 # deploy the broker    
-$ cf push 
+$ cf push -d mydomain.org -p static-cred*.war 
 
 # Register the broker system-wise (requires cloudcontroller.admin i.e. admin access to the CloudFoundry instance)
 # refer to http://docs.cloudfoundry.org/services/managing-service-brokers.html#register-brokre
