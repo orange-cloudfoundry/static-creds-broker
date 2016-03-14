@@ -19,7 +19,7 @@ $ unzip static-creds-broker.zip
 $ cd to-release
 
 # Configure the broker through environment variables, possibly captured in a CF CLI manifest file
-# A sample default example manifest file is provided, adapt it to your environment (in particular domain)
+# A sample default example manifest file is provided, adapt it to your environment (in particular set the domain)
 
 $ vi manifest.yml
 ---
@@ -43,7 +43,8 @@ $ cf push
 # Register the broker system-wise (requires cloudcontroller.admin i.e. admin access to the CloudFoundry instance)
 # refer to http://docs.cloudfoundry.org/services/managing-service-brokers.html#register-brokre
 $ cf create-service-broker mybrokername someuser somethingsecure http://mybroker.example.com/
-$ cf enable-service-access mybrokername
+# Then make individual services visibles in desired orgs or in all orgs, see  http://docs.cloudfoundry.org/services/access-control.html#enable-access
+$ cf enable-service-access MyService
 
 # Alternatively, register as a private service broker for one space or one org
 # get the CF cli 6.16 or the latest edge binaries from https://github.com/cloudfoundry/cli#downloads
