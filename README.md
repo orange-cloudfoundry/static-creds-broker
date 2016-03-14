@@ -9,15 +9,19 @@ This broker is aimed at service providers which would expose an existing service
 # Usage overview
 
 ```
-# Download the binary release of this broker
-$ curl -O -L https://github.com/Orange-OpenSource/static-creds-broker/releases/download/v1.1/static-creds-broker.zip
+# Download the latest binary release of this broker
+$ LATEST_RELEASE_URL=$(curl -s https://api.github.com/repos/Orange-OpenSource/static-creds-broker/releases/latest | grep browser_download_url | head -n 1 | cut -d '"' -f 4)
+$ echo "Downloading $LATEST_RELEASE_URL"
+$ curl -O -L $LATEST_RELEASE_URL
 
 # Unzip the zip release of this broker. The zip contains binary release and manifest file.
 $ unzip static-creds-broker.zip
+$ cd to-release
 
-# Configure the broker through environment variables, possibly captured in a manifest
+# Configure the broker through environment variables, possibly captured in a CF CLI manifest file
+# A sample default example manifest file is provided, adapt it to your environment (in particular domain)
 
-$ vi to-release/manifest.yml
+$ vi manifest.yml
 ---
 applications:
 - name: my-broker
@@ -36,7 +40,7 @@ applications:
 # deploy the broker    
 $ cf push 
 
-# Register the broker system-wise (required cloudcontroller.admin)
+# Register the broker system-wise (requires cloudcontroller.admin i.e. admin access to the CloudFoundry instance)
 # refer to http://docs.cloudfoundry.org/services/managing-service-brokers.html#register-brokre
 $ cf create-service-broker mybrokername someuser somethingsecure http://mybroker.example.com/
 $ cf enable-service-access mybrokername
