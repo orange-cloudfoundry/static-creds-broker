@@ -13,6 +13,8 @@ import com.orange.model.ServicePropertyName;
 import com.orange.model.ServicesMap;
 
 public class ParserApplicationPropertiesTest {
+	private ParserApplicationProperties parserApplicationProperties;
+	
 	private static final String API_DIRECTORY_SERVICE_ID = "API_DIRECTORY";
 	private static final String TRIPADVISOR_SERVICE_ID = "TRIPADVISOR";
 	private static final String API_DIRECTORY_NAME = "API_DIRECTORY_test_Service";
@@ -44,10 +46,13 @@ public class ParserApplicationPropertiesTest {
 	private static final String API_DIRECTORY_PLAN_PLAN3_CREDENTIALS_ACCESS_KEY = "prodAZERT23456664DFDSFSDFDSF";
 	private static final String TRIPADVISOR_SERVICE_CREDENTIALS_ACCESS_KEY = "AZERT23456664DFDSFSDFDSF";
 			
+	public ParserApplicationPropertiesTest() {
+		parserApplicationProperties = new ParserApplicationProperties();
+		parserApplicationProperties.setServices(getServicesProperty());
+	}
+	
 	@Test
 	public void should_get_services_map_with_info_have_been_set_in_property() {
-		ParserApplicationProperties parserApplicationProperties = new ParserApplicationProperties();
-		parserApplicationProperties.setServices(getServicesProperty());
 		final ServicesMap servicesMap = parserApplicationProperties.parseServicesProperties();
 		Assert.assertNotNull(servicesMap);
 		Assert.assertEquals(2, servicesMap.geEntrySet().size());
@@ -85,7 +90,7 @@ public class ParserApplicationPropertiesTest {
 
 	@Test
 	public void shoud_get_plans_map_with_default_info_for_the_services_have_not_set_plan_info_in_property(){
-		final PlansMap plansMap = new ParserApplicationProperties().parsePlansProperties(TRIPADVISOR_SERVICE_ID);
+		final PlansMap plansMap = parserApplicationProperties.parsePlansProperties(TRIPADVISOR_SERVICE_ID);
 		Assert.assertNotNull(plansMap);
 		Assert.assertEquals(1, plansMap.getIDs().size());
 		Assert.assertNotNull(plansMap.get(PlansMap.defaultPlanID));
@@ -97,8 +102,6 @@ public class ParserApplicationPropertiesTest {
 	
 	@Test
 	public void shoud_get_plans_map_of_specific_service_which_have_been_set_in_property(){
-		ParserApplicationProperties parserApplicationProperties = new ParserApplicationProperties();
-		parserApplicationProperties.setServices(getServicesProperty());
 		final PlansMap plansMap = parserApplicationProperties.parsePlansProperties(API_DIRECTORY_SERVICE_ID);
 		Assert.assertNotNull(plansMap);
 		Assert.assertEquals(3, plansMap.getIDs().size());
@@ -121,8 +124,6 @@ public class ParserApplicationPropertiesTest {
 	
 	@Test
 	public void should_get_credentials_map_which_have_been_set_in_property(){
-		ParserApplicationProperties parserApplicationProperties = new ParserApplicationProperties();
-		parserApplicationProperties.setServices(getServicesProperty());
 		final CredentialsMap credentialsMap = parserApplicationProperties.parseCredentialsProperties();
 		Assert.assertNotNull(credentialsMap);
 		Assert.assertEquals(5, credentialsMap.getEntrySet().size());
