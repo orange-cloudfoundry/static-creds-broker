@@ -1,40 +1,40 @@
 enable: true
-# security:
-#     user:
-#         name: hi
-#         password: hipwd
+security:
+    user:
+        password: hipwd
 services:
     TRIPADVISOR:
         NAME: TRIPADVISOR_test_Service
-        DESCRIPTION: My existing TRIPADVISOR service 
+        DESCRIPTION: My existing service 
         METADATA:
             LONGDESCRIPTION: A long description for my service
-#       # CREDENTIALS:
-#       #     URI: http://....
+        CREDENTIALS:
+            URI: http://....
+            ACCESS_KEY: AZERT23456664DFDSFSDFDSF
     API_DIRECTORY:
         NAME: API_DIRECTORY_test_Service
-        DESCRIPTION: My existing API_DIRECTORY service 
+        DESCRIPTION: My existing service
         METADATA:
             LONGDESCRIPTION: A long description for my service
-#       # CREDENTIALS:
-#       #     HOSTNAME: http://company.com
-#       # PLAN:
-#       #     PLAN1:
-#       #         NAME: dev
-#       #         CREDENTIALS:
-#       #             URI: http://mydev-api.org
-#       #             ACCESS_KEY: devAZERT23456664DFDSFSDFDSF
-#       #     PLAN2:
-#       #         NAME: preprod
-#       #         CREDENTIALS:
-#       #             URI: http://mypreprod-api.org
-#       #             ACCESS_KEY: preprodAZERT23456664DFDSFSDFDSF
-#       #     PLAN3:
-#       #         NAME: prod
-#       #         CREDENTIALS:
-#       #             URI: http://myprod-api.org
-#       #             ACCESS_KEY: prodAZERT23456664DFDSFSDFDSF
-#       #             HOSTNAME: http://prod.company.com
+        CREDENTIALS:
+            HOSTNAME: http://company.com
+        PLAN:
+            PLAN1:
+                NAME: dev
+                CREDENTIALS:
+                    URI: http://mydev-api.org
+                    ACCESS_KEY: devAZERT23456664DFDSFSDFDSF
+            PLAN2:
+                NAME: preprod
+                CREDENTIALS:
+                    URI: http://mypreprod-api.org
+                    ACCESS_KEY: preprodAZERT23456664DFDSFSDFDSF
+            PLAN3:
+                NAME: prod
+                CREDENTIALS:
+                    URI: http://myprod-api.org
+                    ACCESS_KEY: prodAZERT23456664DFDSFSDFDSF
+                    HOSTNAME: http://prod.company.com
     ID:
         NAME: static-creds-service-test
         DESCRIPTION: static-creds service for test
@@ -46,12 +46,12 @@ services:
             DOCUMENTATIONURL: https://github.com/tao-xinxiu/static-creds-broker
             PROVIDERDISPLAYNAME: provider display name
             LONGDESCRIPTION: A long description for my services
-#     #     PLAN:
-#     #         1:
-#     #             NAME: myplan
-#     #             DESCRIPTION: The description of the plan
-#     #             #METADATA: '{"bullets":["20 GB of messages","20 connections"],"costs":[{"amount":{"usd":99.0,"eur":49.0},"unit":"MONTHLY"},{"amount":{"usd":0.99,"eur":0.49},"unit":"1GB of messages over 20GB"}],"displayName":"Big Bunny"}'
-#     #             #FREE: false
-#     #     CREDENTIALS: '{"username":"admin","password":"pa55woRD"}'
-#     #         uri: mysql://USERNAME:PASSWORD@HOSTNAME:PORT/NAME
-#     #         HOSTNAME: us-cdbr-east-03.cleardb.com
+        PLAN:
+            1:
+                NAME: myplan
+                DESCRIPTION: The description of the plan
+                #METADATA: '{"bullets":["20 GB of messages","20 connections"],"costs":[{"amount":{"usd":99.0,"eur":49.0},"unit":"MONTHLY"},{"amount":{"usd":0.99,"eur":0.49},"unit":"1GB of messages over 20GB"}],"displayName":"Big Bunny"}'
+                #FREE: false
+        CREDENTIALS: #'{"username":"admin","password":"pa55woRD"}'
+            uri: mysql://USERNAME:PASSWORD@HOSTNAME:PORT/NAME
+            HOSTNAME: us-cdbr-east-03.cleardb.com
