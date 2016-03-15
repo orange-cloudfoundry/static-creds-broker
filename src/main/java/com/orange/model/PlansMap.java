@@ -12,6 +12,7 @@ import java.util.Set;
  */
 public class PlansMap {
 	private Map<String, Map<PlanPropertyName, String>> plansMap = new HashMap<>();
+	public static final String defaultPlanID = "0";
 	
 	/**
 	 * get plans properties for all plans
@@ -68,7 +69,7 @@ public class PlansMap {
 	public void setPlansPropertiesDefaults() {
 		if (plansMap.isEmpty()) {
 			Map<PlanPropertyName, String> plan = new HashMap<>();
-			plansMap.put("0", plan);
+			plansMap.put(defaultPlanID, plan);
 		}
 		for (Map<PlanPropertyName, String> plan : plansMap.values()) {
 			for (PlanPropertyName propertyName : PlanPropertyName.values()) {
