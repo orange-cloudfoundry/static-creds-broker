@@ -53,6 +53,17 @@ public class CredentialsMap {
 	public Set<Entry<List<String>,Map<String,Object>>> getEntrySet(){
 		return credentialsMap.entrySet();
 	}
+	
+	public boolean contains(String serviceID, String planID, String credentialName, Object credentialValue){
+		List<String> servicePlan = planID == null ? Arrays.asList(serviceID) : Arrays.asList(serviceID, planID);
+		Map<String, Object> credentials = credentialsMap.get(servicePlan);
+		if (credentials != null && credentials.get(credentialName).equals(credentialValue)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 
 	public Map<String, Object> getCredentialsForPlan(String planId) {
 		for (Entry<List<String>,Map<String,Object>> entry : getEntrySet()) {
