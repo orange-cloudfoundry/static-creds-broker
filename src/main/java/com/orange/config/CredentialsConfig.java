@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.orange.model.CredentialsMap;
+import com.orange.util.Environment;
 import com.orange.util.ParserApplicationProperties;
 import com.orange.util.ParserProperties;
 import com.orange.util.ParserSystemEnvironment;
@@ -28,7 +29,7 @@ public class CredentialsConfig {
 	 */
 	@Bean
 	public CredentialsMap credentialsMap(){
-		ParserProperties parserProperties = useApplicationProperties ? parserApplicationProperties : new ParserSystemEnvironment();
+		ParserProperties parserProperties = useApplicationProperties ? parserApplicationProperties : new ParserSystemEnvironment(new Environment());
 		CredentialsMap idCredentialsMap = parserProperties.parseCredentialsProperties();
 		CredentialsMap nameCredentialsMap = new CredentialsMap();
 		// credentials for all plans of the service

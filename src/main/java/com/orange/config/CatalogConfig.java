@@ -24,6 +24,7 @@ import com.orange.model.PlanPropertyName;
 import com.orange.model.PlansMap;
 import com.orange.model.ServicePropertyName;
 import com.orange.model.ServicesMap;
+import com.orange.util.Environment;
 import com.orange.util.ParserApplicationProperties;
 import com.orange.util.ParserProperties;
 import com.orange.util.ParserSystemEnvironment;
@@ -37,7 +38,7 @@ public class CatalogConfig {
 	private ParserApplicationProperties parserApplicationProperties;
 	@Bean
 	public Catalog catalog() {
-		ParserProperties parserProperties = useApplicationProperties ? parserApplicationProperties : new ParserSystemEnvironment();
+		ParserProperties parserProperties = useApplicationProperties ? parserApplicationProperties : new ParserSystemEnvironment(new Environment());
 		parserProperties.checkPasswordDefined();
 		servicesMap = parserProperties.parseServicesProperties();
 		List<ServiceDefinition> serviceDefinitions = new ArrayList<ServiceDefinition>();

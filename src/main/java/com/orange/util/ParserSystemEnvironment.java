@@ -1,15 +1,11 @@
 package com.orange.util;
 
-import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orange.model.CredentialsMap;
 import com.orange.model.PlanPropertyName;
 import com.orange.model.PlansMap;
@@ -17,6 +13,11 @@ import com.orange.model.ServicePropertyName;
 import com.orange.model.ServicesMap;
 
 public class ParserSystemEnvironment extends ParserProperties {
+	private Environment environment;
+	public ParserSystemEnvironment(Environment environment) {
+		this.environment = environment;
+	}
+	
 	/**
 	 * check whether mandatory property password are defined
 	 * 
@@ -56,9 +57,8 @@ public class ParserSystemEnvironment extends ParserProperties {
 	 *             property name
 	 */
 	private void checkMandatoryPropertiesDefined(List<String> mandatoryProperties) throws IllegalArgumentException {
-		Map<String, String> env = System.getenv();
 		for (String mandatoryProperty : mandatoryProperties) {
-			if (env.get(mandatoryProperty) == null) {
+			if (environment.get(mandatoryProperty) == null) {
 				throw new IllegalArgumentException("Mandatory property: " + mandatoryProperty + " missing");
 			}
 		}
@@ -76,7 +76,7 @@ public class ParserSystemEnvironment extends ParserProperties {
 	@Override
 	public ServicesMap parseServicesProperties() {
 		ServicesMap servicesMap = new ServicesMap();
-		Map<String, String> env = System.getenv();
+		Map<String, String> env = environment.get();
 		for (Map.Entry<String, String> entry : env.entrySet()) {
 			for (ServicePropertyName propertyName : ServicePropertyName.values()) {
 				String serviceIDRegex = "((?!_PLAN_)(?!_CREDENTIALS).)+";
@@ -110,10 +110,10 @@ public class ParserSystemEnvironment extends ParserProperties {
 	@Override
 	public PlansMap parsePlansProperties(String serviceID) {
 		PlansMap plansMap = new PlansMap();
-		Map<String, String> env = System.getenv();
+		Map<String, String> env = environment.get();
+		String planIDRegex = "((?!_CREDENTIALS).)+";
 		for (Map.Entry<String, String> entry : env.entrySet()) {
 			for (PlanPropertyName propertyName : PlanPropertyName.values()) {
-				String planIDRegex = "((?!_CREDENTIALS).)+";
 				String planPropertyRegex = "^SERVICES_(" + serviceID + ")_PLAN_(?<planid>" + planIDRegex + ")_"
 						+ propertyName + "$";
 				Pattern pattern = Pattern.compile(planPropertyRegex);
@@ -124,9 +124,16 @@ public class ParserSystemEnvironment extends ParserProperties {
 					break;
 				}
 			}
+			String planPropertyRegex = "^SERVICES_(" + serviceID + ")_PLAN_(?<planid>" + planIDRegex + ")_CREDENTIALS";
+			Pattern pattern = Pattern.compile(planPropertyRegex);
+			Matcher matcher = pattern.matcher(entry.getKey());
+			if (matcher.find()) {
+				String planID = matcher.group("planid");
+				plansMap.addPlanWithoutProperty(planID);
+			}
 		}
-		plansMap.checkPlansNameNotDuplicated();
 		plansMap.setPlansPropertiesDefaults();
+		plansMap.checkPlansNameNotDuplicated();
 		return plansMap;
 	}
 
@@ -148,7 +155,7 @@ public class ParserSystemEnvironment extends ParserProperties {
 	@Override
 	public CredentialsMap parseCredentialsProperties() {
 		CredentialsMap credentialsMap = new CredentialsMap();
-		Map<String, String> env = System.getenv();
+		Map<String, String> env = environment.get();
 		for (Map.Entry<String, String> entry : env.entrySet()) {
 			String key = entry.getKey();
 
@@ -208,11 +215,11 @@ public class ParserSystemEnvironment extends ParserProperties {
 
 	@Override
 	public String getServiceName(String serviceID) {
-		return System.getenv("SERVICES_" + serviceID + "_NAME");
+		return environment.get("SERVICES_" + serviceID + "_NAME");
 	}
 
 	@Override
 	public String getPlanName(String serviceID, String planID) {
-		return System.getenv("SERVICES_" + serviceID + "_PLAN_" + planID + "_NAME");
+		return environment.get("SERVICES_" + serviceID + "_PLAN_" + planID + "_NAME");
 	}
 }
