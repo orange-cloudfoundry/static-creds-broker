@@ -67,6 +67,7 @@ public class ParserApplicationProperties extends ParserProperties{
 				for(Map.Entry<?, ?> entry: plansPropertiesMap.entrySet()){
 					if (entry.getKey() instanceof String) {
 						String planID = (String)entry.getKey();
+						plansMap.addPlanWithoutProperty(planID);
 						Object planProperties = entry.getValue();
 						if (planProperties instanceof Map<?, ?>) {
 							Map<?, ?> planPropertiesMap = (Map<?, ?>)planProperties;
@@ -81,8 +82,8 @@ public class ParserApplicationProperties extends ParserProperties{
 				}
 			}
 		}
-		plansMap.checkPlansNameNotDuplicated();
 		plansMap.setPlansPropertiesDefaults();
+		plansMap.checkPlansNameNotDuplicated();
 		return plansMap;
 	}
 
