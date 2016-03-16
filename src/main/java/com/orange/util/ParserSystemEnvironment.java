@@ -16,7 +16,7 @@ import com.orange.model.PlansMap;
 import com.orange.model.ServicePropertyName;
 import com.orange.model.ServicesMap;
 
-public class ParserSystemEnvironment implements ParserProperties {
+public class ParserSystemEnvironment extends ParserProperties {
 	/**
 	 * check whether mandatory property password are defined
 	 * 
@@ -204,17 +204,7 @@ public class ParserSystemEnvironment implements ParserProperties {
 		return credentialsMap;
 	}
 
-	private Map<String, Object> parseCredentialsJSON(String credentials_str) {
-		Map<String, Object> credentials = new HashMap<>();
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			credentials = mapper.readValue(credentials_str, new TypeReference<Map<String, String>>() {
-			});
-		} catch (IOException e) {
-			throw new IllegalArgumentException("JSON parsing error: " + credentials_str);
-		}
-		return credentials;
-	}
+	
 
 	@Override
 	public String getServiceName(String serviceID) {

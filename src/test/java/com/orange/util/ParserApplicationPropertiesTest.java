@@ -34,17 +34,25 @@ public class ParserApplicationPropertiesTest {
 	private static final String API_DIRECTORY_PLAN_PLAN2_ID = "PLAN2";
 	private static final String API_DIRECTORY_PLAN_PLAN2_NAME = "preprod";
 	private static final String API_DIRECTORY_PLAN_PLAN2_FREE = "false";
-	private static final String API_DIRECTORY_PLAN_PLAN2_METADATA = ""; //'{"bullets":["20 GB of messages","20 connections"],"costs":[{"amount":{"usd":99.0,"eur":49.0},"unit":"MONTHLY"},{"amount":{"usd":0.99,"eur":0.49},"unit":"1GB of messages over 20GB"}],"displayName":"Big Bunny"}'
+	private static final String API_DIRECTORY_PLAN_PLAN2_METADATA = "{\"bullets\":[\"20 GB of messages\",\"20 connections\"],\"costs\":[{\"amount\":{\"usd\":99.0,\"eur\":49.0},\"unit\":\"MONTHLY\"},{\"amount\":{\"usd\":0.99,\"eur\":0.49},\"unit\":\"1GB of messages over 20GB\"}],\"displayName\":\"Big Bunny\"}";
 	private static final String API_DIRECTORY_PLAN_PLAN3_ID = "PLAN3";
 	private static final String API_DIRECTORY_PLAN_PLAN3_NAME = "prod";
 	private static final String API_DIRECTORY_SERVICE_CREDENTIALS_HOSTNAME = "http://company.com";
+	private static final String API_DIRECTORY_PLAN_PLAN1_CREDENTIALS_HOSTNAME = "http://dev.company.com";
 	private static final String API_DIRECTORY_PLAN_PLAN1_CREDENTIALS_URI = "http://mydev-api.org";
 	private static final String API_DIRECTORY_PLAN_PLAN1_CREDENTIALS_ACCESS_KEY = "devAZERT23456664DFDSFSDFDSF";
+	private static final String API_DIRECTORY_PLAN_PLAN2_CREDENTIALS_HOSTNAME = "http://preprod.company.com";
 	private static final String API_DIRECTORY_PLAN_PLAN2_CREDENTIALS_URI = "http://mypreprod-api.org";
 	private static final String API_DIRECTORY_PLAN_PLAN2_CREDENTIALS_ACCESS_KEY = "preprodAZERT23456664DFDSFSDFDSF";
+	private static final String API_DIRECTORY_PLAN_PLAN3_CREDENTIALS_HOSTNAME = "http://prod.company.com";
 	private static final String API_DIRECTORY_PLAN_PLAN3_CREDENTIALS_URI = "http://myprod-api.org";
 	private static final String API_DIRECTORY_PLAN_PLAN3_CREDENTIALS_ACCESS_KEY = "prodAZERT23456664DFDSFSDFDSF";
-	private static final String TRIPADVISOR_SERVICE_CREDENTIALS_ACCESS_KEY = "AZERT23456664DFDSFSDFDSF";
+	private static final String TRIPADVISOR_SERVICE_CREDENTIALS_KEY1 = "username";
+	private static final String TRIPADVISOR_SERVICE_CREDENTIALS_VALUE1 = "admin";
+	private static final String TRIPADVISOR_SERVICE_CREDENTIALS_KEY2 = "password";
+	private static final String TRIPADVISOR_SERVICE_CREDENTIALS_VALUE2 = "pa55woRD";
+	private static final String TRIPADVISOR_SERVICE_CREDENTIALS = "{\""+TRIPADVISOR_SERVICE_CREDENTIALS_KEY1+"\":\""+TRIPADVISOR_SERVICE_CREDENTIALS_VALUE1+"\",\""+TRIPADVISOR_SERVICE_CREDENTIALS_KEY2+"\":\""+TRIPADVISOR_SERVICE_CREDENTIALS_VALUE2+"\"}";
+	
 			
 	public ParserApplicationPropertiesTest() {
 		parserApplicationProperties = new ParserApplicationProperties();
@@ -83,7 +91,7 @@ public class ParserApplicationPropertiesTest {
 		service_TRIPADVISOR.put("DESCRIPTION", TRIPADVISOR_DESCRIPTION);
 		service_TRIPADVISOR.put("TAGS", TRIPADVISOR_TAGS);
 		service_TRIPADVISOR.put("METADATA", getTRIPADVISORServiceMetadataProperty());
-		service_TRIPADVISOR.put("CREDENTIALS", getTRIPADVISORServiceCredentialsProperty());
+		service_TRIPADVISOR.put("CREDENTIALS", TRIPADVISOR_SERVICE_CREDENTIALS);
 		services.put(TRIPADVISOR_SERVICE_ID, service_TRIPADVISOR);
 		return services;
 	}
@@ -127,7 +135,8 @@ public class ParserApplicationPropertiesTest {
 		final CredentialsMap credentialsMap = parserApplicationProperties.parseCredentialsProperties();
 		Assert.assertNotNull(credentialsMap);
 		Assert.assertEquals(5, credentialsMap.getEntrySet().size());
-		Assert.assertTrue(credentialsMap.contains(TRIPADVISOR_SERVICE_ID, null, "ACCESS_KEY", TRIPADVISOR_SERVICE_CREDENTIALS_ACCESS_KEY));
+		Assert.assertTrue(credentialsMap.contains(TRIPADVISOR_SERVICE_ID, null, TRIPADVISOR_SERVICE_CREDENTIALS_KEY1, TRIPADVISOR_SERVICE_CREDENTIALS_VALUE1));
+		Assert.assertTrue(credentialsMap.contains(TRIPADVISOR_SERVICE_ID, null, TRIPADVISOR_SERVICE_CREDENTIALS_KEY2, TRIPADVISOR_SERVICE_CREDENTIALS_VALUE2));
 		Assert.assertTrue(credentialsMap.contains(API_DIRECTORY_SERVICE_ID, null, "HOSTNAME", API_DIRECTORY_SERVICE_CREDENTIALS_HOSTNAME));
 		Assert.assertTrue(credentialsMap.contains(API_DIRECTORY_SERVICE_ID, API_DIRECTORY_PLAN_PLAN1_ID, "ACCESS_KEY", API_DIRECTORY_PLAN_PLAN1_CREDENTIALS_ACCESS_KEY));
 		Assert.assertTrue(credentialsMap.contains(API_DIRECTORY_SERVICE_ID, API_DIRECTORY_PLAN_PLAN1_ID, "URI", API_DIRECTORY_PLAN_PLAN1_CREDENTIALS_URI));
@@ -168,13 +177,6 @@ public class ParserApplicationPropertiesTest {
 		return service_TRIPADVISOR_METADATA;
 	}
 	
-	private Map<String, Object> getTRIPADVISORServiceCredentialsProperty(){
-		Map<String, Object> serviceCredentials = new HashMap<>();
-		serviceCredentials.put("ACCESS_KEY", TRIPADVISOR_SERVICE_CREDENTIALS_ACCESS_KEY);
-		return serviceCredentials;
-	}
-	
-	
 	private Map<String, Object> getAPIDIRECTORYServiceCredentialsProperty(){
 		Map<String, Object> serviceCredentials = new HashMap<>();
 		serviceCredentials.put("HOSTNAME", API_DIRECTORY_SERVICE_CREDENTIALS_HOSTNAME);
@@ -185,6 +187,7 @@ public class ParserApplicationPropertiesTest {
 		Map<String, Object> planOneCredentials = new HashMap<>();
 		planOneCredentials.put("URI", API_DIRECTORY_PLAN_PLAN1_CREDENTIALS_URI);
 		planOneCredentials.put("ACCESS_KEY", API_DIRECTORY_PLAN_PLAN1_CREDENTIALS_ACCESS_KEY);
+		planOneCredentials.put("HOSTNAME", API_DIRECTORY_PLAN_PLAN1_CREDENTIALS_HOSTNAME);
 		return planOneCredentials;
 	}
 	
@@ -192,6 +195,7 @@ public class ParserApplicationPropertiesTest {
 		Map<String, Object> planTwoCredentials = new HashMap<>();
 		planTwoCredentials.put("URI", API_DIRECTORY_PLAN_PLAN2_CREDENTIALS_URI);
 		planTwoCredentials.put("ACCESS_KEY", API_DIRECTORY_PLAN_PLAN2_CREDENTIALS_ACCESS_KEY);
+		planTwoCredentials.put("HOSTNAME", API_DIRECTORY_PLAN_PLAN2_CREDENTIALS_HOSTNAME);
 		return planTwoCredentials;
 	}
 	
@@ -199,6 +203,7 @@ public class ParserApplicationPropertiesTest {
 		Map<String, Object> planThreeCredentials = new HashMap<>();
 		planThreeCredentials.put("URI", API_DIRECTORY_PLAN_PLAN3_CREDENTIALS_URI);
 		planThreeCredentials.put("ACCESS_KEY", API_DIRECTORY_PLAN_PLAN3_CREDENTIALS_ACCESS_KEY);
+		planThreeCredentials.put("HOSTNAME", API_DIRECTORY_PLAN_PLAN3_CREDENTIALS_HOSTNAME);
 		return planThreeCredentials;
 	}
 }

@@ -11,7 +11,7 @@ import com.orange.model.*;
 
 @Configuration
 @ConfigurationProperties
-public class ParserApplicationProperties implements ParserProperties{
+public class ParserApplicationProperties extends ParserProperties{
 	private Map<String, Object> services = new HashMap<>();
 	@Value("${security.user.password}")
 	private String password;
@@ -100,6 +100,9 @@ public class ParserApplicationProperties implements ParserProperties{
 								credentialsMap.addCredential(entry.getKey(), null, credentialProperty.getKey().toString(), credentialProperty.getValue().toString());
 							}
 						}
+						else if (serviceProperties.getValue() instanceof String) {
+							credentialsMap.addCredentials(entry.getKey(), null, parseCredentialsJSON(serviceProperties.getValue().toString()));
+						}
 					}
 					if ("PLAN".equals(serviceProperties.getKey())) {
 						if (serviceProperties.getValue() instanceof Map<?, ?>) {
@@ -111,6 +114,9 @@ public class ParserApplicationProperties implements ParserProperties{
 												for (Map.Entry<?, ?> credentialProperty : ((Map<?, ?>)planProperty.getValue()).entrySet() ) {
 													credentialsMap.addCredential(entry.getKey(), planProperties.getKey().toString(), credentialProperty.getKey().toString(), credentialProperty.getValue().toString());
 												}
+											}
+											else if (planProperty.getValue() instanceof String) {
+												credentialsMap.addCredentials(entry.getKey(), planProperties.getKey().toString(), parseCredentialsJSON(planProperty.getValue().toString()));
 											}
 										}
 									}

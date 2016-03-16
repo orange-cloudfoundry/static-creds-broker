@@ -1,10 +1,16 @@
 package com.orange.util;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orange.model.CredentialsMap;
 import com.orange.model.PlansMap;
 import com.orange.model.ServicesMap;
 
-public interface ParserProperties {
+public abstract class ParserProperties {
 	/**
 	 * check whether mandatory property password are defined
 	 * 
@@ -12,7 +18,7 @@ public interface ParserProperties {
 	 *             when find mandatory property not defined, error message
 	 *             contains missing mandatory property name
 	 */
-	public void checkPasswordDefined() throws IllegalArgumentException;
+	public abstract void checkPasswordDefined() throws IllegalArgumentException;
 
 	/**
 	 * check whether service mandatory properties(id and description) are
@@ -23,7 +29,7 @@ public interface ParserProperties {
 	 *             when find mandatory property not defined, error message
 	 *             contains missing mandatory property name
 	 */
-	public void checkServiceMandatoryPropertiesDefined(String serviceID) throws IllegalArgumentException;
+	public abstract void checkServiceMandatoryPropertiesDefined(String serviceID) throws IllegalArgumentException;
 
 	/**
 	 * get the services properties values
@@ -31,7 +37,7 @@ public interface ParserProperties {
 	 * @return a map of service id (String) and service properties definitions
 	 *         (Map<ServicePropertyName, String>)
 	 */
-	public ServicesMap parseServicesProperties();
+	public abstract ServicesMap parseServicesProperties();
 
 	/**
 	 * get the plans properties values
@@ -42,7 +48,7 @@ public interface ParserProperties {
 	 * @return a map of plan id (String) and plan properties definitions
 	 *         (Map<PlanPropertyName, String>) for the specified serviceID
 	 */
-	public PlansMap parsePlansProperties(String serviceID);
+	public abstract PlansMap parsePlansProperties(String serviceID);
 
 	/**
 	 * get the services credential properties values: credential may for whole
@@ -51,9 +57,21 @@ public interface ParserProperties {
 	 * @return a map of servicePlanID (List<String>) and credentials
 	 *         (Map<String, Object>)
 	 */
-	public CredentialsMap parseCredentialsProperties();
+	public abstract CredentialsMap parseCredentialsProperties();
 
-	public String getServiceName(String serviceID);
+	public abstract String getServiceName(String serviceID);
 
-	public String getPlanName(String serviceID, String planID);
+	public abstract String getPlanName(String serviceID, String planID);
+	
+	public Map<String, Object> parseCredentialsJSON(String credentials_str) {
+		Map<String, Object> credentials = new HashMap<>();
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			credentials = mapper.readValue(credentials_str, new TypeReference<Map<String, String>>() {
+			});
+		} catch (IOException e) {
+			throw new IllegalArgumentException("JSON parsing error: " + credentials_str);
+		}
+		return credentials;
+	}
 }
