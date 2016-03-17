@@ -4,15 +4,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.orange.model.CredentialsMap;
+import com.orange.util.Environment;
+import com.orange.util.ParserApplicationProperties;
+import com.orange.util.ParserProperties;
 import com.orange.util.ParserSystemEnvironment;
 
 @Configuration
 public class CredentialsConfig {
-	
+	@Value("${enable:false}")
+	private boolean useApplicationProperties;
+	@Autowired
+	private ParserApplicationProperties parserApplicationProperties;
 	/**
 	 * find the map between all plans of all services and its corresponding credentials.
 	 * The credentials defined for the whole services may be overridden by plan specific credentials values, if conflict.
@@ -21,15 +29,16 @@ public class CredentialsConfig {
 	 */
 	@Bean
 	public CredentialsMap credentialsMap(){
-		CredentialsMap idCredentialsMap = ParserSystemEnvironment.parseCredentialsProperties();
+		ParserProperties parserProperties = useApplicationProperties ? parserApplicationProperties : new ParserSystemEnvironment(new Environment());
+		CredentialsMap idCredentialsMap = parserProperties.parseCredentialsProperties();
 		CredentialsMap nameCredentialsMap = new CredentialsMap();
 		// credentials for all plans of the service
 		for (Entry<List<String>,Map<String,Object>> entry : idCredentialsMap.getEntrySet()) {
 			List<String> service_plan_id = entry.getKey(); 
 			if (service_plan_id.size() == 1) { 
 				String service_id = service_plan_id.get(0);
-				String service_name = ParserSystemEnvironment.getServiceName(service_id);
-				for (String plan_name : ParserSystemEnvironment.parsePlansProperties(service_id).getNames()) {
+				String service_name = parserProperties.getServiceName(service_id);
+				for (String plan_name : parserProperties.parsePlansProperties(service_id).getNames()) {
 					nameCredentialsMap.addCredentials(service_name, plan_name, entry.getValue());
 				}
 			}
@@ -39,9 +48,9 @@ public class CredentialsConfig {
 			List<String> service_plan_id = entry.getKey(); 
 			if (service_plan_id.size() == 2) { 
 				String service_id = service_plan_id.get(0);
-				String service_name = ParserSystemEnvironment.getServiceName(service_id);
+				String service_name = parserProperties.getServiceName(service_id);
 				String plan_id = service_plan_id.get(1);
-				String plan_name = ParserSystemEnvironment.getPlanName(service_id, plan_id);
+				String plan_name = parserProperties.getPlanName(service_id, plan_id);
 				nameCredentialsMap.addCredentials(service_name, plan_name, entry.getValue());
 			}
 		}

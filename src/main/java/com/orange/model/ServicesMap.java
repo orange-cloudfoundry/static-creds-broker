@@ -1,14 +1,12 @@
 package com.orange.model;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.orange.util.ParserSystemEnvironment;
+import com.orange.util.ParserProperties;
 
 /**
  * map of service id (String) and service properties definitions (Map<ServicePropertyName, String>)
@@ -43,12 +41,11 @@ public class ServicesMap {
 	 * @param servicePropertyName
 	 * @param servicePropertyValue
 	 */
-	public void addServiceProperty(String serviceID, ServicePropertyName servicePropertyName, String servicePropertyValue) {
+	public void addServiceProperty(String serviceID, ServicePropertyName servicePropertyName, String servicePropertyValue, ParserProperties parserProperties) {
 		Map<ServicePropertyName, String> service = servicesMap.get(serviceID);
 		if (service == null) {
 			// when parsing a new id, check its mandatory properties
-			List<String> mandatoryProperties = Arrays.asList("SERVICES_" + serviceID + "_NAME", "SERVICES_" + serviceID + "_DESCRIPTION");
-			ParserSystemEnvironment.checkMandatoryPropertiesDefined(mandatoryProperties);
+			parserProperties.checkServiceMandatoryPropertiesDefined(serviceID);
 			// if mandatory properties defined, add it into map
 			service = new HashMap<>();
 			servicesMap.put(serviceID, service);
