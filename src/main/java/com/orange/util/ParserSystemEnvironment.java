@@ -27,7 +27,7 @@ public class ParserSystemEnvironment extends ParserProperties {
 	 */
 	@Override
 	public void checkPasswordDefined() throws IllegalArgumentException {
-		checkMandatoryPropertiesDefined(Arrays.asList("SECURITY_PASSWORD"));
+		checkMandatoryPropertiesDefined(Arrays.asList("SECURITY_USER_PASSWORD"));
 	}
 
 	/**
