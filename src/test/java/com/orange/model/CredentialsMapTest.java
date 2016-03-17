@@ -23,6 +23,8 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 
+import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.MapAssert.entry;
 import static org.junit.Assert.*;
 
 /**
@@ -46,14 +48,10 @@ public class CredentialsMapTest {
         credentialsMap.addCredential(API_DIRECTORY_SERVICE, PROD_PLAN,"CREDENTIALS_ACCESS_KEY","prodAZERTY");
 
         //when I get credentials that have been set for a service API_DIRECTORY instance whose plan is dev
-        final Map<String, Object> credentialsForPlan = credentialsMap.getCredentialsForPlan(getPlanIdFromServiceAndPlan(API_DIRECTORY_SERVICE, DEV_PLAN));
+        final Credentials credentialsForPlan = credentialsMap.getCredentialsForPlan(getPlanIdFromServiceAndPlan(API_DIRECTORY_SERVICE, DEV_PLAN));
 
         //then I should only get credentials that have been set for dev plan of service API_DIRECTORY
-        Assert.assertNotNull(credentialsForPlan);
-        Assert.assertEquals(2,credentialsForPlan.size());
-        Assert.assertEquals("http://mydev-api.org",credentialsForPlan.get("CREDENTIALS_URI"));
-        Assert.assertEquals("devAZERTY",credentialsForPlan.get("CREDENTIALS_ACCESS_KEY"));
-
+        assertThat(credentialsForPlan.toMap()).hasSize(2).includes(entry("CREDENTIALS_URI", "http://mydev-api.org"), entry("CREDENTIALS_ACCESS_KEY", "devAZERTY"));
     }
 
     @Test
@@ -67,7 +65,7 @@ public class CredentialsMapTest {
         credentialsMap.addCredential(API_DIRECTORY_SERVICE, PROD_PLAN,"CREDENTIALS_ACCESS_KEY","prodAZERTY");
 
         //when I get credentials that have been set for a service API_DIRECTORY instance whose plan is dummy
-        final Map<String, Object> credentialsForPlan = credentialsMap.getCredentialsForPlan(getPlanIdFromServiceAndPlan(API_DIRECTORY_SERVICE, DUMMY_PLAN));
+        final Credentials credentialsForPlan = credentialsMap.getCredentialsForPlan(getPlanIdFromServiceAndPlan(API_DIRECTORY_SERVICE, DUMMY_PLAN));
 
         //then I should get no credentials
         Assert.assertNull(credentialsForPlan);

@@ -16,6 +16,7 @@
 	
 	<properties>
 		<springCloudServiceBrokerVersion>1.0.0.RC1</springCloudServiceBrokerVersion>
+		<fest-assert.version>1.4</fest-assert.version>
 	</properties>
 
 	<build>
@@ -72,6 +73,18 @@
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.easytesting</groupId>
+			<artifactId>fest-assert</artifactId>
+			<version>${fest-assert.version}</version>
+			<scope>test</scope>
 		</dependency>
 
 	</dependencies>

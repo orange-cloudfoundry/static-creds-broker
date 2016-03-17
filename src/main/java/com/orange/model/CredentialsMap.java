@@ -9,7 +9,7 @@ import java.util.Map.Entry;
  * identification could be "id" named in env. variables or name
  */
 public class CredentialsMap {
-	private Map<List<String>, Map<String, Object>> credentialsMap = new HashMap<>();
+	private Map<List<String>, Credentials> credentialsMap = new HashMap<>();
 
 	/**
 	 * 
@@ -19,7 +19,7 @@ public class CredentialsMap {
 	 * @param credentialValue
 	 */
 	public void addCredential(String serviceID, String planID, String credentialName, Object credentialValue) {
-		Map<String, Object> credentialsToAdd = new HashMap<>();
+		Credentials credentialsToAdd = new Credentials();
 		credentialsToAdd.put(credentialName, credentialValue);
 		addCredentials(serviceID, planID, credentialsToAdd);
 	}
@@ -30,7 +30,7 @@ public class CredentialsMap {
 	 * @param planID null if the credential is for all plans of the service
 	 * @param credentialsToAdd
 	 */
-	public void addCredentials(String serviceID, String planID, Map<String, Object> credentialsToAdd) {
+	public void addCredentials(String serviceID, String planID, Credentials credentialsToAdd) {
 		List<String> servicePlan;
 		if (planID == null) {
 			servicePlan = Arrays.asList(serviceID);
@@ -38,9 +38,9 @@ public class CredentialsMap {
 		else {
 			servicePlan = Arrays.asList(serviceID, planID);
 		}
-		Map<String, Object> credentials = credentialsMap.get(servicePlan);
+		Credentials credentials = credentialsMap.get(servicePlan);
 		if (credentials == null) {
-			credentials = new HashMap<>();
+			credentials = new Credentials();
 		}
 		credentials.putAll(credentialsToAdd);
 		credentialsMap.put(servicePlan, credentials);
@@ -50,7 +50,7 @@ public class CredentialsMap {
 	 * get all keys which has credentials defined 
 	 * @return
 	 */
-	public Set<Entry<List<String>,Map<String,Object>>> getEntrySet(){
+	public Set<Entry<List<String>,Credentials>> getEntrySet(){
 		return credentialsMap.entrySet();
 	}
 	
@@ -65,8 +65,8 @@ public class CredentialsMap {
 		}
 	}
 
-	public Map<String, Object> getCredentialsForPlan(String planId) {
-		for (Entry<List<String>,Map<String,Object>> entry : getEntrySet()) {
+	public Credentials getCredentialsForPlan(String planId) {
+		for (Entry<List<String>,Credentials> entry : getEntrySet()) {
 			List<String> servicePlanName = entry.getKey();
 			String service_name = servicePlanName.get(0);
 			String plan_name = servicePlanName.get(1);
