@@ -16,14 +16,13 @@
 
 package com.orange.service;
 
-import com.orange.model.CredentialsMap;
+import com.orange.model.CredentialsRepository;
+import com.orange.model.ServicePlan;
+import com.orange.model.ServicePlanBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.cloud.servicebroker.model.CreateServiceInstanceBindingRequest;
 import org.springframework.cloud.servicebroker.model.CreateServiceInstanceBindingResponse;
-
-import java.util.Arrays;
-import java.util.UUID;
 
 
 /**
@@ -36,20 +35,25 @@ public class CredsServiceInstanceBindingServiceTest {
     public static final String PROD_PLAN = "prod";
     public static final String DUMMY_PLAN = "dummy";
 
+    public static final ServicePlan SERVICE_PLAN_DEV= new ServicePlanBuilder().withServiceID(API_DIRECTORY_SERVICE).withPlanID(DEV_PLAN).build();
+    public static final ServicePlan SERVICE_PLAN_PROD= new ServicePlanBuilder().withServiceID(API_DIRECTORY_SERVICE).withPlanID(PROD_PLAN).build();
+    public static final ServicePlan SERVICE_PLAN_DUMMY= new ServicePlanBuilder().withServiceID(API_DIRECTORY_SERVICE).withPlanID(DUMMY_PLAN).build();
+
+
     @Test
     public void should_bind_with_credentials_that_have_been_set_for_associated_service_plan() throws Exception {
 
-        CredentialsMap credentialsMap = new CredentialsMap();
+        CredentialsRepository credentialsRepository = new CredentialsRepository();
         //given credentials have been set for dev plan of service API_DIRECTORY
-        credentialsMap.addCredential(API_DIRECTORY_SERVICE, DEV_PLAN,"CREDENTIALS_URI","http://mydev-api.org");
-        credentialsMap.addCredential(API_DIRECTORY_SERVICE,DEV_PLAN,"CREDENTIALS_ACCESS_KEY","devAZERTY");
+        credentialsRepository.save(SERVICE_PLAN_DEV, "CREDENTIALS_URI","http://mydev-api.org");
+        credentialsRepository.save(SERVICE_PLAN_DEV,"CREDENTIALS_ACCESS_KEY","devAZERTY");
         //given credentials have been set for prod plan of service API_DIRECTORY
-        credentialsMap.addCredential(API_DIRECTORY_SERVICE, PROD_PLAN,"CREDENTIALS_URI","http://myprod-api.org");
-        credentialsMap.addCredential(API_DIRECTORY_SERVICE, PROD_PLAN,"CREDENTIALS_ACCESS_KEY","prodAZERTY");
+        credentialsRepository.save(SERVICE_PLAN_PROD,"CREDENTIALS_URI","http://myprod-api.org");
+        credentialsRepository.save(SERVICE_PLAN_PROD,"CREDENTIALS_ACCESS_KEY","prodAZERTY");
 
         //when I bind my app to a service API_DIRECTORY instance whose plan is dev
-        CredsServiceInstanceBindingService serviceInstanceBindingService = new CredsServiceInstanceBindingService(credentialsMap);
-        final CreateServiceInstanceBindingResponse response = serviceInstanceBindingService.createServiceInstanceBinding(getCreateServiceInstanceRequestWithServiceAndPlan(API_DIRECTORY_SERVICE,DEV_PLAN));
+        CredsServiceInstanceBindingService serviceInstanceBindingService = new CredsServiceInstanceBindingService(credentialsRepository);
+        final CreateServiceInstanceBindingResponse response = serviceInstanceBindingService.createServiceInstanceBinding(getCreateServiceInstanceRequestWithServiceAndPlan(SERVICE_PLAN_DEV));
 
         //then I should only get credentials that have been set for dev plan of service API_DIRECTORY
         Assert.assertNotNull(response.getCredentials());
@@ -62,28 +66,25 @@ public class CredsServiceInstanceBindingServiceTest {
     @Test
     public void should_bind_with_no_credentials_if_no_credentials_have_been_set_for_associated_service_plan() throws Exception {
 
-        CredentialsMap credentialsMap = new CredentialsMap();
+        CredentialsRepository credentialsRepository = new CredentialsRepository();
         //given credentials have been set for dev plan of service API_DIRECTORY
-        credentialsMap.addCredential(API_DIRECTORY_SERVICE, DEV_PLAN,"CREDENTIALS_URI","http://mydev-api.org");
-        credentialsMap.addCredential(API_DIRECTORY_SERVICE,DEV_PLAN,"CREDENTIALS_ACCESS_KEY","devAZERTY");
+        credentialsRepository.save(SERVICE_PLAN_DEV,"CREDENTIALS_URI","http://mydev-api.org");
+        credentialsRepository.save(SERVICE_PLAN_DEV,"CREDENTIALS_ACCESS_KEY","devAZERTY");
         //given credentials have been set for prod plan of service API_DIRECTORY
-        credentialsMap.addCredential(API_DIRECTORY_SERVICE, PROD_PLAN,"CREDENTIALS_URI","http://myprod-api.org");
-        credentialsMap.addCredential(API_DIRECTORY_SERVICE, PROD_PLAN,"CREDENTIALS_ACCESS_KEY","prodAZERTY");
+        credentialsRepository.save(SERVICE_PLAN_PROD,"CREDENTIALS_URI","http://myprod-api.org");
+        credentialsRepository.save(SERVICE_PLAN_PROD,"CREDENTIALS_ACCESS_KEY","prodAZERTY");
 
         //when I bind my app to a service API_DIRECTORY instance whose plan is dummy
-        CredsServiceInstanceBindingService serviceInstanceBindingService = new CredsServiceInstanceBindingService(credentialsMap);
-        final CreateServiceInstanceBindingResponse response = serviceInstanceBindingService.createServiceInstanceBinding(getCreateServiceInstanceRequestWithServiceAndPlan(API_DIRECTORY_SERVICE,DUMMY_PLAN));
+        CredsServiceInstanceBindingService serviceInstanceBindingService = new CredsServiceInstanceBindingService(credentialsRepository);
+        final CreateServiceInstanceBindingResponse response = serviceInstanceBindingService.createServiceInstanceBinding(getCreateServiceInstanceRequestWithServiceAndPlan(SERVICE_PLAN_DUMMY));
 
         //then I should get no credentials
         Assert.assertNull(response.getCredentials());
 
     }
 
-    private CreateServiceInstanceBindingRequest getCreateServiceInstanceRequestWithServiceAndPlan(String serviceName, String plan) {
-        return new CreateServiceInstanceBindingRequest("serviceDefinitionId",getPlanIdFromServiceAndPlan(serviceName,plan),"appGuid",null);
+    private CreateServiceInstanceBindingRequest getCreateServiceInstanceRequestWithServiceAndPlan(ServicePlan servicePlan) {
+        return new CreateServiceInstanceBindingRequest("serviceDefinitionId", servicePlan.getPlanUid(),"appGuid",null);
     }
 
-    private String getPlanIdFromServiceAndPlan(String serviceName, String plan){
-        return UUID.nameUUIDFromBytes(Arrays.asList(serviceName, plan).toString().getBytes()).toString();
-    }
 }

@@ -6,7 +6,8 @@ import java.util.Map;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.orange.model.CredentialsMap;
+import com.orange.model.Credentials;
+import com.orange.model.CredentialsRepository;
 import com.orange.model.PlansMap;
 import com.orange.model.ServicesMap;
 
@@ -57,13 +58,13 @@ public abstract class ParserProperties {
 	 * @return a map of servicePlanID (List<String>) and credentials
 	 *         (Map<String, Object>)
 	 */
-	public abstract CredentialsMap parseCredentialsProperties();
+	public abstract CredentialsRepository parseCredentialsProperties();
 
 	public abstract String getServiceName(String serviceID);
 
 	public abstract String getPlanName(String serviceID, String planID);
-	
-	public Map<String, Object> parseCredentialsJSON(String credentials_str) {
+
+	protected Credentials parseCredentialsJSON(String credentials_str) {
 		Map<String, Object> credentials = new HashMap<>();
 		ObjectMapper mapper = new ObjectMapper();
 		try {
@@ -72,6 +73,8 @@ public abstract class ParserProperties {
 		} catch (IOException e) {
 			throw new IllegalArgumentException("JSON parsing error: " + credentials_str);
 		}
-		return credentials;
+		Credentials res = new Credentials();
+		credentials.entrySet().stream().forEach(e -> res.put(e.getKey(), e.getValue()));
+		return res;
 	}
 }
