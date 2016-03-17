@@ -16,7 +16,7 @@
 
 package com.orange.service;
 
-import com.orange.model.CredentialsMap;
+import com.orange.model.CredentialsRepository;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.cloud.servicebroker.model.CreateServiceInstanceBindingRequest;
@@ -39,16 +39,16 @@ public class CredsServiceInstanceBindingServiceTest {
     @Test
     public void should_bind_with_credentials_that_have_been_set_for_associated_service_plan() throws Exception {
 
-        CredentialsMap credentialsMap = new CredentialsMap();
+        CredentialsRepository credentialsRepository = new CredentialsRepository();
         //given credentials have been set for dev plan of service API_DIRECTORY
-        credentialsMap.addCredential(API_DIRECTORY_SERVICE, DEV_PLAN,"CREDENTIALS_URI","http://mydev-api.org");
-        credentialsMap.addCredential(API_DIRECTORY_SERVICE,DEV_PLAN,"CREDENTIALS_ACCESS_KEY","devAZERTY");
+        credentialsRepository.save(API_DIRECTORY_SERVICE, DEV_PLAN,"CREDENTIALS_URI","http://mydev-api.org");
+        credentialsRepository.save(API_DIRECTORY_SERVICE,DEV_PLAN,"CREDENTIALS_ACCESS_KEY","devAZERTY");
         //given credentials have been set for prod plan of service API_DIRECTORY
-        credentialsMap.addCredential(API_DIRECTORY_SERVICE, PROD_PLAN,"CREDENTIALS_URI","http://myprod-api.org");
-        credentialsMap.addCredential(API_DIRECTORY_SERVICE, PROD_PLAN,"CREDENTIALS_ACCESS_KEY","prodAZERTY");
+        credentialsRepository.save(API_DIRECTORY_SERVICE, PROD_PLAN,"CREDENTIALS_URI","http://myprod-api.org");
+        credentialsRepository.save(API_DIRECTORY_SERVICE, PROD_PLAN,"CREDENTIALS_ACCESS_KEY","prodAZERTY");
 
         //when I bind my app to a service API_DIRECTORY instance whose plan is dev
-        CredsServiceInstanceBindingService serviceInstanceBindingService = new CredsServiceInstanceBindingService(credentialsMap);
+        CredsServiceInstanceBindingService serviceInstanceBindingService = new CredsServiceInstanceBindingService(credentialsRepository);
         final CreateServiceInstanceBindingResponse response = serviceInstanceBindingService.createServiceInstanceBinding(getCreateServiceInstanceRequestWithServiceAndPlan(API_DIRECTORY_SERVICE,DEV_PLAN));
 
         //then I should only get credentials that have been set for dev plan of service API_DIRECTORY
@@ -62,16 +62,16 @@ public class CredsServiceInstanceBindingServiceTest {
     @Test
     public void should_bind_with_no_credentials_if_no_credentials_have_been_set_for_associated_service_plan() throws Exception {
 
-        CredentialsMap credentialsMap = new CredentialsMap();
+        CredentialsRepository credentialsRepository = new CredentialsRepository();
         //given credentials have been set for dev plan of service API_DIRECTORY
-        credentialsMap.addCredential(API_DIRECTORY_SERVICE, DEV_PLAN,"CREDENTIALS_URI","http://mydev-api.org");
-        credentialsMap.addCredential(API_DIRECTORY_SERVICE,DEV_PLAN,"CREDENTIALS_ACCESS_KEY","devAZERTY");
+        credentialsRepository.save(API_DIRECTORY_SERVICE, DEV_PLAN,"CREDENTIALS_URI","http://mydev-api.org");
+        credentialsRepository.save(API_DIRECTORY_SERVICE,DEV_PLAN,"CREDENTIALS_ACCESS_KEY","devAZERTY");
         //given credentials have been set for prod plan of service API_DIRECTORY
-        credentialsMap.addCredential(API_DIRECTORY_SERVICE, PROD_PLAN,"CREDENTIALS_URI","http://myprod-api.org");
-        credentialsMap.addCredential(API_DIRECTORY_SERVICE, PROD_PLAN,"CREDENTIALS_ACCESS_KEY","prodAZERTY");
+        credentialsRepository.save(API_DIRECTORY_SERVICE, PROD_PLAN,"CREDENTIALS_URI","http://myprod-api.org");
+        credentialsRepository.save(API_DIRECTORY_SERVICE, PROD_PLAN,"CREDENTIALS_ACCESS_KEY","prodAZERTY");
 
         //when I bind my app to a service API_DIRECTORY instance whose plan is dummy
-        CredsServiceInstanceBindingService serviceInstanceBindingService = new CredsServiceInstanceBindingService(credentialsMap);
+        CredsServiceInstanceBindingService serviceInstanceBindingService = new CredsServiceInstanceBindingService(credentialsRepository);
         final CreateServiceInstanceBindingResponse response = serviceInstanceBindingService.createServiceInstanceBinding(getCreateServiceInstanceRequestWithServiceAndPlan(API_DIRECTORY_SERVICE,DUMMY_PLAN));
 
         //then I should get no credentials

@@ -8,21 +8,21 @@ import org.springframework.cloud.servicebroker.model.DeleteServiceInstanceBindin
 import org.springframework.cloud.servicebroker.service.ServiceInstanceBindingService;
 import org.springframework.stereotype.Service;
 
-import com.orange.model.CredentialsMap;
+import com.orange.model.CredentialsRepository;
 
 @Service
 public class CredsServiceInstanceBindingService implements ServiceInstanceBindingService {
-    private CredentialsMap credentialsMap;
+    private CredentialsRepository credentialsRepository;
 
     @Autowired
-    public CredsServiceInstanceBindingService(CredentialsMap credentialsMap) {
-        this.credentialsMap = credentialsMap;
+    public CredsServiceInstanceBindingService(CredentialsRepository credentialsRepository) {
+        this.credentialsRepository = credentialsRepository;
     }
 
     @Override
     public CreateServiceInstanceBindingResponse createServiceInstanceBinding(CreateServiceInstanceBindingRequest request) {
         String planId = request.getPlanId();
-        Credentials credentials = credentialsMap.getCredentialsForPlan(planId);
+        Credentials credentials = credentialsRepository.findByPlan(planId);
         return new CreateServiceInstanceBindingResponse(credentials != null ? credentials.toMap() : null);
     }
 

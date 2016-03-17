@@ -8,7 +8,8 @@ import java.util.Map.Entry;
  * servicePlan is the combination identification of service and plan
  * identification could be "id" named in env. variables or name
  */
-public class CredentialsMap {
+public class CredentialsRepository {
+
 	private Map<List<String>, Credentials> credentialsMap = new HashMap<>();
 
 	/**
@@ -18,10 +19,10 @@ public class CredentialsMap {
 	 * @param credentialName
 	 * @param credentialValue
 	 */
-	public void addCredential(String serviceID, String planID, String credentialName, Object credentialValue) {
+	public void save(String serviceID, String planID, String credentialName, Object credentialValue) {
 		Credentials credentialsToAdd = new Credentials();
 		credentialsToAdd.put(credentialName, credentialValue);
-		addCredentials(serviceID, planID, credentialsToAdd);
+		save(serviceID, planID, credentialsToAdd);
 	}
 	
 	/**
@@ -30,7 +31,7 @@ public class CredentialsMap {
 	 * @param planID null if the credential is for all plans of the service
 	 * @param credentialsToAdd
 	 */
-	public void addCredentials(String serviceID, String planID, Credentials credentialsToAdd) {
+	public void save(String serviceID, String planID, Credentials credentialsToAdd) {
 		List<String> servicePlan;
 		if (planID == null) {
 			servicePlan = Arrays.asList(serviceID);
@@ -50,14 +51,14 @@ public class CredentialsMap {
 	 * get all keys which has credentials defined 
 	 * @return
 	 */
-	public Set<Entry<List<String>,Credentials>> getEntrySet(){
+	public Set<Entry<List<String>,Credentials>> findAll(){
 		return credentialsMap.entrySet();
 	}
 	
 	public boolean contains(String serviceID, String planID, String credentialName, Object credentialValue){
 		List<String> servicePlan = planID == null ? Arrays.asList(serviceID) : Arrays.asList(serviceID, planID);
-		Map<String, Object> credentials = credentialsMap.get(servicePlan);
-		if (credentials != null && credentials.get(credentialName).equals(credentialValue)) {
+		Credentials credentials = credentialsMap.get(servicePlan);
+		if (credentials != null && credentials.toMap().get(credentialName).equals(credentialValue)) {
 			return true;
 		}
 		else {
@@ -65,8 +66,8 @@ public class CredentialsMap {
 		}
 	}
 
-	public Credentials getCredentialsForPlan(String planId) {
-		for (Entry<List<String>,Credentials> entry : getEntrySet()) {
+	public Credentials findByPlan(String planId) {
+		for (Entry<List<String>,Credentials> entry : credentialsMap.entrySet()) {
 			List<String> servicePlanName = entry.getKey();
 			String service_name = servicePlanName.get(0);
 			String plan_name = servicePlanName.get(1);

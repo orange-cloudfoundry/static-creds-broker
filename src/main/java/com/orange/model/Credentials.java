@@ -8,7 +8,7 @@ import java.util.Map;
  * Created by YSBU7453 on 17/03/2016.
  */
 public class Credentials {
-
+    
     private Map<String, Object> credentials =new HashMap<>();
 
     public void putAll(Credentials credentials) {

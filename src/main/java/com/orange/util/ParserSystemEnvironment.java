@@ -6,18 +6,14 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.orange.model.CredentialsMap;
-import com.orange.model.PlanPropertyName;
-import com.orange.model.PlansMap;
-import com.orange.model.ServicePropertyName;
-import com.orange.model.ServicesMap;
+import com.orange.model.*;
 
 public class ParserSystemEnvironment extends ParserProperties {
 	private Environment environment;
 	public ParserSystemEnvironment(Environment environment) {
 		this.environment = environment;
 	}
-	
+
 	/**
 	 * check whether mandatory property password are defined
 	 * 
@@ -33,7 +29,7 @@ public class ParserSystemEnvironment extends ParserProperties {
 	/**
 	 * check whether service mandatory properties(id and description) are
 	 * defined
-	 * 
+	 *
 	 * @param serviceID
 	 * @throws IllegalArgumentException
 	 *             when find mandatory property not defined, error message
@@ -148,13 +144,13 @@ public class ParserSystemEnvironment extends ParserProperties {
 	 * SERVICES_{SERVICE_ID}_PLAN_{PLAN_ID}_CREDENTIALS_{credentialPropertyName}
 	 * ex. SERVICES_TRIPADVISOR_PLAN_1_CREDENTIALS,
 	 * SERVICES_TRIPADVISOR_PLAN_1_CREDENTIALS_URI
-	 * 
+	 *
 	 * @return a map of service id (String) and credentials (Map<String,
 	 *         Object>)
 	 */
 	@Override
-	public CredentialsMap parseCredentialsProperties() {
-		CredentialsMap credentialsMap = new CredentialsMap();
+	public CredentialsRepository parseCredentialsProperties() {
+		CredentialsRepository credentialsRepository = new CredentialsRepository();
 		Map<String, String> env = environment.get();
 		for (Map.Entry<String, String> entry : env.entrySet()) {
 			String key = entry.getKey();
@@ -166,7 +162,7 @@ public class ParserSystemEnvironment extends ParserProperties {
 			if (serviceCredentialJsonMatcher.find()) {
 				String serviceID = serviceCredentialJsonMatcher.group("serviceid");
 				checkServiceMandatoryPropertiesDefined(serviceID);
-				credentialsMap.addCredentials(serviceID, null, parseCredentialsJSON(entry.getValue()));
+				credentialsRepository.save(serviceID, null, parseCredentialsJSON(entry.getValue()));
 				continue;
 			}
 
@@ -178,7 +174,7 @@ public class ParserSystemEnvironment extends ParserProperties {
 				String serviceID = serviceCredentialPropertyMatcher.group("serviceid");
 				String credentialProperty = serviceCredentialPropertyMatcher.group("credentialProperty");
 				checkServiceMandatoryPropertiesDefined(serviceID);
-				credentialsMap.addCredential(serviceID, null, credentialProperty, entry.getValue());
+				credentialsRepository.save(serviceID, null, credentialProperty, entry.getValue());
 				continue;
 			}
 
@@ -191,7 +187,7 @@ public class ParserSystemEnvironment extends ParserProperties {
 				String serviceID = planCredentialJsonMatcher.group("serviceid");
 				String planID = planCredentialJsonMatcher.group("planid");
 				checkServiceMandatoryPropertiesDefined(serviceID);
-				credentialsMap.addCredentials(serviceID, planID, parseCredentialsJSON(entry.getValue()));
+				credentialsRepository.save(serviceID, planID, parseCredentialsJSON(entry.getValue()));
 				continue;
 			}
 
@@ -204,11 +200,11 @@ public class ParserSystemEnvironment extends ParserProperties {
 				String planID = planCredentialPropertyMatcher.group("planid");
 				String credentialProperty = planCredentialPropertyMatcher.group("credentialProperty");
 				checkServiceMandatoryPropertiesDefined(serviceID);
-				credentialsMap.addCredential(serviceID, planID, credentialProperty, entry.getValue());
+				credentialsRepository.save(serviceID, planID, credentialProperty, entry.getValue());
 				continue;
 			}
 		}
-		return credentialsMap;
+		return credentialsRepository;
 	}
 
 	@Override

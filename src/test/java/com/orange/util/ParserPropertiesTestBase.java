@@ -6,6 +6,9 @@ import org.junit.Test;
 
 import com.orange.model.*;
 
+import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.MapAssert.entry;
+
 public abstract class ParserPropertiesTestBase<T extends ParserProperties> {
 	protected T parser;
 
@@ -162,31 +165,43 @@ public abstract class ParserPropertiesTestBase<T extends ParserProperties> {
 
 	@Test
 	public void should_get_credentials_map_which_have_been_set_in_property() {
-		final CredentialsMap credentialsMap = parser.parseCredentialsProperties();
-		Assert.assertNotNull(credentialsMap);
-		Assert.assertEquals(8, credentialsMap.getEntrySet().size());
-		Assert.assertTrue(credentialsMap.contains(TRIPADVISOR_SERVICE_ID, null, TRIPADVISOR_SERVICE_CREDENTIALS_KEY1,
+		final CredentialsRepository credentialsRepository = parser.parseCredentialsProperties();
+		Assert.assertNotNull(credentialsRepository);
+		Assert.assertEquals(8, credentialsRepository.findAll().size());
+		Assert.assertTrue(credentialsRepository.contains(TRIPADVISOR_SERVICE_ID, null, TRIPADVISOR_SERVICE_CREDENTIALS_KEY1,
 				TRIPADVISOR_SERVICE_CREDENTIALS_VALUE1));
-		Assert.assertTrue(credentialsMap.contains(TRIPADVISOR_SERVICE_ID, null, TRIPADVISOR_SERVICE_CREDENTIALS_KEY2,
+		Assert.assertTrue(credentialsRepository.contains(TRIPADVISOR_SERVICE_ID, null, TRIPADVISOR_SERVICE_CREDENTIALS_KEY2,
 				TRIPADVISOR_SERVICE_CREDENTIALS_VALUE2));
-		Assert.assertTrue(credentialsMap.contains(API_DIRECTORY_SERVICE_ID, null, "HOSTNAME",
+		Assert.assertTrue(credentialsRepository.contains(API_DIRECTORY_SERVICE_ID, null, "HOSTNAME",
 				API_DIRECTORY_CREDENTIALS_HOSTNAME));
-		Assert.assertTrue(credentialsMap.contains(API_DIRECTORY_SERVICE_ID, API_DIRECTORY_PLAN_PLAN1_ID, "ACCESS_KEY",
+		Assert.assertTrue(credentialsRepository.contains(API_DIRECTORY_SERVICE_ID, API_DIRECTORY_PLAN_PLAN1_ID, "ACCESS_KEY",
 				API_DIRECTORY_PLAN_PLAN1_CREDENTIALS_ACCESS_KEY));
-		Assert.assertTrue(credentialsMap.contains(API_DIRECTORY_SERVICE_ID, API_DIRECTORY_PLAN_PLAN1_ID, "URI",
+		Assert.assertTrue(credentialsRepository.contains(API_DIRECTORY_SERVICE_ID, API_DIRECTORY_PLAN_PLAN1_ID, "URI",
 				API_DIRECTORY_PLAN_PLAN1_CREDENTIALS_URI));
-		Assert.assertTrue(credentialsMap.contains(API_DIRECTORY_SERVICE_ID, API_DIRECTORY_PLAN_PLAN2_ID, "ACCESS_KEY",
+		Assert.assertTrue(credentialsRepository.contains(API_DIRECTORY_SERVICE_ID, API_DIRECTORY_PLAN_PLAN2_ID, "ACCESS_KEY",
 				API_DIRECTORY_PLAN_PLAN2_CREDENTIALS_ACCESS_KEY));
-		Assert.assertTrue(credentialsMap.contains(API_DIRECTORY_SERVICE_ID, API_DIRECTORY_PLAN_PLAN2_ID, "URI",
+		Assert.assertTrue(credentialsRepository.contains(API_DIRECTORY_SERVICE_ID, API_DIRECTORY_PLAN_PLAN2_ID, "URI",
 				API_DIRECTORY_PLAN_PLAN2_CREDENTIALS_URI));
-		Assert.assertTrue(credentialsMap.contains(API_DIRECTORY_SERVICE_ID, API_DIRECTORY_PLAN_PLAN3_ID, "ACCESS_KEY",
+		Assert.assertTrue(credentialsRepository.contains(API_DIRECTORY_SERVICE_ID, API_DIRECTORY_PLAN_PLAN3_ID, "ACCESS_KEY",
 				API_DIRECTORY_PLAN_PLAN3_CREDENTIALS_ACCESS_KEY));
-		Assert.assertTrue(credentialsMap.contains(API_DIRECTORY_SERVICE_ID, API_DIRECTORY_PLAN_PLAN3_ID, "URI",
+		Assert.assertTrue(credentialsRepository.contains(API_DIRECTORY_SERVICE_ID, API_DIRECTORY_PLAN_PLAN3_ID, "URI",
 				API_DIRECTORY_PLAN_PLAN3_CREDENTIALS_URI));
-		Assert.assertTrue(credentialsMap.contains(TEST_SERVICE_SERVICE_ID, null, "URI", TEST_SERVICE_CREDENTIALS_URI));
-		Assert.assertTrue(credentialsMap.contains(TEST_SERVICE_SERVICE_ID, TEST_SERVICE_PLAN_PLAN_1_ID, "URI",
+		Assert.assertTrue(credentialsRepository.contains(TEST_SERVICE_SERVICE_ID, null, "URI", TEST_SERVICE_CREDENTIALS_URI));
+		Assert.assertTrue(credentialsRepository.contains(TEST_SERVICE_SERVICE_ID, TEST_SERVICE_PLAN_PLAN_1_ID, "URI",
 				TEST_SERVICE_PLAN_PLAN_1_CREDENTIALS_URI));
-		Assert.assertTrue(credentialsMap.contains(TEST_SERVICE_SERVICE_ID, TEST_SERVICE_PLAN_PLAN_2_ID, "URI",
+		Assert.assertTrue(credentialsRepository.contains(TEST_SERVICE_SERVICE_ID, TEST_SERVICE_PLAN_PLAN_2_ID, "URI",
 				TEST_SERVICE_PLAN_PLAN_2_CREDENTIALS_URI));
+	}
+
+	@Test
+	public void should_parse_credentials_JSON() throws Exception {
+
+		String json = " {\"username\":\"admin\",\"password\":\"pa55woRD\"}";
+
+		Credentials credentials = parser.parseCredentialsJSON(json);
+
+		assertThat(credentials.toMap()).hasSize(2).includes(entry("username", "admin"), entry("password", "pa55woRD"));
+
+
 	}
 }
