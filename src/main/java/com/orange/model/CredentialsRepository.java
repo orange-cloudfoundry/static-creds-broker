@@ -10,35 +10,26 @@ import java.util.Map.Entry;
  */
 public class CredentialsRepository {
 
-	private Map<List<String>, Credentials> credentialsMap = new HashMap<>();
+	private Map<ServicePlan, Credentials> credentialsMap = new HashMap<>();
 
 	/**
-	 * 
-	 * @param serviceID
-	 * @param planID null if the credential is for all plans of the service
+	 *
+	 * @param servicePlan
 	 * @param credentialName
 	 * @param credentialValue
 	 */
-	public void save(String serviceID, String planID, String credentialName, Object credentialValue) {
+	public void save(ServicePlan servicePlan, String credentialName, Object credentialValue) {
 		Credentials credentialsToAdd = new Credentials();
 		credentialsToAdd.put(credentialName, credentialValue);
-		save(serviceID, planID, credentialsToAdd);
+		save(servicePlan, credentialsToAdd);
 	}
 	
 	/**
 	 * 
-	 * @param serviceID
-	 * @param planID null if the credential is for all plans of the service
+	 * @param servicePlan
 	 * @param credentialsToAdd
 	 */
-	public void save(String serviceID, String planID, Credentials credentialsToAdd) {
-		List<String> servicePlan;
-		if (planID == null) {
-			servicePlan = Arrays.asList(serviceID);
-		}
-		else {
-			servicePlan = Arrays.asList(serviceID, planID);
-		}
+	public void save(ServicePlan servicePlan, Credentials credentialsToAdd) {
 		Credentials credentials = credentialsMap.get(servicePlan);
 		if (credentials == null) {
 			credentials = new Credentials();
@@ -51,12 +42,12 @@ public class CredentialsRepository {
 	 * get all keys which has credentials defined 
 	 * @return
 	 */
-	public Set<Entry<List<String>,Credentials>> findAll(){
+	public Set<Entry<ServicePlan,Credentials>> findAll(){
 		return credentialsMap.entrySet();
 	}
 	
 	public boolean contains(String serviceID, String planID, String credentialName, Object credentialValue){
-		List<String> servicePlan = planID == null ? Arrays.asList(serviceID) : Arrays.asList(serviceID, planID);
+		ServicePlan servicePlan = new ServicePlanBuilder().withServiceID(serviceID).withPlanID(planID).build();
 		Credentials credentials = credentialsMap.get(servicePlan);
 		if (credentials != null && credentials.toMap().get(credentialName).equals(credentialValue)) {
 			return true;
@@ -67,15 +58,14 @@ public class CredentialsRepository {
 	}
 
 	public Credentials findByPlan(String planId) {
-		for (Entry<List<String>,Credentials> entry : credentialsMap.entrySet()) {
-			List<String> servicePlanName = entry.getKey();
-			String service_name = servicePlanName.get(0);
-			String plan_name = servicePlanName.get(1);
-			String plan_guid = UUID.nameUUIDFromBytes(Arrays.asList(service_name, plan_name).toString().getBytes()).toString();
+		for (Entry<ServicePlan,Credentials> entry : credentialsMap.entrySet()) {
+			ServicePlan servicePlanName = entry.getKey();
+			String plan_guid = servicePlanName.getPlanUid();
 			if (plan_guid.equals(planId)) {
 				return entry.getValue();
 			}
 		}
 		return null;
 	}
+
 }

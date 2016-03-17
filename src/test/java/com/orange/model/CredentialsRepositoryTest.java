@@ -35,18 +35,22 @@ public class CredentialsRepositoryTest {
     public static final String PROD_PLAN = "prod";
     public static final String DUMMY_PLAN = "dummy";
 
+    public static final ServicePlan SERVICE_PLAN_DEV= new ServicePlanBuilder().withServiceID(API_DIRECTORY_SERVICE).withPlanID(DEV_PLAN).build();
+    public static final ServicePlan SERVICE_PLAN_PROD= new ServicePlanBuilder().withServiceID(API_DIRECTORY_SERVICE).withPlanID(PROD_PLAN).build();
+    public static final ServicePlan SERVICE_PLAN_DUMMY= new ServicePlanBuilder().withServiceID(API_DIRECTORY_SERVICE).withPlanID(DUMMY_PLAN).build();
+
     @Test
     public void should_get_credentials_that_have_been_set_for_associated_service_plan() throws Exception {
         CredentialsRepository credentialsRepository = new CredentialsRepository();
         //given credentials have been set for dev plan of service API_DIRECTORY
-        credentialsRepository.save(API_DIRECTORY_SERVICE, DEV_PLAN,"CREDENTIALS_URI","http://mydev-api.org");
-        credentialsRepository.save(API_DIRECTORY_SERVICE,DEV_PLAN,"CREDENTIALS_ACCESS_KEY","devAZERTY");
+        credentialsRepository.save(SERVICE_PLAN_DEV,"CREDENTIALS_URI","http://mydev-api.org");
+        credentialsRepository.save(SERVICE_PLAN_DEV,"CREDENTIALS_ACCESS_KEY","devAZERTY");
         //given credentials have been set for prod plan of service API_DIRECTORY
-        credentialsRepository.save(API_DIRECTORY_SERVICE, PROD_PLAN,"CREDENTIALS_URI","http://myprod-api.org");
-        credentialsRepository.save(API_DIRECTORY_SERVICE, PROD_PLAN,"CREDENTIALS_ACCESS_KEY","prodAZERTY");
+        credentialsRepository.save(SERVICE_PLAN_PROD,"CREDENTIALS_URI","http://myprod-api.org");
+        credentialsRepository.save(SERVICE_PLAN_PROD,"CREDENTIALS_ACCESS_KEY","prodAZERTY");
 
         //when I get credentials that have been set for a service API_DIRECTORY instance whose plan is dev
-        final Credentials credentialsForPlan = credentialsRepository.findByPlan(getPlanIdFromServiceAndPlan(API_DIRECTORY_SERVICE, DEV_PLAN));
+        final Credentials credentialsForPlan = credentialsRepository.findByPlan(SERVICE_PLAN_DEV.getPlanUid());
 
         //then I should only get credentials that have been set for dev plan of service API_DIRECTORY
         assertThat(credentialsForPlan.toMap()).hasSize(2).includes(entry("CREDENTIALS_URI", "http://mydev-api.org"), entry("CREDENTIALS_ACCESS_KEY", "devAZERTY"));
@@ -56,20 +60,18 @@ public class CredentialsRepositoryTest {
     public void should_get_no_credentials_if_no_credentials_have_been_set_for_associated_service_plan() throws Exception {
         CredentialsRepository credentialsRepository = new CredentialsRepository();
         //given credentials have been set for dev plan of service API_DIRECTORY
-        credentialsRepository.save(API_DIRECTORY_SERVICE, DEV_PLAN,"CREDENTIALS_URI","http://mydev-api.org");
-        credentialsRepository.save(API_DIRECTORY_SERVICE,DEV_PLAN,"CREDENTIALS_ACCESS_KEY","devAZERTY");
+        credentialsRepository.save(SERVICE_PLAN_DEV,"CREDENTIALS_URI","http://mydev-api.org");
+        credentialsRepository.save(SERVICE_PLAN_DEV,"CREDENTIALS_ACCESS_KEY","devAZERTY");
         //given credentials have been set for prod plan of service API_DIRECTORY
-        credentialsRepository.save(API_DIRECTORY_SERVICE, PROD_PLAN,"CREDENTIALS_URI","http://myprod-api.org");
-        credentialsRepository.save(API_DIRECTORY_SERVICE, PROD_PLAN,"CREDENTIALS_ACCESS_KEY","prodAZERTY");
+        credentialsRepository.save(SERVICE_PLAN_PROD,"CREDENTIALS_URI","http://myprod-api.org");
+        credentialsRepository.save(SERVICE_PLAN_PROD,"CREDENTIALS_ACCESS_KEY","prodAZERTY");
 
         //when I get credentials that have been set for a service API_DIRECTORY instance whose plan is dummy
-        final Credentials credentialsForPlan = credentialsRepository.findByPlan(getPlanIdFromServiceAndPlan(API_DIRECTORY_SERVICE, DUMMY_PLAN));
+        final Credentials credentialsForPlan = credentialsRepository.findByPlan(SERVICE_PLAN_DUMMY.getPlanUid());
 
         //then I should get no credentials
         Assert.assertNull(credentialsForPlan);
 
     }
-    private String getPlanIdFromServiceAndPlan(String serviceName, String plan){
-        return UUID.nameUUIDFromBytes(Arrays.asList(serviceName, plan).toString().getBytes()).toString();
-    }
+
 }

@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.orange.model.Credentials;
+import com.orange.model.ServicePlan;
+import com.orange.model.ServicePlanBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -34,25 +36,25 @@ public class CredentialsConfig {
 		CredentialsRepository idCredentialsRepository = parserProperties.parseCredentialsProperties();
 		CredentialsRepository nameCredentialsRepository = new CredentialsRepository();
 		// credentials for all plans of the service
-		for (Entry<List<String>,Credentials> entry : idCredentialsRepository.findAll()) {
-			List<String> service_plan_id = entry.getKey(); 
-			if (service_plan_id.size() == 1) { 
-				String service_id = service_plan_id.get(0);
+		for (Entry<ServicePlan,Credentials> entry : idCredentialsRepository.findAll()) {
+			ServicePlan service_plan_id = entry.getKey();
+			if (service_plan_id.getPlanId() == null) {
+				String service_id = service_plan_id.getServiceId();
 				String service_name = parserProperties.getServiceName(service_id);
 				for (String plan_name : parserProperties.parsePlansProperties(service_id).getNames()) {
-					nameCredentialsRepository.save(service_name, plan_name, entry.getValue());
+					nameCredentialsRepository.save(new ServicePlanBuilder().withServiceID(service_name).withPlanID(plan_name).build(), entry.getValue());
 				}
 			}
 		}
 		// credentials for specific plans
-		for (Entry<List<String>,Credentials> entry : idCredentialsRepository.findAll()) {
-			List<String> service_plan_id = entry.getKey(); 
-			if (service_plan_id.size() == 2) { 
-				String service_id = service_plan_id.get(0);
+		for (Entry<ServicePlan,Credentials> entry : idCredentialsRepository.findAll()) {
+			ServicePlan service_plan_id = entry.getKey();
+			if (service_plan_id.getPlanId() != null) {
+				String service_id = service_plan_id.getServiceId();
 				String service_name = parserProperties.getServiceName(service_id);
-				String plan_id = service_plan_id.get(1);
+				String plan_id = service_plan_id.getPlanId();
 				String plan_name = parserProperties.getPlanName(service_id, plan_id);
-				nameCredentialsRepository.save(service_name, plan_name, entry.getValue());
+				nameCredentialsRepository.save(new ServicePlanBuilder().withServiceID(service_name).withPlanID(plan_name).build(), entry.getValue());
 			}
 		}
 		return nameCredentialsRepository;

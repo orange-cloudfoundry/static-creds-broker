@@ -89,7 +89,7 @@ public class ParserApplicationProperties extends ParserProperties{
 
 	@Override
 	public CredentialsRepository parseCredentialsProperties() {
-		CredentialsRepository credentialsMap = new CredentialsRepository();
+		CredentialsRepository credentialsRepository = new CredentialsRepository();
 		for (Map.Entry<String, Object> entry : services.entrySet()) {
 			if (entry.getValue() instanceof Map<?, ?>) {
 				Map<?, ?> servicesProperties = (Map<?, ?>) entry.getValue();
@@ -98,11 +98,13 @@ public class ParserApplicationProperties extends ParserProperties{
 						//TODO yaml could add both value and map ?
 						if (serviceProperties.getValue() instanceof Map<?, ?>) {
 							for (Map.Entry<?, ?> credentialProperty : ((Map<?, ?>)serviceProperties.getValue()).entrySet() ) {
-								credentialsMap.save(entry.getKey(), null, credentialProperty.getKey().toString(), credentialProperty.getValue().toString());
+								ServicePlan servicePlan = new ServicePlanBuilder().withServiceID(entry.getKey()).build();
+								credentialsRepository.save(servicePlan, credentialProperty.getKey().toString(), credentialProperty.getValue().toString());
 							}
 						}
 						else if (serviceProperties.getValue() instanceof String) {
-							credentialsMap.save(entry.getKey(), null, parseCredentialsJSON(serviceProperties.getValue().toString()));
+							ServicePlan servicePlan = new ServicePlanBuilder().withServiceID(entry.getKey()).build();
+							credentialsRepository.save(servicePlan, parseCredentialsJSON(serviceProperties.getValue().toString()));
 						}
 					}
 					if ("PLAN".equals(serviceProperties.getKey())) {
@@ -113,11 +115,13 @@ public class ParserApplicationProperties extends ParserProperties{
 										if ("CREDENTIALS".equals(planProperty.getKey())) {
 											if (planProperty.getValue() instanceof Map<?, ?>) {
 												for (Map.Entry<?, ?> credentialProperty : ((Map<?, ?>)planProperty.getValue()).entrySet() ) {
-													credentialsMap.save(entry.getKey(), planProperties.getKey().toString(), credentialProperty.getKey().toString(), credentialProperty.getValue().toString());
+													ServicePlan servicePlan = new ServicePlanBuilder().withServiceID(entry.getKey()).withPlanID(planProperties.getKey().toString()).build();
+													credentialsRepository.save(servicePlan, credentialProperty.getKey().toString(), credentialProperty.getValue().toString());
 												}
 											}
 											else if (planProperty.getValue() instanceof String) {
-												credentialsMap.save(entry.getKey(), planProperties.getKey().toString(), parseCredentialsJSON(planProperty.getValue().toString()));
+												ServicePlan servicePlan = new ServicePlanBuilder().withServiceID(entry.getKey()).withPlanID(planProperties.getKey().toString()).build();
+												credentialsRepository.save(servicePlan, parseCredentialsJSON(planProperty.getValue().toString()));
 											}
 										}
 									}
@@ -128,7 +132,7 @@ public class ParserApplicationProperties extends ParserProperties{
 				}
 			}
 		}
-		return credentialsMap;
+		return credentialsRepository;
 	}
 
 	@Override
