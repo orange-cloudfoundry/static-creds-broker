@@ -115,16 +115,16 @@ public abstract class ParserPropertiesTestBase<T extends ParserProperties> {
 		Assert.assertNotNull(plansMap);
 		Assert.assertEquals(2, plansMap.getIDs().size());
 		Assert.assertNotNull(plansMap.get(TEST_SERVICE_PLAN_PLAN_1_ID));
-		Assert.assertEquals(TEST_SERVICE_PLAN_PLAN_1_ID,
+		Assert.assertEquals(plansMap.getDefaultName(TEST_SERVICE_PLAN_PLAN_1_ID),
 				plansMap.get(TEST_SERVICE_PLAN_PLAN_1_ID).get(PlanPropertyName.NAME));
-		Assert.assertEquals("", plansMap.get(TEST_SERVICE_PLAN_PLAN_1_ID).get(PlanPropertyName.DESCRIPTION));
+		Assert.assertEquals(plansMap.getDefaultDescription(TEST_SERVICE_PLAN_PLAN_1_ID), plansMap.get(TEST_SERVICE_PLAN_PLAN_1_ID).get(PlanPropertyName.DESCRIPTION));
 		Assert.assertEquals(PlansMap.defaultFree, plansMap.get(TEST_SERVICE_PLAN_PLAN_1_ID).get(PlanPropertyName.FREE));
 		Assert.assertEquals(PlansMap.defaultMetadata,
 				plansMap.get(TEST_SERVICE_PLAN_PLAN_1_ID).get(PlanPropertyName.METADATA));
 		Assert.assertNotNull(plansMap.get(TEST_SERVICE_PLAN_PLAN_2_ID));
-		Assert.assertEquals(TEST_SERVICE_PLAN_PLAN_2_ID,
+		Assert.assertEquals(plansMap.getDefaultName(TEST_SERVICE_PLAN_PLAN_2_ID),
 				plansMap.get(TEST_SERVICE_PLAN_PLAN_2_ID).get(PlanPropertyName.NAME));
-		Assert.assertEquals("", plansMap.get(TEST_SERVICE_PLAN_PLAN_2_ID).get(PlanPropertyName.DESCRIPTION));
+		Assert.assertEquals(plansMap.getDefaultDescription(TEST_SERVICE_PLAN_PLAN_2_ID), plansMap.get(TEST_SERVICE_PLAN_PLAN_2_ID).get(PlanPropertyName.DESCRIPTION));
 		Assert.assertEquals(PlansMap.defaultFree, plansMap.get(TEST_SERVICE_PLAN_PLAN_2_ID).get(PlanPropertyName.FREE));
 		Assert.assertEquals(PlansMap.defaultMetadata,
 				plansMap.get(TEST_SERVICE_PLAN_PLAN_2_ID).get(PlanPropertyName.METADATA));
@@ -146,7 +146,7 @@ public abstract class ParserPropertiesTestBase<T extends ParserProperties> {
 		Assert.assertNotNull(plansMap.get(API_DIRECTORY_PLAN_PLAN2_ID));
 		Assert.assertEquals(API_DIRECTORY_PLAN_PLAN2_NAME,
 				plansMap.get(API_DIRECTORY_PLAN_PLAN2_ID).get(PlanPropertyName.NAME));
-		Assert.assertEquals("", plansMap.get(API_DIRECTORY_PLAN_PLAN2_ID).get(PlanPropertyName.DESCRIPTION));
+		Assert.assertEquals(plansMap.getDefaultDescription(API_DIRECTORY_PLAN_PLAN2_ID), plansMap.get(API_DIRECTORY_PLAN_PLAN2_ID).get(PlanPropertyName.DESCRIPTION));
 		Assert.assertEquals(API_DIRECTORY_PLAN_PLAN2_FREE,
 				plansMap.get(API_DIRECTORY_PLAN_PLAN2_ID).get(PlanPropertyName.FREE));
 		Assert.assertEquals(API_DIRECTORY_PLAN_PLAN2_METADATA,
@@ -154,7 +154,7 @@ public abstract class ParserPropertiesTestBase<T extends ParserProperties> {
 		Assert.assertNotNull(plansMap.get(API_DIRECTORY_PLAN_PLAN3_ID));
 		Assert.assertEquals(API_DIRECTORY_PLAN_PLAN3_NAME,
 				plansMap.get(API_DIRECTORY_PLAN_PLAN3_ID).get(PlanPropertyName.NAME));
-		Assert.assertEquals("", plansMap.get(API_DIRECTORY_PLAN_PLAN3_ID).get(PlanPropertyName.DESCRIPTION));
+		Assert.assertEquals(plansMap.getDefaultDescription(API_DIRECTORY_PLAN_PLAN3_ID), plansMap.get(API_DIRECTORY_PLAN_PLAN3_ID).get(PlanPropertyName.DESCRIPTION));
 		Assert.assertEquals(PlansMap.defaultFree, plansMap.get(API_DIRECTORY_PLAN_PLAN3_ID).get(PlanPropertyName.FREE));
 		Assert.assertEquals(PlansMap.defaultMetadata,
 				plansMap.get(API_DIRECTORY_PLAN_PLAN3_ID).get(PlanPropertyName.METADATA));

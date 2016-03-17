@@ -16,7 +16,7 @@ public class PlansMap {
 	public static final String defaultFree = "true";
 	public static final String defaultMetadata = "{}";
 	public static final String defaultPlanName = "default";
-	public static final String defaultPlanDescription = "Default plan";
+	public static final String defaultPlanDescription = "plan " + defaultPlanName;
 	
 	/**
 	 * get plans properties for all plans
@@ -97,10 +97,10 @@ public class PlansMap {
 						plan.put(propertyName, defaultFree);
 						break;
 					case NAME:
-						plan.put(propertyName, entry.getKey());
+						plan.put(propertyName, getDefaultName(entry.getKey()));
 						break;
 					case DESCRIPTION:
-						plan.put(propertyName, "");
+						plan.put(propertyName, getDefaultDescription(entry.getKey()));
 						break;
 					case METADATA:
 						plan.put(propertyName, defaultMetadata);
@@ -121,5 +121,14 @@ public class PlansMap {
 				throw new IllegalArgumentException("Duplicated plan name is not allowed: " + name);
 			}
 		}
+	}
+	
+	public String getDefaultDescription(String planid) {
+		String planName = plansMap.get(planid).get(PlanPropertyName.NAME);
+		return planName == null ? ("plan " + planid) : ("plan " + planName);
+	}
+	
+	public String getDefaultName(String planid) {
+		return planid;
 	}
 }

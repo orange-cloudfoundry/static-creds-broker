@@ -19,6 +19,8 @@ class Staticreds(object):
         plan_id_pattern = r'((?!_CREDENTIALS).)+'
         service_name_pattern = r'^SERVICES_(?P<serviceid>%s)_NAME$' %service_id_pattern
         plan_name_pattern = r'^SERVICES_(?P<serviceid>%s)_PLAN_(?P<planid>%s)_NAME$' %(service_id_pattern, plan_id_pattern)
+        plan_propertyname_pattern = r'DESCRIPTION$|METADATA$|FREE$|CREDENTIALS'
+        plan_property_pattern = r'^SERVICES_(?P<serviceid>%s)_PLAN_(?P<planid>%s)_%s$' %(service_id_pattern, plan_id_pattern, plan_propertyname_pattern)
         for propertyname, propertyvalue in self.manifest_env.iteritems():
             service_name_match_result = re.match(service_name_pattern, propertyname)
             if service_name_match_result:
@@ -39,6 +41,16 @@ class Staticreds(object):
         for service_value in services.values():
             if len(service_value[1]) == 0:
                 service_value[1]['0'] = 'default'
+        # add plan default name for plans defined without name
+        for propertyname, propertyvalue in self.manifest_env.iteritems():
+            plan_property_match_result = re.match(plan_property_pattern, propertyname)
+            if plan_property_match_result:
+                service_id = plan_property_match_result.group('serviceid')
+                plan_id = plan_property_match_result.group('planid')
+                service = services.get(service_id)
+                if service != None and service[1] != None and service[1][plan_id] == None:
+                    service[1][plan_id] = plan_id
+                    services[service_id] = service
         return services
 
     # return dict of service name and its plans name: {service_name:[plans_name]}
@@ -143,13 +155,13 @@ class Staticreds(object):
         manifest_plans_id_and_name = self.services_plans_id_and_name[manifest_service_id][1]
         cf_plan_info = re.split("GET /v2/service_plans", cf_service_info)[1]
             
-        for manifest_plan_id in manifest_plans_id_and_name.keys():
+        for manifest_plan_id, manifest_plans_name in manifest_plans_id_and_name.iteritems():
             # the correspond property name between in cf_plan_info and in manifest_env (only for the properties whose value is string)
             propertyname_correspond = {#'name':'SERVICES_%s_PLAN_%s_NAME' %(manifest_service_id, manifest_plan_id), 
                 'description':'SERVICES_%s_PLAN_%s_DESCRIPTION' %(manifest_service_id, manifest_plan_id),
                 'free':'SERVICES_%s_PLAN_%s_FREE' %(manifest_service_id, manifest_plan_id)}
             property_defaultvalue = {#'SERVICES_%s_PLAN_%s_NAME' %(manifest_service_id, manifest_plan_id):'default', 
-                'SERVICES_%s_PLAN_%s_DESCRIPTION' %(manifest_service_id, manifest_plan_id):'Default plan', 
+                'SERVICES_%s_PLAN_%s_DESCRIPTION' %(manifest_service_id, manifest_plan_id):'plan ' + manifest_plans_name, 
                 'SERVICES_%s_PLAN_%s_FREE' %(manifest_service_id, manifest_plan_id):'true'}
             manifest_plan_info = {}
             for propertyname_plan, propertyname_manifest in propertyname_correspond.iteritems():
