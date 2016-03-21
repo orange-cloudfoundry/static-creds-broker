@@ -1,5 +1,6 @@
 import logging
 import yaml
+import json
 from Parser import Parser
 
 class ConfigParser(Parser):
@@ -21,9 +22,23 @@ class ConfigParser(Parser):
                     plans[plan_id] = plan_properties.get('NAME', plan_id)
             services[service_id] = (service_properties.get('NAME'), plans)
         return services
-        
+
     def get_configured_credential_info(self, service_name, plan_name): 
-        pass
+        credentials = {}
+        service_id, plan_id = self.get_service_and_plan_id_from_name(service_name, plan_name)
+        service_credentials = self.service_config.get(service_id).get('CREDENTIALS')
+        if type(service_credentials) is str:
+            service_credentials = json.loads(service_credentials)
+        if service_credentials:
+            credentials.update(service_credentials)
+        plans_properties = self.service_config.get(service_id).get('PLAN')
+        if plans_properties:
+            plan_credentials = plans_properties.get(plan_id).get('CREDENTIALS')
+            if type(plan_credentials) is str:
+                plan_credentials = json.loads(plan_credentials)
+            if plan_credentials:
+                credentials.update(plan_credentials)
+        return credentials
 
     def get_configured_service_info(self, config_service_id):
         pass
