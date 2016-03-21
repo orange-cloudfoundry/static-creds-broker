@@ -6,13 +6,11 @@ from ConfigParser import ConfigParser
 
 class Compare():
     """compare info with definitions in specified manifest file for cloud foundry (manifest.yml) or configuration file for Spring (application.yml)"""
-    def __init__(self, use_config_file, file_path):
-        self.use_config_file = use_config_file
-        self.file_path = file_path
+    def __init__(self, use_config_file, manifest_path, config_path):
         if use_config_file:
-            self.parser = ConfigParser(file_path)
+            self.parser = ConfigParser(config_path)
         else:
-            self.parser = ManifestParser(file_path)
+            self.parser = ManifestParser(manifest_path)
 
     def get_services_name_and_its_plans_name(self):
         """return dict of service name and its plans name: {service_name:[plans_name]}""" 

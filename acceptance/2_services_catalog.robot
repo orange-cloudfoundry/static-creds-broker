@@ -4,7 +4,7 @@ Documentation   Test static-creds-broker services catalog infomation
 Library         String
 Library         Collections
 Force Tags      Service broker
-Library         Compare      ${USE_YAML_CONFIG}      ${MANIFEST_PATH}
+Library         Compare      ${USE_YAML_CONFIG}      ${MANIFEST_PATH}       ${CONFIG_PATH}
 
 Suite Setup      Run Keywords  Cloud Foundry config and target   Clean all service broker data   Deploy service broker   Register service broker
 Suite Teardown   Run Keywords  Clean all service broker data
