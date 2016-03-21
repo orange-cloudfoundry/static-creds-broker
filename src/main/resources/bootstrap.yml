@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: static-creds-broker
+  cloud:
+    config:
+      server:
+      # to indicate that the server should configure itself from its own remote repository
+        bootstrap: true
