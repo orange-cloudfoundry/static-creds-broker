@@ -7,6 +7,8 @@ CLIENT_PASSWORD = os.environ["cf_password"].replace("\r","")
 ORGANIZATION_NAME = os.environ["organization_name"].replace("\r","")
 SPACE_NAME = os.environ["space_name"].replace("\r","")
 
+USE_YAML_CONFIG = os.environ["use_yaml_config"].replace("\r","").lower() == "true"
+CONFIG_PATH = os.environ["config_path"].replace("\r","")
 BINARY_PATH = os.environ["binary_path"].replace("\r","")
 MANIFEST_PATH = os.environ["manifest_path"].replace("\r","")
 BROKER_USERNAME = os.environ["broker_username"].replace("\r","")

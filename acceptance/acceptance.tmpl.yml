@@ -9,6 +9,8 @@ organization_name: __organization_name__
 space_name: __space_name__
 
 # informations about your broker deployment (manifest file path, broker war file path, broker username and password which defined in the manifest)
+use_yaml_config:__use_yaml_config__
+config_path: __config_path__
 manifest_path: __manifest_path__
 binary_path: __binary_path__
 broker_username: __broker_username__

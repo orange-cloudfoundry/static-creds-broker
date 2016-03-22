@@ -5,7 +5,7 @@ Library         String
 Library         Collections
 Force Tags      Service broker
 Variables       Configuration.py
-Library         Staticreds      ${MANIFEST_PATH}
+Library         Compare      ${USE_YAML_CONFIG}      ${MANIFEST_PATH}       ${CONFIG_PATH}
 
 Suite Setup      Run Keywords  Cloud Foundry config and target   Clean all service broker data   Deploy service broker   Register service broker
 Suite Teardown   Run Keywords  Clean all service broker data
@@ -38,7 +38,7 @@ Test credential info in service key for one service plan ${service_name} ${plan_
     Create service instance ${service_name} ${plan_name} ${service_instance_name}
     Create service key ${service_instance_name} ${service_key_name}
     ${service_key_info}=    Get service key ${service_instance_name} ${service_key_name}
-    Service key info should match manifest      ${service_key_info}     ${service_name}     ${plan_name}
+    Service key info should match configuration      ${service_key_info}     ${service_name}     ${plan_name}
     Delete service key ${service_instance_name} ${service_key_name}
     Delete service instance ${service_instance_name}
 
@@ -47,7 +47,7 @@ Test credential info in bound application for one service plan ${service_name} $
     Create service instance ${service_name} ${plan_name} ${service_instance_name}   
     Bind service ${TEST_APP_NAME} ${service_instance_name}
     ${app_env_info}=    Get application environment ${TEST_APP_NAME}
-    Bound app env credential info should match manifest      ${app_env_info}     ${service_name}     ${plan_name}   ${service_instance_name}
+    Bound app env credential info should match configuration      ${app_env_info}     ${service_name}     ${plan_name}   ${service_instance_name}
     Unbind service ${TEST_APP_NAME} ${service_instance_name}
     Delete service instance ${service_instance_name}
 

@@ -4,7 +4,7 @@ Documentation   Test static-creds-broker services catalog infomation
 Library         String
 Library         Collections
 Force Tags      Service broker
-Library         Staticreds      ${MANIFEST_PATH}
+Library         Compare      ${USE_YAML_CONFIG}      ${MANIFEST_PATH}       ${CONFIG_PATH}
 
 Suite Setup      Run Keywords  Cloud Foundry config and target   Clean all service broker data   Deploy service broker   Register service broker
 Suite Teardown   Run Keywords  Clean all service broker data
@@ -30,5 +30,5 @@ Each service catalog info in marketplace should match manifest
     ${service_items}=    Get Dictionary Items    ${services}
     :FOR    ${service_id}     ${service_name}     IN  @{service_items}
     \       Execute:    cf m -s ${service_name} > tmp.txt    CF_TRACE=true
-    \       Service catalog info should match manifest    tmp.txt   ${service_id}
+    \       Service catalog info should match configuration    tmp.txt   ${service_id}
     \       Execute:    rm tmp.txt   
