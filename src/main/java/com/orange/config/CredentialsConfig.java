@@ -1,7 +1,5 @@
 package com.orange.config;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import com.orange.model.Credentials;
@@ -34,6 +32,7 @@ public class CredentialsConfig {
 	public CredentialsRepository credentialsMap(){
 		ParserProperties parserProperties = useApplicationProperties ? parserApplicationProperties : new ParserSystemEnvironment(new Environment());
 		CredentialsRepository idCredentialsRepository = parserProperties.parseCredentialsProperties();
+		parserProperties.checkAllServicesHaveCredentialDefinition(idCredentialsRepository);
 		CredentialsRepository nameCredentialsRepository = new CredentialsRepository();
 		// credentials for all plans of the service
 		for (Entry<ServicePlan,Credentials> entry : idCredentialsRepository.findAll()) {

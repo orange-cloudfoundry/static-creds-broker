@@ -14,6 +14,10 @@ import com.orange.util.ParserProperties;
 public class ServicesMap {
 	private Map<String, Map<ServicePropertyName, String>> servicesMap = new HashMap<>();
 	
+	public Set<String> getServicesID(){
+		return servicesMap.keySet();
+	}
+	
 	/**
 	 * get services properties for all services
 	 * @return

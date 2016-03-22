@@ -2,7 +2,9 @@ package com.orange.util;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import com.orange.model.*;
 
@@ -13,6 +15,10 @@ public abstract class ParserPropertiesTestBase<T extends ParserProperties> {
 	protected T parser;
 
 	protected abstract T createInstance();
+	
+	protected abstract T createInstanceWithNoService();
+	
+	protected abstract T createInstanceWithServiceNoCredential();
 
 	@Before
 	public void setUp() {
@@ -66,7 +72,26 @@ public abstract class ParserPropertiesTestBase<T extends ParserProperties> {
 	protected static final String TEST_SERVICE_PLAN_PLAN_1_CREDENTIALS_URI = "http://plan1.mycompany.com";
 	protected static final String TEST_SERVICE_PLAN_PLAN_2_ID = "PLAN_2";
 	protected static final String TEST_SERVICE_PLAN_PLAN_2_CREDENTIALS_URI = "http://plan2.mycompany.com";
-
+	
+	@Rule
+	public final ExpectedException thrown = ExpectedException.none();
+	
+	@Test
+	public void should_throw_exception_when_not_any_service_defined(){
+		T parserNoServiceDefined = createInstanceWithNoService();
+		thrown.expect(IllegalArgumentException.class);
+		thrown.expectMessage("Not found any valid service defined.");
+		parserNoServiceDefined.checkAtLeastOneServiceDefined(parserNoServiceDefined.parseServicesProperties());
+	}
+	
+	@Test
+	public void should_throw_exception_when_not_any_credential_defined_for_a_service(){
+		T parserServiceNoCredential = createInstanceWithServiceNoCredential();
+		thrown.expect(IllegalArgumentException.class);
+		thrown.expectMessage("Not found any credential defined for service ");
+		parserServiceNoCredential.checkAllServicesHaveCredentialDefinition(parserServiceNoCredential.parseCredentialsProperties());
+	}
+	
 	@Test
 	public void should_get_services_map_with_info_have_been_set_in_property() {
 		final ServicesMap servicesMap = parser.parseServicesProperties();

@@ -56,6 +56,11 @@ public class CredentialsRepository {
 			return false;
 		}
 	}
+	
+	public boolean contains(String serviceID, String planID){
+		ServicePlan servicePlan = new ServicePlanBuilder().withServiceID(serviceID).withPlanID(planID).build();
+		return credentialsMap.containsKey(servicePlan);
+	}
 
 	public Credentials findByPlan(String planId) {
 		for (Entry<ServicePlan,Credentials> entry : credentialsMap.entrySet()) {

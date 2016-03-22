@@ -9,10 +9,32 @@ public class ParserSystemEnvironmentTest extends ParserPropertiesTestBase<Parser
 		return new ParserSystemEnvironment(new MockEnvironment());
 	}
 	
-	class MockEnvironment extends Environment{
+	@Override
+	protected ParserSystemEnvironment createInstanceWithNoService() {
+		return new ParserSystemEnvironment(new MockEnvironment(new HashMap<>()));
+	}
+	
+	@Override
+	protected ParserSystemEnvironment createInstanceWithServiceNoCredential() {
+		Map<String, String> env = getTestEnvironment();
+		env.remove("SERVICES_TRIPADVISOR_CREDENTIALS");
+		return new ParserSystemEnvironment(new MockEnvironment(env));
+	}
+	
+	class MockEnvironment extends Environment {
+		private Map<String, String> env;
+
+		MockEnvironment(){
+			this.env = getTestEnvironment();
+		}
+
+		MockEnvironment(Map<String, String> env) {
+			this.env = env;
+		}
+
 		@Override
-		public Map<String, String> get(){
-			return getTestEnvironment();
+		public Map<String, String> get() {
+			return this.env;
 		}
 	}
 	
@@ -29,6 +51,7 @@ public class ParserSystemEnvironmentTest extends ParserPropertiesTestBase<Parser
 		env.put("SERVICES_TRIPADVISOR_METADATA_DOCUMENTATIONURL", TRIPADVISOR_METADATA_DOCUMENTATIONURL);
 		env.put("SERVICES_TRIPADVISOR_METADATA_PROVIDERDISPLAYNAME", TRIPADVISOR_METADATA_PROVIDERDISPLAYNAME);
 		env.put("SERVICES_TRIPADVISOR_METADATA_LONGDESCRIPTION", TRIPADVISOR_METADATA_LONGDESCRIPTION);
+		env.put("SERVICES_TRIPADVISOR_CREDENTIALS", TRIPADVISOR_CREDENTIALS);
 		env.put("SERVICES_API_DIRECTORY_PLAN_PLAN1_NAME", API_DIRECTORY_PLAN_PLAN1_NAME);
 		env.put("SERVICES_API_DIRECTORY_PLAN_PLAN1_DESCRIPTION", API_DIRECTORY_PLAN_PLAN1_DESCRIPTION);
 		env.put("SERVICES_API_DIRECTORY_PLAN_PLAN2_NAME", API_DIRECTORY_PLAN_PLAN2_NAME);
@@ -51,7 +74,6 @@ public class ParserSystemEnvironmentTest extends ParserPropertiesTestBase<Parser
 		env.put("SERVICES_API_DIRECTORY_PLAN_PLAN3_CREDENTIALS_URI", API_DIRECTORY_PLAN_PLAN3_CREDENTIALS_URI);
 		env.put("SERVICES_API_DIRECTORY_PLAN_PLAN3_CREDENTIALS_ACCESS_KEY",
 				API_DIRECTORY_PLAN_PLAN3_CREDENTIALS_ACCESS_KEY);
-		env.put("SERVICES_TRIPADVISOR_CREDENTIALS", TRIPADVISOR_CREDENTIALS);
 		env.put("SERVICES_TEST_SERVICE_NAME", TEST_SERVICE_NAME);
 		env.put("SERVICES_TEST_SERVICE_DESCRIPTION", TEST_SERVICE_DESCRIPTION);
 		env.put("SERVICES_TEST_SERVICE_CREDENTIALS_URI", TEST_SERVICE_CREDENTIALS_URI);

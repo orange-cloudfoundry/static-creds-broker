@@ -11,6 +11,22 @@ public class ParserApplicationPropertiesTest extends ParserPropertiesTestBase<Pa
 		return parserApplicationProperties;
 	}
 	
+	@Override
+	protected ParserApplicationProperties createInstanceWithNoService() {
+		ParserApplicationProperties parserApplicationProperties = new ParserApplicationProperties();
+		parserApplicationProperties.setServices(new HashMap<>());
+		return parserApplicationProperties;
+	}
+	
+	@Override
+	protected ParserApplicationProperties createInstanceWithServiceNoCredential() {
+		ParserApplicationProperties parserApplicationProperties = new ParserApplicationProperties();
+		Map<String, Object> servicesProperty = getServicesProperty();
+		((Map<?, ?>)(servicesProperty.get(TRIPADVISOR_SERVICE_ID))).remove("CREDENTIALS");
+		parserApplicationProperties.setServices(servicesProperty);
+		return parserApplicationProperties;
+	}
+	
 	private Map<String, Object> getServicesProperty(){
 		Map<String, Object> services = new HashMap<>();
 		Map<String, Object> service_API_DIRECTORY = new HashMap<>();

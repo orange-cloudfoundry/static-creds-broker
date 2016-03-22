@@ -6,10 +6,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.orange.model.Credentials;
-import com.orange.model.CredentialsRepository;
-import com.orange.model.PlansMap;
-import com.orange.model.ServicesMap;
+import com.orange.model.*;
 
 public abstract class ParserProperties {
 	/**
@@ -76,5 +73,33 @@ public abstract class ParserProperties {
 		Credentials res = new Credentials();
 		credentials.entrySet().stream().forEach(e -> res.put(e.getKey(), e.getValue()));
 		return res;
+	}
+	
+	public void checkAtLeastOneServiceDefined(ServicesMap servicesMap) throws IllegalArgumentException{
+		if (servicesMap.getAllServicesProperties().size() == 0) {
+			throw new IllegalArgumentException("Not found any valid service defined.");
+		}
+	}
+	
+	public void checkAllServicesHaveCredentialDefinition(CredentialsRepository credentialsRepository) throws IllegalArgumentException{
+		//get name of all services defined
+		ServicesMap servicesMap = this.parseServicesProperties();
+		for (String serviceID : servicesMap.getServicesID()) {
+			if (credentialsRepository.contains(serviceID, null)) {
+				continue;
+			}
+			else {
+				boolean noCredential = true;
+				for (String planID : this.parsePlansProperties(serviceID).getIDs()) {
+					if (credentialsRepository.contains(serviceID, planID)) {
+						noCredential = false;
+						break;
+					}
+				}
+				if (noCredential) {
+					throw new IllegalArgumentException("Not found any credential defined for service " + serviceID);
+				}
+			}
+		}
 	}
 }

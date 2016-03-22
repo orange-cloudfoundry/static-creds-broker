@@ -41,6 +41,7 @@ public class CatalogConfig {
 		ParserProperties parserProperties = useApplicationProperties ? parserApplicationProperties : new ParserSystemEnvironment(new Environment());
 		parserProperties.checkPasswordDefined();
 		servicesMap = parserProperties.parseServicesProperties();
+		parserProperties.checkAtLeastOneServiceDefined(servicesMap);
 		List<ServiceDefinition> serviceDefinitions = new ArrayList<ServiceDefinition>();
 		for (Map.Entry<String, Map<ServicePropertyName, String>> entry : servicesMap.geEntrySet()) {
 			String serviceID = entry.getKey();
