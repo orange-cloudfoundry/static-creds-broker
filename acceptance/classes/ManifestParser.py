@@ -81,63 +81,30 @@ class ManifestParser(Parser):
         return manifest_credentials
 
     def get_configured_service_info(self, config_service_id):
-        configured_catalog_info = {}
-        # the correspond property name between service info retrived from cloud foundry and in manifest_env definition
-        propertyname_correspond = {
-            'label':'SERVICES_' + config_service_id + '_NAME', 
-            'description':'SERVICES_' + config_service_id + '_DESCRIPTION', 
-            'bindable':'SERVICES_' + config_service_id + '_BINDEABLE', 
-            'tags': 'SERVICES_' + config_service_id + '_TAGS'
-        }
-        property_defaultvalue = {'bindable':True, 'tags':''}
-        for propertyname_service, propertyname_manifest in propertyname_correspond.iteritems():
-            manifest_env_property_value = self.manifest_env.get(propertyname_manifest, property_defaultvalue.get(propertyname_service));
-            if propertyname_service == 'bindable':
-                configured_catalog_info[propertyname_service] = bool(manifest_env_property_value)
-            elif propertyname_service == 'tags':
-                configured_catalog_info[propertyname_service] = filter(None, manifest_env_property_value.split(','))
-            else:
-                configured_catalog_info[propertyname_service] = manifest_env_property_value
-
-        metadata_propertyname_correspond = {
-            'displayName':'SERVICES_' + config_service_id + '_METADATA_DISPLAYNAME', 
-            'imageUrl':'SERVICES_' + config_service_id + '_METADATA_IMAGEURL', 
-            'supportUrl':'SERVICES_' + config_service_id + '_METADATA_SUPPORTURL', 
-            'documentationUrl':'SERVICES_' + config_service_id + '_METADATA_DOCUMENTATIONURL', 
-            'providerDisplayName':'SERVICES_' + config_service_id + '_METADATA_PROVIDERDISPLAYNAME', 
-            'longDescription':'SERVICES_' + config_service_id + '_METADATA_LONGDESCRIPTION'
-        }
-        metadata_property_defaultvalue = {'displayName':self.manifest_env.get('SERVICES_' + config_service_id + '_NAME'),
-            'imageUrl':'', 'supportUrl':'', 'documentationUrl':'', 'providerDisplayName':'', 'longDescription':''}
-        metadata_info = {}
-        for propertyname_metadata, propertyname_manifest in metadata_propertyname_correspond.iteritems():
-            manifest_env_property_value = self.manifest_env.get(propertyname_manifest, metadata_property_defaultvalue.get(propertyname_metadata));
-            metadata_info[propertyname_metadata] = manifest_env_property_value
-        configured_catalog_info['extra'] = metadata_info
-        return configured_catalog_info
+        service_properties_definition = self.manifest_env
+        config_service_propertyname = ['SERVICES_' + config_service_id + '_NAME', 
+            'SERVICES_' + config_service_id + '_DESCRIPTION', 
+            'SERVICES_' + config_service_id + '_BINDEABLE', 
+            'SERVICES_' + config_service_id + '_TAGS']
+        meta_properties_definition = self.manifest_env
+        config_meta_propertyname = ['SERVICES_' + config_service_id + '_METADATA_DISPLAYNAME', 
+            'SERVICES_' + config_service_id + '_METADATA_IMAGEURL', 
+            'SERVICES_' + config_service_id + '_METADATA_SUPPORTURL', 
+            'SERVICES_' + config_service_id + '_METADATA_DOCUMENTATIONURL', 
+            'SERVICES_' + config_service_id + '_METADATA_PROVIDERDISPLAYNAME', 
+            'SERVICES_' + config_service_id + '_METADATA_LONGDESCRIPTION']
+        return self.get_configured_service_info_pattern(service_properties_definition, config_service_propertyname, meta_properties_definition, config_meta_propertyname)
 
     def get_configured_plans_info(self, config_service_id):
-        manifest_plans_info = []
-        manifest_plans_id_and_name = self.services_plans_id_and_name[config_service_id][1]
-        for plan_id, plan_name in manifest_plans_id_and_name.iteritems():
-            manifest_plan_info = {}
-            manifest_plan_info['name'] = plan_name
-            # the correspond property name between in cf_plan_info and in manifest_env 
-            propertyname_correspond = { 
-                'description':'SERVICES_%s_PLAN_%s_DESCRIPTION' %(config_service_id, plan_id),
-                'free':'SERVICES_%s_PLAN_%s_FREE' %(config_service_id, plan_id)}
-            property_defaultvalue = { 
-                'description':'plan ' + plan_name, 
-                'free':True}
-            for propertyname_plan, propertyname_manifest in propertyname_correspond.iteritems():
-                manifest_env_value = self.manifest_env.get(propertyname_manifest, property_defaultvalue.get(propertyname_plan));
-                manifest_plan_info[propertyname_plan] = manifest_env_value
-                if propertyname_plan == 'free':
-                    manifest_plan_info[propertyname_plan] = bool(manifest_env_value)
-            plan_metadata_propertyname = 'SERVICES_%s_PLAN_%s_METADATA' %(config_service_id, plan_id)
-            if plan_metadata_propertyname not in self.manifest_env:
-                manifest_plan_info['extra'] = {"bullets":None,"costs":None,"displayName":None}
-            else:
-                manifest_plan_info['extra'] = self.manifest_env[plan_metadata_propertyname]
-            manifest_plans_info.append(manifest_plan_info)
-        return manifest_plans_info
+        assert self.services_plans_id_and_name.get(config_service_id) != None
+        assert self.services_plans_id_and_name[config_service_id][1] != None
+        plans_properties_definition  = {}
+        config_plans_propertyname ={}
+        config_plans_id_and_name = self.services_plans_id_and_name[config_service_id][1]
+        for plan_id in config_plans_id_and_name.keys():
+            propertyname_correspond = ['SERVICES_%s_PLAN_%s_DESCRIPTION' %(config_service_id, plan_id),
+                'SERVICES_%s_PLAN_%s_FREE' %(config_service_id, plan_id),
+                'SERVICES_%s_PLAN_%s_METADATA' %(config_service_id, plan_id)]
+            plans_properties_definition[plan_id] = self.manifest_env
+            config_plans_propertyname[plan_id] = propertyname_correspond
+        return self.get_configured_plans_info_pattern(config_plans_id_and_name, plans_properties_definition, config_plans_propertyname)

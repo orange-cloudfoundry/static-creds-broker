@@ -35,17 +35,19 @@ class Compare():
         configured_service_info = self.parser.get_configured_service_info(config_service_id)
         for propertyname in configured_service_info.keys():
             if cf_service_info[propertyname] != configured_service_info[propertyname]:
-                raise AssertionError('info [%s] in service: %r, not match in broker manifest configuration: %r' % (propertyname, cf_service_info[propertyname], configured_service_info[propertyname]))
+                raise AssertionError('info [%s] in service: %r, not match in broker configuration: %r' % (propertyname, cf_service_info[propertyname], configured_service_info[propertyname]))
             else:
-                logging.info('info [%s] in service: %r, match in broker manifest configuration: %r' % (propertyname, cf_service_info[propertyname], configured_service_info[propertyname]))
+                logging.info('info [%s] in service: %r, match in broker configuration: %r' % (propertyname, cf_service_info[propertyname], configured_service_info[propertyname]))
         cf_plans_info = sorted(self.parse_cf_plans_info(cf_service_info_split[1]), key=lambda k: k['name'])  
-        configured_plans_info = sorted(self.parser.get_configured_plans_info(config_service_id), key=lambda k: k['name'])  
-        for cf_plan_info, configured_plan_info in zip(cf_plans_info, configured_plans_info):
+        configured_plans_info = sorted(self.parser.get_configured_plans_info(config_service_id), key=lambda k: k['name']) 
+        if len(cf_plans_info) != len(configured_plans_info):
+            raise AssertionError('found [%r] plans of service, not match [%r] plans defined in broker configuration.' % (len(cf_plans_info), len(configured_plans_info)))
+        for configured_plan_info, cf_plan_info in zip(configured_plans_info, cf_plans_info):
             for propertyname in configured_plan_info.keys():
                 if cf_plan_info[propertyname] != configured_plan_info[propertyname]:
-                    raise AssertionError('info [%s] in service plan[%s]: %r, not match plan[%s] in broker manifest configuration: %r' % (propertyname, cf_plan_info['name'], cf_plan_info[propertyname], configured_plan_info['name'], configured_plan_info[propertyname]))
+                    raise AssertionError('info [%s] in service plan[%s]: %r, not match plan[%s] in broker configuration: %r' % (propertyname, cf_plan_info['name'], cf_plan_info[propertyname], configured_plan_info['name'], configured_plan_info[propertyname]))
                 else:
-                    logging.info('info [%s] in service plan[%s]: %r, match plan[%s] in broker manifest configuration: %r' % (propertyname, cf_plan_info['name'], cf_plan_info[propertyname], configured_plan_info['name'], configured_plan_info[propertyname]))
+                    logging.info('info [%s] in service plan[%s]: %r, match plan[%s] in broker configuration: %r' % (propertyname, cf_plan_info['name'], cf_plan_info[propertyname], configured_plan_info['name'], configured_plan_info[propertyname]))
 
 
     def service_key_info_should_match_configuration(self, cf_service_key_info, service_name, plan_name):
@@ -74,7 +76,7 @@ class Compare():
         cf_plan_info_json = re.findall(r'(\{.*\})', cf_plans_info_str, re.M | re.S)[0] 
         cf_plan_info = json.loads(cf_plan_info_json)
         plans_number = cf_plan_info['total_results']
-        for plan_index in xrange(0, plans_number - 1):
+        for plan_index in xrange(0, plans_number):
             plan_info = cf_plan_info['resources'][plan_index]['entity']
             plan_info['extra'] = json.loads(plan_info['extra'])
             plans_info.append(plan_info)

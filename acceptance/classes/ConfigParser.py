@@ -26,6 +26,7 @@ class ConfigParser(Parser):
     def get_configured_credential_info(self, service_name, plan_name): 
         credentials = {}
         service_id, plan_id = self.get_service_and_plan_id_from_name(service_name, plan_name)
+        assert self.service_config.get(service_id) != None
         service_credentials = self.service_config.get(service_id).get('CREDENTIALS')
         if type(service_credentials) is str:
             service_credentials = json.loads(service_credentials)
@@ -41,7 +42,22 @@ class ConfigParser(Parser):
         return credentials
 
     def get_configured_service_info(self, config_service_id):
-        pass
+        assert self.service_config.get(config_service_id) != None
+        service_properties_definition = self.service_config.get(config_service_id)
+        config_service_propertyname = ['NAME', 'DESCRIPTION', 'BINDEABLE', 'TAGS']
+        meta_properties_definition = self.service_config.get(config_service_id).get('METADATA')
+        config_meta_propertyname = ['DISPLAYNAME', 'IMAGEURL', 'SUPPORTURL', 'DOCUMENTATIONURL', 'PROVIDERDISPLAYNAME', 'LONGDESCRIPTION']
+        return self.get_configured_service_info_pattern(service_properties_definition, config_service_propertyname, meta_properties_definition, config_meta_propertyname)
 
     def get_configured_plans_info(self, config_service_id):
-        pass
+        assert self.service_config.get(config_service_id) != None
+        assert self.services_plans_id_and_name.get(config_service_id) != None
+        assert self.services_plans_id_and_name[config_service_id][1] != None
+        plans_properties_definition  = {}
+        config_plans_propertyname ={}
+        config_plans_id_and_name = self.services_plans_id_and_name[config_service_id][1]
+        for plan_id in config_plans_id_and_name.keys():
+            propertyname_correspond = ['DESCRIPTION', 'FREE', 'METADATA']
+            plans_properties_definition[plan_id] = self.service_config.get(config_service_id).get('PLAN', {}).get(plan_id, {})
+            config_plans_propertyname[plan_id] = propertyname_correspond
+        return self.get_configured_plans_info_pattern(config_plans_id_and_name, plans_properties_definition, config_plans_propertyname)
