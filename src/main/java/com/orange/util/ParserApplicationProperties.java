@@ -91,6 +91,7 @@ public class ParserApplicationProperties extends ParserProperties{
 	public CredentialsRepository parseCredentialsProperties() {
 		CredentialsRepository credentialsRepository = new CredentialsRepository();
 		for (Map.Entry<String, Object> entry : services.entrySet()) {
+			checkServiceMandatoryPropertiesDefined(entry.getKey());
 			if (entry.getValue() instanceof Map<?, ?>) {
 				Map<?, ?> servicesProperties = (Map<?, ?>) entry.getValue();
 				for (Map.Entry<?, ?> serviceProperties : servicesProperties.entrySet()) {

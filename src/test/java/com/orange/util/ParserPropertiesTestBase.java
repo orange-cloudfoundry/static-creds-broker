@@ -15,10 +15,16 @@ public abstract class ParserPropertiesTestBase<T extends ParserProperties> {
 	protected T parser;
 
 	protected abstract T createInstance();
-	
+
 	protected abstract T createInstanceWithNoService();
-	
+
 	protected abstract T createInstanceWithServiceNoCredential();
+
+	protected abstract T createInstanceWithServiceNoName();
+
+	protected abstract T createInstanceWithServiceNoDescription();
+
+	protected abstract T createInstanceWithServiceNoNameAndDescription();
 
 	@Before
 	public void setUp() {
@@ -72,36 +78,79 @@ public abstract class ParserPropertiesTestBase<T extends ParserProperties> {
 	protected static final String TEST_SERVICE_PLAN_PLAN_1_CREDENTIALS_URI = "http://plan1.mycompany.com";
 	protected static final String TEST_SERVICE_PLAN_PLAN_2_ID = "PLAN_2";
 	protected static final String TEST_SERVICE_PLAN_PLAN_2_CREDENTIALS_URI = "http://plan2.mycompany.com";
-	
+	protected static final String DUMMY_SERVICE_ID = "DUMMY";
+	protected static final String DUMMY_NAME = "DUMMY_SERVICE";
+	protected static final String DUMMY_DESCRIPTION = "DUMMY description";
+	protected static final String DUMMY_PLAN_0_ID = "0";
+	protected static final String DUMMY_PLAN_0_CREDENTIALS_KEY = "azert";
+
 	@Rule
 	public final ExpectedException thrown = ExpectedException.none();
-	
+
 	@Test
-	public void should_throw_exception_when_not_any_service_defined(){
+	public void should_throw_exception_when_not_any_service_defined() {
 		T parserNoServiceDefined = createInstanceWithNoService();
 		thrown.expect(IllegalArgumentException.class);
 		thrown.expectMessage("Not found any valid service defined.");
 		parserNoServiceDefined.checkAtLeastOneServiceDefined(parserNoServiceDefined.parseServicesProperties());
 	}
-	
+
 	@Test
-	public void should_throw_exception_when_not_any_credential_defined_for_a_service(){
+	public void should_throw_exception_when_not_any_credential_defined_for_a_service() {
 		T parserServiceNoCredential = createInstanceWithServiceNoCredential();
 		thrown.expect(IllegalArgumentException.class);
 		thrown.expectMessage("Not found any credential defined for service ");
-		parserServiceNoCredential.checkAllServicesHaveCredentialDefinition(parserServiceNoCredential.parseCredentialsProperties());
+		parserServiceNoCredential
+				.checkAllServicesHaveCredentialDefinition(parserServiceNoCredential.parseCredentialsProperties());
 	}
-	
+
+	@Test
+	public void should_throw_exception_when_service_name_not_set() {
+		T parserNoServiceDescription = createInstanceWithServiceNoName();
+		thrown.expect(IllegalArgumentException.class);
+		thrown.expectMessage("Mandatory property:");
+		thrown.expectMessage("missing");
+		parserNoServiceDescription.parseServicesProperties();
+	}
+
+	@Test
+	public void should_throw_exception_when_service_description_not_set() {
+		T parserNoServiceDescription = createInstanceWithServiceNoDescription();
+		thrown.expect(IllegalArgumentException.class);
+		thrown.expectMessage("Mandatory property:");
+		thrown.expectMessage("missing");
+		parserNoServiceDescription.parseServicesProperties();
+	}
+
+	@Test
+	public void should_throw_exception_when_service_name_and_description_not_set() {
+		T parserNoServiceDescription = createInstanceWithServiceNoNameAndDescription();
+		thrown.expect(IllegalArgumentException.class);
+		thrown.expectMessage("Mandatory property:");
+		thrown.expectMessage("missing");
+		parserNoServiceDescription.parseCredentialsProperties();
+	}
+
 	@Test
 	public void should_get_services_map_with_info_have_been_set_in_property() {
 		final ServicesMap servicesMap = parser.parseServicesProperties();
 		Assert.assertNotNull(servicesMap);
-		Assert.assertEquals(3, servicesMap.geEntrySet().size());
+		Assert.assertEquals(4, servicesMap.geEntrySet().size());
 		Assert.assertEquals(API_DIRECTORY_NAME,
 				servicesMap.get(API_DIRECTORY_SERVICE_ID).get(ServicePropertyName.NAME));
 		Assert.assertEquals(API_DIRECTORY_DESCRIPTION,
 				servicesMap.get(API_DIRECTORY_SERVICE_ID).get(ServicePropertyName.DESCRIPTION));
-		// TODO check default values of unset property
+		Assert.assertEquals(null, servicesMap.get(API_DIRECTORY_SERVICE_ID).get(ServicePropertyName.TAGS));
+		Assert.assertEquals(API_DIRECTORY_NAME,
+				servicesMap.get(API_DIRECTORY_SERVICE_ID).get(ServicePropertyName.METADATA_DISPLAYNAME));
+		Assert.assertEquals("", servicesMap.get(API_DIRECTORY_SERVICE_ID).get(ServicePropertyName.METADATA_IMAGEURL));
+		Assert.assertEquals("", servicesMap.get(API_DIRECTORY_SERVICE_ID).get(ServicePropertyName.METADATA_SUPPORTURL));
+		Assert.assertEquals("",
+				servicesMap.get(API_DIRECTORY_SERVICE_ID).get(ServicePropertyName.METADATA_DOCUMENTATIONURL));
+		Assert.assertEquals("",
+				servicesMap.get(API_DIRECTORY_SERVICE_ID).get(ServicePropertyName.METADATA_PROVIDERDISPLAYNAME));
+		Assert.assertEquals("",
+				servicesMap.get(API_DIRECTORY_SERVICE_ID).get(ServicePropertyName.METADATA_LONGDESCRIPTION));
 		Assert.assertEquals(TRIPADVISOR_NAME, servicesMap.get(TRIPADVISOR_SERVICE_ID).get(ServicePropertyName.NAME));
 		Assert.assertEquals(TRIPADVISOR_DESCRIPTION,
 				servicesMap.get(TRIPADVISOR_SERVICE_ID).get(ServicePropertyName.DESCRIPTION));
@@ -121,6 +170,8 @@ public abstract class ParserPropertiesTestBase<T extends ParserProperties> {
 		Assert.assertEquals(TEST_SERVICE_NAME, servicesMap.get(TEST_SERVICE_SERVICE_ID).get(ServicePropertyName.NAME));
 		Assert.assertEquals(TEST_SERVICE_DESCRIPTION,
 				servicesMap.get(TEST_SERVICE_SERVICE_ID).get(ServicePropertyName.DESCRIPTION));
+		Assert.assertEquals(DUMMY_NAME, servicesMap.get(DUMMY_SERVICE_ID).get(ServicePropertyName.NAME));
+		Assert.assertEquals(DUMMY_DESCRIPTION, servicesMap.get(DUMMY_SERVICE_ID).get(ServicePropertyName.DESCRIPTION));
 	}
 
 	@Test
@@ -145,17 +196,29 @@ public abstract class ParserPropertiesTestBase<T extends ParserProperties> {
 		Assert.assertNotNull(plansMap.get(TEST_SERVICE_PLAN_PLAN_1_ID));
 		Assert.assertEquals(plansMap.getDefaultName(TEST_SERVICE_PLAN_PLAN_1_ID),
 				plansMap.get(TEST_SERVICE_PLAN_PLAN_1_ID).get(PlanPropertyName.NAME));
-		Assert.assertEquals(plansMap.getDefaultDescription(TEST_SERVICE_PLAN_PLAN_1_ID), plansMap.get(TEST_SERVICE_PLAN_PLAN_1_ID).get(PlanPropertyName.DESCRIPTION));
+		Assert.assertEquals(plansMap.getDefaultDescription(TEST_SERVICE_PLAN_PLAN_1_ID),
+				plansMap.get(TEST_SERVICE_PLAN_PLAN_1_ID).get(PlanPropertyName.DESCRIPTION));
 		Assert.assertEquals(PlansMap.defaultFree, plansMap.get(TEST_SERVICE_PLAN_PLAN_1_ID).get(PlanPropertyName.FREE));
 		Assert.assertEquals(PlansMap.defaultMetadata,
 				plansMap.get(TEST_SERVICE_PLAN_PLAN_1_ID).get(PlanPropertyName.METADATA));
 		Assert.assertNotNull(plansMap.get(TEST_SERVICE_PLAN_PLAN_2_ID));
 		Assert.assertEquals(plansMap.getDefaultName(TEST_SERVICE_PLAN_PLAN_2_ID),
 				plansMap.get(TEST_SERVICE_PLAN_PLAN_2_ID).get(PlanPropertyName.NAME));
-		Assert.assertEquals(plansMap.getDefaultDescription(TEST_SERVICE_PLAN_PLAN_2_ID), plansMap.get(TEST_SERVICE_PLAN_PLAN_2_ID).get(PlanPropertyName.DESCRIPTION));
+		Assert.assertEquals(plansMap.getDefaultDescription(TEST_SERVICE_PLAN_PLAN_2_ID),
+				plansMap.get(TEST_SERVICE_PLAN_PLAN_2_ID).get(PlanPropertyName.DESCRIPTION));
 		Assert.assertEquals(PlansMap.defaultFree, plansMap.get(TEST_SERVICE_PLAN_PLAN_2_ID).get(PlanPropertyName.FREE));
 		Assert.assertEquals(PlansMap.defaultMetadata,
 				plansMap.get(TEST_SERVICE_PLAN_PLAN_2_ID).get(PlanPropertyName.METADATA));
+		final PlansMap dummyPlansMap = parser.parsePlansProperties(DUMMY_SERVICE_ID);
+		Assert.assertNotNull(dummyPlansMap);
+		Assert.assertEquals(1, dummyPlansMap.getIDs().size());
+		Assert.assertNotNull(dummyPlansMap.get(DUMMY_PLAN_0_ID));
+		Assert.assertEquals(dummyPlansMap.getDefaultName(DUMMY_PLAN_0_ID),
+				dummyPlansMap.get(DUMMY_PLAN_0_ID).get(PlanPropertyName.NAME));
+		Assert.assertEquals(dummyPlansMap.getDefaultDescription(DUMMY_PLAN_0_ID),
+				dummyPlansMap.get(DUMMY_PLAN_0_ID).get(PlanPropertyName.DESCRIPTION));
+		Assert.assertEquals(PlansMap.defaultFree, dummyPlansMap.get(DUMMY_PLAN_0_ID).get(PlanPropertyName.FREE));
+		Assert.assertEquals(PlansMap.defaultMetadata, dummyPlansMap.get(DUMMY_PLAN_0_ID).get(PlanPropertyName.METADATA));
 	}
 
 	@Test
@@ -174,7 +237,8 @@ public abstract class ParserPropertiesTestBase<T extends ParserProperties> {
 		Assert.assertNotNull(plansMap.get(API_DIRECTORY_PLAN_PLAN2_ID));
 		Assert.assertEquals(API_DIRECTORY_PLAN_PLAN2_NAME,
 				plansMap.get(API_DIRECTORY_PLAN_PLAN2_ID).get(PlanPropertyName.NAME));
-		Assert.assertEquals(plansMap.getDefaultDescription(API_DIRECTORY_PLAN_PLAN2_ID), plansMap.get(API_DIRECTORY_PLAN_PLAN2_ID).get(PlanPropertyName.DESCRIPTION));
+		Assert.assertEquals(plansMap.getDefaultDescription(API_DIRECTORY_PLAN_PLAN2_ID),
+				plansMap.get(API_DIRECTORY_PLAN_PLAN2_ID).get(PlanPropertyName.DESCRIPTION));
 		Assert.assertEquals(API_DIRECTORY_PLAN_PLAN2_FREE,
 				plansMap.get(API_DIRECTORY_PLAN_PLAN2_ID).get(PlanPropertyName.FREE));
 		Assert.assertEquals(API_DIRECTORY_PLAN_PLAN2_METADATA,
@@ -182,7 +246,8 @@ public abstract class ParserPropertiesTestBase<T extends ParserProperties> {
 		Assert.assertNotNull(plansMap.get(API_DIRECTORY_PLAN_PLAN3_ID));
 		Assert.assertEquals(API_DIRECTORY_PLAN_PLAN3_NAME,
 				plansMap.get(API_DIRECTORY_PLAN_PLAN3_ID).get(PlanPropertyName.NAME));
-		Assert.assertEquals(plansMap.getDefaultDescription(API_DIRECTORY_PLAN_PLAN3_ID), plansMap.get(API_DIRECTORY_PLAN_PLAN3_ID).get(PlanPropertyName.DESCRIPTION));
+		Assert.assertEquals(plansMap.getDefaultDescription(API_DIRECTORY_PLAN_PLAN3_ID),
+				plansMap.get(API_DIRECTORY_PLAN_PLAN3_ID).get(PlanPropertyName.DESCRIPTION));
 		Assert.assertEquals(PlansMap.defaultFree, plansMap.get(API_DIRECTORY_PLAN_PLAN3_ID).get(PlanPropertyName.FREE));
 		Assert.assertEquals(PlansMap.defaultMetadata,
 				plansMap.get(API_DIRECTORY_PLAN_PLAN3_ID).get(PlanPropertyName.METADATA));
@@ -192,30 +257,33 @@ public abstract class ParserPropertiesTestBase<T extends ParserProperties> {
 	public void should_get_credentials_map_which_have_been_set_in_property() {
 		final CredentialsRepository credentialsRepository = parser.parseCredentialsProperties();
 		Assert.assertNotNull(credentialsRepository);
-		Assert.assertEquals(8, credentialsRepository.findAll().size());
-		Assert.assertTrue(credentialsRepository.contains(TRIPADVISOR_SERVICE_ID, null, TRIPADVISOR_SERVICE_CREDENTIALS_KEY1,
-				TRIPADVISOR_SERVICE_CREDENTIALS_VALUE1));
-		Assert.assertTrue(credentialsRepository.contains(TRIPADVISOR_SERVICE_ID, null, TRIPADVISOR_SERVICE_CREDENTIALS_KEY2,
-				TRIPADVISOR_SERVICE_CREDENTIALS_VALUE2));
+		Assert.assertEquals(9, credentialsRepository.findAll().size());
+		Assert.assertTrue(credentialsRepository.contains(TRIPADVISOR_SERVICE_ID, null,
+				TRIPADVISOR_SERVICE_CREDENTIALS_KEY1, TRIPADVISOR_SERVICE_CREDENTIALS_VALUE1));
+		Assert.assertTrue(credentialsRepository.contains(TRIPADVISOR_SERVICE_ID, null,
+				TRIPADVISOR_SERVICE_CREDENTIALS_KEY2, TRIPADVISOR_SERVICE_CREDENTIALS_VALUE2));
 		Assert.assertTrue(credentialsRepository.contains(API_DIRECTORY_SERVICE_ID, null, "HOSTNAME",
 				API_DIRECTORY_CREDENTIALS_HOSTNAME));
-		Assert.assertTrue(credentialsRepository.contains(API_DIRECTORY_SERVICE_ID, API_DIRECTORY_PLAN_PLAN1_ID, "ACCESS_KEY",
-				API_DIRECTORY_PLAN_PLAN1_CREDENTIALS_ACCESS_KEY));
+		Assert.assertTrue(credentialsRepository.contains(API_DIRECTORY_SERVICE_ID, API_DIRECTORY_PLAN_PLAN1_ID,
+				"ACCESS_KEY", API_DIRECTORY_PLAN_PLAN1_CREDENTIALS_ACCESS_KEY));
 		Assert.assertTrue(credentialsRepository.contains(API_DIRECTORY_SERVICE_ID, API_DIRECTORY_PLAN_PLAN1_ID, "URI",
 				API_DIRECTORY_PLAN_PLAN1_CREDENTIALS_URI));
-		Assert.assertTrue(credentialsRepository.contains(API_DIRECTORY_SERVICE_ID, API_DIRECTORY_PLAN_PLAN2_ID, "ACCESS_KEY",
-				API_DIRECTORY_PLAN_PLAN2_CREDENTIALS_ACCESS_KEY));
+		Assert.assertTrue(credentialsRepository.contains(API_DIRECTORY_SERVICE_ID, API_DIRECTORY_PLAN_PLAN2_ID,
+				"ACCESS_KEY", API_DIRECTORY_PLAN_PLAN2_CREDENTIALS_ACCESS_KEY));
 		Assert.assertTrue(credentialsRepository.contains(API_DIRECTORY_SERVICE_ID, API_DIRECTORY_PLAN_PLAN2_ID, "URI",
 				API_DIRECTORY_PLAN_PLAN2_CREDENTIALS_URI));
-		Assert.assertTrue(credentialsRepository.contains(API_DIRECTORY_SERVICE_ID, API_DIRECTORY_PLAN_PLAN3_ID, "ACCESS_KEY",
-				API_DIRECTORY_PLAN_PLAN3_CREDENTIALS_ACCESS_KEY));
+		Assert.assertTrue(credentialsRepository.contains(API_DIRECTORY_SERVICE_ID, API_DIRECTORY_PLAN_PLAN3_ID,
+				"ACCESS_KEY", API_DIRECTORY_PLAN_PLAN3_CREDENTIALS_ACCESS_KEY));
 		Assert.assertTrue(credentialsRepository.contains(API_DIRECTORY_SERVICE_ID, API_DIRECTORY_PLAN_PLAN3_ID, "URI",
 				API_DIRECTORY_PLAN_PLAN3_CREDENTIALS_URI));
-		Assert.assertTrue(credentialsRepository.contains(TEST_SERVICE_SERVICE_ID, null, "URI", TEST_SERVICE_CREDENTIALS_URI));
+		Assert.assertTrue(
+				credentialsRepository.contains(TEST_SERVICE_SERVICE_ID, null, "URI", TEST_SERVICE_CREDENTIALS_URI));
 		Assert.assertTrue(credentialsRepository.contains(TEST_SERVICE_SERVICE_ID, TEST_SERVICE_PLAN_PLAN_1_ID, "URI",
 				TEST_SERVICE_PLAN_PLAN_1_CREDENTIALS_URI));
 		Assert.assertTrue(credentialsRepository.contains(TEST_SERVICE_SERVICE_ID, TEST_SERVICE_PLAN_PLAN_2_ID, "URI",
 				TEST_SERVICE_PLAN_PLAN_2_CREDENTIALS_URI));
+		Assert.assertTrue(
+				credentialsRepository.contains(DUMMY_SERVICE_ID, DUMMY_PLAN_0_ID, "KEY", DUMMY_PLAN_0_CREDENTIALS_KEY));
 	}
 
 	@Test
@@ -226,7 +294,6 @@ public abstract class ParserPropertiesTestBase<T extends ParserProperties> {
 		Credentials credentials = parser.parseCredentialsJSON(json);
 
 		assertThat(credentials.toMap()).hasSize(2).includes(entry("username", "admin"), entry("password", "pa55woRD"));
-
 
 	}
 }

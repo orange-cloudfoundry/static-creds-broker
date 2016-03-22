@@ -27,6 +27,34 @@ public class ParserApplicationPropertiesTest extends ParserPropertiesTestBase<Pa
 		return parserApplicationProperties;
 	}
 	
+	@Override
+	protected ParserApplicationProperties createInstanceWithServiceNoName() {
+		ParserApplicationProperties parserApplicationProperties = new ParserApplicationProperties();
+		Map<String, Object> servicesProperty = getServicesProperty();
+		((Map<?, ?>)(servicesProperty.get(DUMMY_SERVICE_ID))).remove("NAME");
+		parserApplicationProperties.setServices(servicesProperty);
+		return parserApplicationProperties;
+	}
+	
+	@Override
+	protected ParserApplicationProperties createInstanceWithServiceNoDescription() {
+		ParserApplicationProperties parserApplicationProperties = new ParserApplicationProperties();
+		Map<String, Object> servicesProperty = getServicesProperty();
+		((Map<?, ?>)(servicesProperty.get(DUMMY_SERVICE_ID))).remove("DESCRIPTION");
+		parserApplicationProperties.setServices(servicesProperty);
+		return parserApplicationProperties;
+	}
+	
+	@Override
+	protected ParserApplicationProperties createInstanceWithServiceNoNameAndDescription() {
+		ParserApplicationProperties parserApplicationProperties = new ParserApplicationProperties();
+		Map<String, Object> servicesProperty = getServicesProperty();
+		((Map<?, ?>)(servicesProperty.get(DUMMY_SERVICE_ID))).remove("NAME");
+		((Map<?, ?>)(servicesProperty.get(DUMMY_SERVICE_ID))).remove("DESCRIPTION");
+		parserApplicationProperties.setServices(servicesProperty);
+		return parserApplicationProperties;
+	}
+	
 	private Map<String, Object> getServicesProperty(){
 		Map<String, Object> services = new HashMap<>();
 		Map<String, Object> service_API_DIRECTORY = new HashMap<>();
@@ -48,6 +76,11 @@ public class ParserApplicationPropertiesTest extends ParserPropertiesTestBase<Pa
 		service_TEST_SERVICE.put("PLAN", getTESTSERVICEPlansProperty());
 		service_TEST_SERVICE.put("CREDENTIALS", getTESTSERVICEServiceCredentialsProperty());
 		services.put(TEST_SERVICE_SERVICE_ID, service_TEST_SERVICE);
+		Map<String, Object> service_DUMMY = new HashMap<>();
+		service_DUMMY.put("NAME", DUMMY_NAME);
+		service_DUMMY.put("DESCRIPTION", DUMMY_DESCRIPTION);
+		service_DUMMY.put("PLAN", getDUMMYPlansProperty());
+		services.put(DUMMY_SERVICE_ID, service_DUMMY);
 		return services;
 	}
 	
@@ -139,5 +172,23 @@ public class ParserApplicationPropertiesTest extends ParserPropertiesTestBase<Pa
 		Map<String, Object> planTwoCredentials = new HashMap<>();
 		planTwoCredentials.put("URI", TEST_SERVICE_PLAN_PLAN_2_CREDENTIALS_URI);
 		return planTwoCredentials;
+	}
+	
+	private Map<String, Object> getDUMMYPlanCredentialsProperty(){
+		Map<String, Object> planCredentials = new HashMap<>();
+		planCredentials.put("KEY", DUMMY_PLAN_0_CREDENTIALS_KEY);
+		return planCredentials;
+	}
+	
+	private Map<String, Object> getDUMMYPlanProperty(){
+		Map<String, Object> planProperties = new HashMap<>();
+		planProperties.put("CREDENTIALS", getDUMMYPlanCredentialsProperty());
+		return planProperties;
+	}
+	
+	private Map<String, Object> getDUMMYPlansProperty(){
+		Map<String, Object> planProperties = new HashMap<>();
+		planProperties.put(DUMMY_PLAN_0_ID, getDUMMYPlanProperty());
+		return planProperties;
 	}
 }

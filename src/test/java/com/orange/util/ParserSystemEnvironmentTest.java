@@ -21,6 +21,28 @@ public class ParserSystemEnvironmentTest extends ParserPropertiesTestBase<Parser
 		return new ParserSystemEnvironment(new MockEnvironment(env));
 	}
 	
+	@Override
+	protected ParserSystemEnvironment createInstanceWithServiceNoName() {
+		Map<String, String> env = getTestEnvironment();
+		env.remove("SERVICES_DUMMY_NAME");
+		return new ParserSystemEnvironment(new MockEnvironment(env));
+	}
+	
+	@Override
+	protected ParserSystemEnvironment createInstanceWithServiceNoDescription() {
+		Map<String, String> env = getTestEnvironment();
+		env.remove("SERVICES_DUMMY_DESCRIPTION");
+		return new ParserSystemEnvironment(new MockEnvironment(env));
+	}
+	
+	@Override
+	protected ParserSystemEnvironment createInstanceWithServiceNoNameAndDescription() {
+		Map<String, String> env = getTestEnvironment();
+		env.remove("SERVICES_DUMMY_NAME");
+		env.remove("SERVICES_DUMMY_DESCRIPTION");
+		return new ParserSystemEnvironment(new MockEnvironment(env));
+	}
+	
 	class MockEnvironment extends Environment {
 		private Map<String, String> env;
 
@@ -79,6 +101,9 @@ public class ParserSystemEnvironmentTest extends ParserPropertiesTestBase<Parser
 		env.put("SERVICES_TEST_SERVICE_CREDENTIALS_URI", TEST_SERVICE_CREDENTIALS_URI);
 		env.put("SERVICES_TEST_SERVICE_PLAN_PLAN_1_CREDENTIALS_URI", TEST_SERVICE_PLAN_PLAN_1_CREDENTIALS_URI);
 		env.put("SERVICES_TEST_SERVICE_PLAN_PLAN_2_CREDENTIALS_URI", TEST_SERVICE_PLAN_PLAN_2_CREDENTIALS_URI);
+		env.put("SERVICES_DUMMY_NAME", DUMMY_NAME);
+		env.put("SERVICES_DUMMY_DESCRIPTION", DUMMY_DESCRIPTION);
+		env.put("SERVICES_DUMMY_PLAN_0_CREDENTIALS_KEY", DUMMY_PLAN_0_CREDENTIALS_KEY);
 		return env;
 	}
 }
