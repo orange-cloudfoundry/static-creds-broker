@@ -32,7 +32,7 @@ public class CredentialsConfig {
 	public CredentialsRepository credentialsMap(){
 		ParserProperties parserProperties = useApplicationProperties ? parserApplicationProperties : new ParserSystemEnvironment(new Environment());
 		CredentialsRepository idCredentialsRepository = parserProperties.parseCredentialsProperties();
-		parserProperties.checkAllServicesHaveCredentialDefinition(idCredentialsRepository);
+		parserProperties.checkAllServicesPlansHaveCredentialDefinition(idCredentialsRepository);
 		CredentialsRepository nameCredentialsRepository = new CredentialsRepository();
 		// credentials for all plans of the service
 		for (Entry<ServicePlan,Credentials> entry : idCredentialsRepository.findAll()) {

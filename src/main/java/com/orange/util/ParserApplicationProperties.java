@@ -96,7 +96,6 @@ public class ParserApplicationProperties extends ParserProperties{
 				Map<?, ?> servicesProperties = (Map<?, ?>) entry.getValue();
 				for (Map.Entry<?, ?> serviceProperties : servicesProperties.entrySet()) {
 					if ("CREDENTIALS".equals(serviceProperties.getKey())) {
-						//TODO yaml could add both value and map ?
 						if (serviceProperties.getValue() instanceof Map<?, ?>) {
 							for (Map.Entry<?, ?> credentialProperty : ((Map<?, ?>)serviceProperties.getValue()).entrySet() ) {
 								ServicePlan servicePlan = new ServicePlanBuilder().withServiceID(entry.getKey()).build();
@@ -179,5 +178,22 @@ public class ParserApplicationProperties extends ParserProperties{
 				throw new IllegalArgumentException("Mandatory property: service." + serviceID + ".DESCRIPTION missing");
 			}
 		}
+	}
+	
+	public static Object getNestedMapValue(Map<String, Object> nestedMap, String... nestedKeys) {
+		Map<?, ?> currentLevelMap = nestedMap;
+		for (int i = 0; i < nestedKeys.length; i++) {
+			String key = nestedKeys[i];
+			if (i == nestedKeys.length - 1) {
+				return currentLevelMap.get(key);
+			} else {
+				if (currentLevelMap.get(key) instanceof Map<?, ?>) {
+					currentLevelMap = (Map<?, ?>) (currentLevelMap.get(key));
+				} else {
+					break;
+				}
+			}
+		}
+		return null;
 	}
 }

@@ -22,6 +22,16 @@ public class ParserSystemEnvironmentTest extends ParserPropertiesTestBase<Parser
 	}
 	
 	@Override
+	protected ParserSystemEnvironment createInstanceWithOnePlanNoCredential() {
+		Map<String, String> env = getTestEnvironment();
+		env.remove("SERVICES_API_DIRECTORY_PLAN_PLAN1_CREDENTIALS_HOSTNAME");
+		env.remove("SERVICES_API_DIRECTORY_PLAN_PLAN1_CREDENTIALS_URI");
+		env.remove("SERVICES_API_DIRECTORY_PLAN_PLAN1_CREDENTIALS_ACCESS_KEY");
+		env.remove("SERVICES_API_DIRECTORY_CREDENTIALS_HOSTNAME");
+		return new ParserSystemEnvironment(new MockEnvironment(env));
+	}
+	
+	@Override
 	protected ParserSystemEnvironment createInstanceWithServiceNoName() {
 		Map<String, String> env = getTestEnvironment();
 		env.remove("SERVICES_DUMMY_NAME");

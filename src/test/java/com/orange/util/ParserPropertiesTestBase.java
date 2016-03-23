@@ -19,6 +19,8 @@ public abstract class ParserPropertiesTestBase<T extends ParserProperties> {
 	protected abstract T createInstanceWithNoService();
 
 	protected abstract T createInstanceWithServiceNoCredential();
+	
+	protected abstract T createInstanceWithOnePlanNoCredential();
 
 	protected abstract T createInstanceWithServiceNoName();
 
@@ -99,9 +101,18 @@ public abstract class ParserPropertiesTestBase<T extends ParserProperties> {
 	public void should_throw_exception_when_not_any_credential_defined_for_a_service() {
 		T parserServiceNoCredential = createInstanceWithServiceNoCredential();
 		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("Not found any credential defined for service ");
+		thrown.expectMessage("Not found any credential defined for plan " + PlansMap.defaultPlanID + " of service " + TRIPADVISOR_SERVICE_ID);
 		parserServiceNoCredential
-				.checkAllServicesHaveCredentialDefinition(parserServiceNoCredential.parseCredentialsProperties());
+				.checkAllServicesPlansHaveCredentialDefinition(parserServiceNoCredential.parseCredentialsProperties());
+	}
+	
+	@Test
+	public void should_throw_exception_when_not_any_credential_defined_for_a_plan() {
+		T parserServiceNoCredential = createInstanceWithOnePlanNoCredential();
+		thrown.expect(IllegalArgumentException.class);
+		thrown.expectMessage("Not found any credential defined for plan " + API_DIRECTORY_PLAN_PLAN1_ID + " of service " + API_DIRECTORY_SERVICE_ID);
+		parserServiceNoCredential
+				.checkAllServicesPlansHaveCredentialDefinition(parserServiceNoCredential.parseCredentialsProperties());
 	}
 
 	@Test

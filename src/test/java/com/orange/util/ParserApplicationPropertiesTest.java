@@ -3,6 +3,9 @@ package com.orange.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 public class ParserApplicationPropertiesTest extends ParserPropertiesTestBase<ParserApplicationProperties>{
 	@Override
 	protected ParserApplicationProperties createInstance() {
@@ -23,6 +26,16 @@ public class ParserApplicationPropertiesTest extends ParserPropertiesTestBase<Pa
 		ParserApplicationProperties parserApplicationProperties = new ParserApplicationProperties();
 		Map<String, Object> servicesProperty = getServicesProperty();
 		((Map<?, ?>)(servicesProperty.get(TRIPADVISOR_SERVICE_ID))).remove("CREDENTIALS");
+		parserApplicationProperties.setServices(servicesProperty);
+		return parserApplicationProperties;
+	}
+	
+	@Override
+	protected ParserApplicationProperties createInstanceWithOnePlanNoCredential() {
+		ParserApplicationProperties parserApplicationProperties = new ParserApplicationProperties();
+		Map<String, Object> servicesProperty = getServicesProperty();
+		((Map<?, ?>) ParserApplicationProperties.getNestedMapValue(servicesProperty, API_DIRECTORY_SERVICE_ID, "PLAN", API_DIRECTORY_PLAN_PLAN1_ID)).remove("CREDENTIALS");
+		((Map<?, ?>)(servicesProperty.get(API_DIRECTORY_SERVICE_ID))).remove("CREDENTIALS");
 		parserApplicationProperties.setServices(servicesProperty);
 		return parserApplicationProperties;
 	}
@@ -53,6 +66,15 @@ public class ParserApplicationPropertiesTest extends ParserPropertiesTestBase<Pa
 		((Map<?, ?>)(servicesProperty.get(DUMMY_SERVICE_ID))).remove("DESCRIPTION");
 		parserApplicationProperties.setServices(servicesProperty);
 		return parserApplicationProperties;
+	}
+	
+	@Test
+	public void should_get_right_value_from_nested_map(){
+		Map<String, Object> servicesProperty = getServicesProperty();
+		Assert.assertEquals(API_DIRECTORY_NAME, ParserApplicationProperties.getNestedMapValue(servicesProperty, API_DIRECTORY_SERVICE_ID, "NAME")); 
+		Assert.assertEquals(API_DIRECTORY_DESCRIPTION, ParserApplicationProperties.getNestedMapValue(servicesProperty, API_DIRECTORY_SERVICE_ID, "DESCRIPTION")); 
+		Assert.assertEquals(API_DIRECTORY_PLAN_PLAN1_CREDENTIALS_ACCESS_KEY, ParserApplicationProperties.getNestedMapValue(servicesProperty, API_DIRECTORY_SERVICE_ID, "PLAN", API_DIRECTORY_PLAN_PLAN1_ID, "CREDENTIALS", "ACCESS_KEY")); 
+		Assert.assertEquals(API_DIRECTORY_PLAN_PLAN2_METADATA, ParserApplicationProperties.getNestedMapValue(servicesProperty, API_DIRECTORY_SERVICE_ID, "PLAN", API_DIRECTORY_PLAN_PLAN2_ID,"METADATA")); 
 	}
 	
 	private Map<String, Object> getServicesProperty(){

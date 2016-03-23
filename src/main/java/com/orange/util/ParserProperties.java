@@ -81,7 +81,7 @@ public abstract class ParserProperties {
 		}
 	}
 	
-	public void checkAllServicesHaveCredentialDefinition(CredentialsRepository credentialsRepository) throws IllegalArgumentException{
+	public void checkAllServicesPlansHaveCredentialDefinition(CredentialsRepository credentialsRepository) throws IllegalArgumentException{
 		//get name of all services defined
 		ServicesMap servicesMap = this.parseServicesProperties();
 		for (String serviceID : servicesMap.getServicesID()) {
@@ -89,15 +89,10 @@ public abstract class ParserProperties {
 				continue;
 			}
 			else {
-				boolean noCredential = true;
 				for (String planID : this.parsePlansProperties(serviceID).getIDs()) {
-					if (credentialsRepository.contains(serviceID, planID)) {
-						noCredential = false;
-						break;
+					if (!credentialsRepository.contains(serviceID, planID)) {
+						throw new IllegalArgumentException("Not found any credential defined for plan " + planID + " of service " + serviceID);
 					}
-				}
-				if (noCredential) {
-					throw new IllegalArgumentException("Not found any credential defined for service " + serviceID);
 				}
 			}
 		}
