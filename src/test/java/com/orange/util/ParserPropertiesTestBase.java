@@ -266,7 +266,7 @@ public abstract class ParserPropertiesTestBase<T extends ParserProperties> {
 
 	@Test
 	public void should_get_credentials_map_which_have_been_set_in_property() {
-		final CredentialsRepository credentialsRepository = parser.parseCredentialsProperties();
+		final ParsingCredentialsRepository credentialsRepository = parser.parseCredentialsProperties();
 		Assert.assertNotNull(credentialsRepository);
 		Assert.assertEquals(9, credentialsRepository.findAll().size());
 		Assert.assertTrue(credentialsRepository.contains(TRIPADVISOR_SERVICE_ID, null,

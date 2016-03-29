@@ -55,7 +55,7 @@ public abstract class ParserProperties {
 	 * @return a map of servicePlanID (List<String>) and credentials
 	 *         (Map<String, Object>)
 	 */
-	public abstract CredentialsRepository parseCredentialsProperties();
+	public abstract ParsingCredentialsRepository parseCredentialsProperties();
 
 	public abstract String getServiceName(String serviceID);
 
@@ -81,7 +81,7 @@ public abstract class ParserProperties {
 		}
 	}
 	
-	public void checkAllServicesPlansHaveCredentialDefinition(CredentialsRepository credentialsRepository) throws IllegalArgumentException{
+	public void checkAllServicesPlansHaveCredentialDefinition(ParsingCredentialsRepository credentialsRepository) throws IllegalArgumentException{
 		//get name of all services defined
 		ServicesMap servicesMap = this.parseServicesProperties();
 		for (String serviceID : servicesMap.getServicesID()) {

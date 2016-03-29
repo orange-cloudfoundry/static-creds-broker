@@ -14,7 +14,7 @@ public class ServicePlanBuilder {
         return this;
     }
 
-    public ServicePlan build() {
-        return new ServicePlan(serviceID, planID);
+    public ServicePlanID build() {
+        return new ServicePlanID(serviceID, planID);
     }
 }

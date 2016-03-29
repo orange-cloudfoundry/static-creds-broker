@@ -1,23 +1,16 @@
 package com.orange.model;
 
-import java.util.Arrays;
-import java.util.UUID;
-
 /**
  * Created by YSBU7453 on 17/03/2016.
  */
-public class ServicePlan {
+public class ServicePlanID {
 
     private String serviceId;
     private String planId;
 
-    public ServicePlan(String serviceID, String planID) {
+    public ServicePlanID(String serviceID, String planID) {
         this.serviceId = serviceID;
         this.planId = planID;
-    }
-
-    public String getPlanUid() {
-        return UUID.nameUUIDFromBytes(Arrays.asList(serviceId, planId).toString().getBytes()).toString();
     }
 
     @Override
@@ -25,7 +18,7 @@ public class ServicePlan {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ServicePlan that = (ServicePlan) o;
+        ServicePlanID that = (ServicePlanID) o;
 
         if (!serviceId.equals(that.serviceId)) return false;
         return planId != null ? planId.equals(that.planId) : that.planId == null;
