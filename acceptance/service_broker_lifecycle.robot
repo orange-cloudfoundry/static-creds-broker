@@ -1,10 +1,9 @@
 *** Settings ***
-Resource            Keywords.robot
+Resource            keywords.robot
 Documentation   Test basic service broker lifecycle
 Library         String
 Library         Collections
 Force Tags      Service broker
-Library         Compare      ${USE_YAML_CONFIG}      ${MANIFEST_PATH}       ${CONFIG_PATH}
 
 Suite Setup      Run Keywords  Cloud Foundry config and target   Clean all service broker data
 Suite Teardown   Run Keywords  Clean all service broker data
@@ -20,13 +19,12 @@ Suite Teardown   Run Keywords  Clean all service broker data
 
 2) Test service instance lifecycle
 	[Documentation]		Test for each plan of each service defined (Create/Delete a service instance; Create/Delete a service key; Bind/Unbind service instance to the application [${TEST_APP_NAME}]).
-    ${services}=    Get services name and its plans name 
-    ${services}=    Get Dictionary Items    ${services}
-    :FOR    ${service_name}     ${service_plans}     IN  @{services}
-    \       ${service_instance_name}=   Generate Random String
-    \       ${service_key_name}=    Generate Random String
-    \       Test service instance lifecycle for multi plans of a service ${service_name} ${service_plans} ${service_instance_name} ${service_key_name}
-    [Teardown]      Clean up services ${service_instance_name} ${service_key_name} ${TEST_APP_NAME}
+    [Template]      Test service instance lifecycle for the service ${service_name} plan ${plan_name}
+    "TRIPADVISOR_test_Service"      "default"
+    "API_DIRECTORY_test_Service"    "dev"
+    "API_DIRECTORY_test_Service"    "preprod"
+    "API_DIRECTORY_test_Service"    "prod"
+    "static-creds-service-test"     "myplan"
 
 3) Unregister borker
 	[Documentation]		Remove the registered private broker, which means remove all services and plans in the broker’s catalog from the Cloud Foundry Marketplace.
@@ -37,8 +35,10 @@ Suite Teardown   Run Keywords  Clean all service broker data
     Undeploy service broker
 
 *** Keywords ***
-Test service instance lifecycle for one service plan ${service_name} ${plan_name} ${service_instance_name} ${service_key_name}
+Test service instance lifecycle for the service ${service_name} plan ${plan_name}
     [Documentation]     Test lifecycle of the plan [${PLAN_NAME}] of the service [${SERVICE_NAME}] (Create/Delete a service instance; Create/Delete a service key; Bind/Unbind service instance to the application [${TEST_APP_NAME}]).
+    ${service_instance_name}=   Generate Random String
+    ${service_key_name}=    Generate Random String
     Create service instance ${service_name} ${plan_name} ${service_instance_name}
     Create service key ${service_instance_name} ${service_key_name}
     Get service key ${service_instance_name} ${service_key_name}
@@ -46,8 +46,9 @@ Test service instance lifecycle for one service plan ${service_name} ${plan_name
     Bind service ${TEST_APP_NAME} ${service_instance_name}
     Unbind service ${TEST_APP_NAME} ${service_instance_name}
     Delete service instance ${service_instance_name}
+    [Teardown]      Delete service instance ${service_instance_name} with service key ${service_key_name} and bound to ${TEST_APP_NAME}
 
-Test service instance lifecycle for multi plans of a service ${service_name} ${plan_list} ${service_instance_name} ${service_key_name}
-    [Documentation]     Iterate to test each plan of the service [${SERVICE_NAME}]
-    :FOR    ${plan_name}     IN     @{plan_list}
-    \       Test service instance lifecycle for one service plan ${service_name} ${plan_name} ${service_instance_name} ${service_key_name}
+Delete service instance ${service_instance_name} with service key ${service_key_name} and bound to ${TEST_APP_NAME}
+    Delete service key ${service_instance_name} ${service_key_name}
+    Unbind service ${TEST_APP_NAME} ${service_instance_name}
+    Delete service instance ${service_instance_name}
