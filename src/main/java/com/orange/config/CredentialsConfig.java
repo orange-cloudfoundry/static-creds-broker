@@ -35,26 +35,21 @@ public class CredentialsConfig {
 		parserProperties.checkAllServicesPlansHaveCredentialDefinition(parsingCredentialsRepository);
 		ParsedCredentialsRepository parsedCredentialsRepository = new ParsedCredentialsRepository();
 		// credentials for all plans of the service
-		for (Entry<ServicePlanID, Credentials> entry : parsingCredentialsRepository.findAll()) {
-			ServicePlanID service_plan_id = entry.getKey();
-			if (service_plan_id.getPlanId() == null) {
-				String service_id = service_plan_id.getServiceId();
-				String service_name = parserProperties.getServiceName(service_id);
-				for (String plan_name : parserProperties.parsePlansProperties(service_id).getNames()) {
-					parsedCredentialsRepository.save(service_name, plan_name, entry.getValue());
-				}
+		for (Entry<String, Credentials> entry : parsingCredentialsRepository.findAllServicesCredentials()) {
+			String service_id = entry.getKey();
+			String service_name = parserProperties.getServiceName(service_id);
+			for (String plan_name : parserProperties.parsePlansProperties(service_id).getNames()) {
+				parsedCredentialsRepository.save(service_name, plan_name, entry.getValue());
 			}
 		}
 		// credentials for specific plans
-		for (Entry<ServicePlanID, Credentials> entry : parsingCredentialsRepository.findAll()) {
+		for (Entry<ServicePlanID, Credentials> entry : parsingCredentialsRepository.findAllPlansCredentials()) {
 			ServicePlanID service_plan_id = entry.getKey();
-			if (service_plan_id.getPlanId() != null) {
-				String service_id = service_plan_id.getServiceId();
-				String service_name = parserProperties.getServiceName(service_id);
-				String plan_id = service_plan_id.getPlanId();
-				String plan_name = parserProperties.getPlanName(service_id, plan_id);
-				parsedCredentialsRepository.save(service_name, plan_name, entry.getValue());
-			}
+			String service_id = service_plan_id.getServiceId();
+			String service_name = parserProperties.getServiceName(service_id);
+			String plan_id = service_plan_id.getPlanId();
+			String plan_name = parserProperties.getPlanName(service_id, plan_id);
+			parsedCredentialsRepository.save(service_name, plan_name, entry.getValue());
 		}
 		return parsedCredentialsRepository;
 	}

@@ -97,11 +97,11 @@ public class ParserApplicationProperties extends ParserProperties{
 					if ("CREDENTIALS".equals(serviceProperties.getKey())) {
 						if (serviceProperties.getValue() instanceof Map<?, ?>) {
 							for (Map.Entry<?, ?> credentialProperty : ((Map<?, ?>)serviceProperties.getValue()).entrySet() ) {
-								credentialsRepository.save(entry.getKey(), null, credentialProperty.getKey().toString(), credentialProperty.getValue().toString(), this);
+								credentialsRepository.save(entry.getKey(), credentialProperty.getKey().toString(), credentialProperty.getValue().toString(), this);
 							}
 						}
 						else if (serviceProperties.getValue() instanceof String) {
-							credentialsRepository.save(entry.getKey(), null, parseCredentialsJSON(serviceProperties.getValue().toString()), this);
+							credentialsRepository.save(entry.getKey(), parseCredentialsJSON(serviceProperties.getValue().toString()), this);
 						}
 					}
 					if ("PLAN".equals(serviceProperties.getKey())) {

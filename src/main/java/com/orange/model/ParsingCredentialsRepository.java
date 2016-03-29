@@ -11,48 +11,68 @@ import com.orange.util.ParserProperties;
  * identification could be "id" named in env. variables or name
  */
 public class ParsingCredentialsRepository {
+	private Map<ServicePlanID, Credentials> plansCredentialsMap = new HashMap<>();
+	private Map<String, Credentials> servicesCredentialsMap = new HashMap<>();
 
-	private Map<ServicePlanID, Credentials> credentialsMap = new HashMap<>();
-
-	/**
-	 *
-	 * @param servicePlan
-	 * @param credentialKey
-	 * @param credentialValue
-	 */
 	public void save(String serviceID, String planID, String credentialKey, Object credentialValue, ParserProperties parserProperties) {
 		Credentials credentialsToAdd = new Credentials();
 		credentialsToAdd.put(credentialKey, credentialValue);
 		save(serviceID, planID, credentialsToAdd, parserProperties);
 	}
 	
-	/**
-	 * 
-	 * @param servicePlan
-	 * @param credentialsToAdd
-	 */
 	public void save(String serviceID, String planID, Credentials credentialsToAdd, ParserProperties parserProperties) {
+		if (planID == null) {
+			save(serviceID, credentialsToAdd, parserProperties);
+			return;
+		}
 		parserProperties.checkServiceMandatoryPropertiesDefined(serviceID); 
 		ServicePlanID servicePlan = new ServicePlanID(serviceID, planID);
-		Credentials credentials = credentialsMap.get(servicePlan);
+		Credentials credentials = plansCredentialsMap.get(servicePlan);
 		if (credentials == null) {
 			credentials = new Credentials();
 		}
 		credentials.putAll(credentialsToAdd);
-		credentialsMap.put(servicePlan, credentials);
+		plansCredentialsMap.put(servicePlan, credentials);
+	}
+	
+	public void save(String serviceID, String credentialKey, Object credentialValue, ParserProperties parserProperties) {
+		Credentials credentialsToAdd = new Credentials();
+		credentialsToAdd.put(credentialKey, credentialValue);
+		save(serviceID, credentialsToAdd, parserProperties);
+	}
+	
+	public void save(String serviceID, Credentials credentialsToAdd, ParserProperties parserProperties) {
+		parserProperties.checkServiceMandatoryPropertiesDefined(serviceID); 
+		Credentials credentials = servicesCredentialsMap.get(serviceID);
+		if (credentials == null) {
+			credentials = new Credentials();
+		}
+		credentials.putAll(credentialsToAdd);
+		servicesCredentialsMap.put(serviceID, credentials);
 	}
 
 	/**
-	 * get all keys which has credentials defined 
+	 * get all credentials defined for a plan
 	 * @return
 	 */
-	public Set<Entry<ServicePlanID,Credentials>> findAll(){
-		return credentialsMap.entrySet();
+	public Set<Entry<ServicePlanID, Credentials>> findAllPlansCredentials() {
+		return plansCredentialsMap.entrySet();
+	}
+
+	/**
+	 * get all credentials defined for a service (i.e. for all plans of the service)
+	 * @return
+	 */
+	public Set<Entry<String, Credentials>> findAllServicesCredentials() {
+		return servicesCredentialsMap.entrySet();
 	}
 	
 	public boolean contains(String serviceID, String planID, String credentialKey, Object credentialValue){
+		if (planID == null) {
+			return contains(serviceID, credentialKey, credentialValue);
+		}
 		ServicePlanID servicePlan = new ServicePlanBuilder().withServiceID(serviceID).withPlanID(planID).build();
-		Credentials credentials = credentialsMap.get(servicePlan);
+		Credentials credentials = plansCredentialsMap.get(servicePlan);
 		if (credentials != null && credentials.toMap().get(credentialKey).equals(credentialValue)) {
 			return true;
 		}
@@ -62,7 +82,24 @@ public class ParsingCredentialsRepository {
 	}
 	
 	public boolean contains(String serviceID, String planID){
+		if (planID == null) {
+			return contains(serviceID);
+		}
 		ServicePlanID servicePlan = new ServicePlanBuilder().withServiceID(serviceID).withPlanID(planID).build();
-		return credentialsMap.containsKey(servicePlan);
+		return plansCredentialsMap.containsKey(servicePlan);
+	}
+	
+	public boolean contains(String serviceID, String credentialKey, Object credentialValue){
+		Credentials credentials = servicesCredentialsMap.get(serviceID);
+		if (credentials != null && credentials.toMap().get(credentialKey).equals(credentialValue)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	public boolean contains(String serviceID){
+		return servicesCredentialsMap.containsKey(serviceID);
 	}
 }

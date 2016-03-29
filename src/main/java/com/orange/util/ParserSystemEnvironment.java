@@ -161,7 +161,7 @@ public class ParserSystemEnvironment extends ParserProperties {
 			Matcher serviceCredentialJsonMatcher = serviceCredentialJsonPattern.matcher(key);
 			if (serviceCredentialJsonMatcher.find()) {
 				String serviceID = serviceCredentialJsonMatcher.group("serviceid");
-				credentialsRepository.save(serviceID, null, parseCredentialsJSON(entry.getValue()), this);
+				credentialsRepository.save(serviceID, parseCredentialsJSON(entry.getValue()), this);
 				continue;
 			}
 
@@ -172,7 +172,7 @@ public class ParserSystemEnvironment extends ParserProperties {
 			if (serviceCredentialPropertyMatcher.find()) {
 				String serviceID = serviceCredentialPropertyMatcher.group("serviceid");
 				String credentialProperty = serviceCredentialPropertyMatcher.group("credentialProperty");
-				credentialsRepository.save(serviceID, null, credentialProperty, entry.getValue(), this);
+				credentialsRepository.save(serviceID, credentialProperty, entry.getValue(), this);
 				continue;
 			}
 
