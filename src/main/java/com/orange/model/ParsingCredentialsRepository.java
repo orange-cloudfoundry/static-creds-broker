@@ -71,7 +71,7 @@ public class ParsingCredentialsRepository {
 		if (planID == null) {
 			return contains(serviceID, credentialKey, credentialValue);
 		}
-		ServicePlanID servicePlan = new ServicePlanBuilder().withServiceID(serviceID).withPlanID(planID).build();
+		ServicePlanID servicePlan = new ServicePlanID(serviceID, planID);
 		Credentials credentials = plansCredentialsMap.get(servicePlan);
 		if (credentials != null && credentials.toMap().get(credentialKey).equals(credentialValue)) {
 			return true;
@@ -85,7 +85,7 @@ public class ParsingCredentialsRepository {
 		if (planID == null) {
 			return contains(serviceID);
 		}
-		ServicePlanID servicePlan = new ServicePlanBuilder().withServiceID(serviceID).withPlanID(planID).build();
+		ServicePlanID servicePlan = new ServicePlanID(serviceID, planID);
 		return plansCredentialsMap.containsKey(servicePlan);
 	}
 	
