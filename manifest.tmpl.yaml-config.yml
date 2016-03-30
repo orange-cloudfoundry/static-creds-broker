@@ -1,0 +1,12 @@
+---
+applications:
+- name: <broker_app_name>
+  instances: 1
+  memory: 256M
+  host: <broker_hostname>
+  domain: <my-admin-domain.cf.io>
+  path: static-creds-broker-<LATEST_RELEASE_VERSION>.war
+
+  env:
+    # mandatory variables
+    SECURITY_USER_PASSWORD: <broker_password>

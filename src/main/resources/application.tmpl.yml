@@ -1,8 +1,9 @@
-enable: false
+enable: <whether_use_yaml_config>
+# security properties could be removed, if it's configured in the manifest.yml through environment variable SECURITY_USER_NAME and SECURITY_USER_PASSWORD
 security:
     user:
-        password: hipwd
-services:
+        password: <broker_password>
+services:  
     TRIPADVISOR:
         NAME: TRIPADVISOR_test_Service
         DESCRIPTION: My existing service 
