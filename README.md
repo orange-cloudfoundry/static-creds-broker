@@ -18,7 +18,8 @@ $ curl -O -L $LATEST_RELEASE_URL
 $ unzip static-creds-broker.zip
 
 # Configure the broker through environment variables, possibly captured in a CF CLI manifest file
-# A sample default example manifest file is provided, adapt it to your environment (in particular set the domain)
+# A sample default example manifest file (manifest.tmpl.yml) is provided, create a manifest.yml file by adapting it to your environment (in particular set the domain)
+Note: Be careful that services and plans name should be unique in the scope of your Cloud Foundry platform.
 
 $ vi manifest.yml
 ---
@@ -37,7 +38,7 @@ applications:
     SERVICES_ID_METADATA_LONGDESCRIPTION: A long description for my service
     SERVICES_ID_CREDENTIALS_URI: mysql://USERNAME:PASSWORD@HOSTNAME:PORT/NAME
 # deploy the broker    
-$ cf push -d mydomain.org -p static-cred*.war 
+$ cf push 
 
 # Register the broker system-wise (requires cloudcontroller.admin i.e. admin access to the CloudFoundry instance)
 # refer to http://docs.cloudfoundry.org/services/managing-service-brokers.html#register-brokre
