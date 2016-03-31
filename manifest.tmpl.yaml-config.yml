@@ -5,7 +5,7 @@ applications:
   memory: 256M
   host: <broker_hostname>
   domain: <my-admin-domain.cf.io>
-  path: static-creds-broker-<LATEST_RELEASE_VERSION>.war
+  path: <binary_jar_exploded_path>
 
   env:
     # mandatory variables
