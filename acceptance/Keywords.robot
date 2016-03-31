@@ -1,17 +1,21 @@
 *** Settings ***
+Library         String
 Library         Process
 Variables       Configuration.py
 
 *** Keywords ***
 Execute:
     [Documentation]     Execute command which uses cf-cli, return the standard output of the command result.  
-    [arguments]     ${cmd}  ${CF_TRACE}=false    ${cwd}=.
-    ${result}=		Run Process    ${cmd}   cwd=${cwd}  env:CF_COLOR=false    env:CF_TRACE=${CF_TRACE}		shell=True
+    [arguments]     ${cmd}  ${CF_TRACE}=false    ${current_working_directory}=.
+    ${result}=		Run Process    ${cmd}   cwd=${current_working_directory}  env:CF_COLOR=false    env:CF_TRACE=${CF_TRACE}		shell=True
     [return]		${result.stdout}
 
-Execute command: ${cmd}
+Execute command:
+	[arguments]     ${cmd}  ${current_working_directory}=.
     [Documentation]     Execute command which not uses cf-cli, and verify the command was executed successfully.
-    ${result}=      Run Process    ${cmd}    shell=True
+    ${result}=      Run Process    ${cmd}    cwd=${current_working_directory}     shell=True
+    Log     ${result.stdout}
+    Log     ${result.stderr}
     Should Be Equal As Integers     ${result.rc}    0
 
 Cloud Foundry config and target
@@ -22,27 +26,69 @@ Cloud Foundry config and target
     Log		${result}
     Should Contain  ${result}   OK
 
-Clean all service broker data
-    [Documentation]     Delete the service broker, and deployed broker application if exist.
+Unregister and undeploy broker
     Unregister service broker
     Undeploy service broker
 
-Replace ${old_str} with ${new_str} in the file ${file_path}
-    Execute command: sed -i.bak s/${old_str}/${new_str}/ ${file_path}
+Clean all service broker data
+    [Documentation]     Delete the service broker, deployed broker application and deploy directory if exist.
+    Unregister and undeploy broker
+    Execute command: 	rm -rf ${DEPLOY_PATH}
 
-Edit manifest file
-    [Documentation]     create the manifest.yml and adapt it to the running environment
-    Execute command: cp ${MANIFEST_TMPL_PATH} ${MANIFEST_PATH}
+Replace ${old_str} with ${new_str} in the file ${file_path}
+    Execute command: 	sed -i s#${old_str}#${new_str}# ${file_path}
+
+Create manifest file ${MANIFEST_PATH} based on manifest.tmpl.yml
+    [Documentation]     create the manifest.yml based on template ${MANIFEST_TMPL_PATH} and adapt it to the running environment
+    Execute command: 	cp ${MANIFEST_TMPL_PATH} ${MANIFEST_PATH}
     Replace "<broker_app_name>" with ${BROKER_APP_NAME} in the file ${MANIFEST_PATH}
     Replace "<broker_hostname>" with ${BROKER_HOSTNAME} in the file ${MANIFEST_PATH}
     Replace "<my-admin-domain.cf.io>" with ${BROKER_DOMAIN} in the file ${MANIFEST_PATH}
     Replace "<LATEST_RELEASE_VERSION>" with ${BROKER_RELEASE_VERSION} in the file ${MANIFEST_PATH}
     Replace "<broker_password>" with ${BROKER_PASSWORD} in the file ${MANIFEST_PATH}
 
-Deploy service broker
+Create manifest file ${MANIFEST_PATH} based on manifest.tmpl.yaml-config.yml with <binary_jar_exploded_path> ${BINARY_JAR_EXPLODED_PATH}
+    [Documentation]     create the manifest.yml based on template ${MANIFEST_TMPL_YAML_CONFIG_PATH} and adapt it to the running environment
+    Execute command: 	cp ${MANIFEST_TMPL_YAML_CONFIG_PATH} ${MANIFEST_PATH}
+    Replace "<broker_app_name>" with ${BROKER_APP_NAME} in the file ${MANIFEST_PATH}
+    Replace "<broker_hostname>" with ${BROKER_HOSTNAME} in the file ${MANIFEST_PATH}
+    Replace "<my-admin-domain.cf.io>" with ${BROKER_DOMAIN} in the file ${MANIFEST_PATH}
+    Replace "<binary_jar_exploded_path>" with "${BINARY_JAR_EXPLODED_PATH}" in the file ${MANIFEST_PATH}
+    Replace "<broker_password>" with ${BROKER_PASSWORD} in the file ${MANIFEST_PATH}
+
+Create yaml configuration file ${YAML_CONFIG_PATH} based on template ${YAML_CONFIG_TMPL_PATH}
+    [Documentation]     create the application.yml file based on template application.tmpl.yml
+    Execute command: 	cp ${YAML_CONFIG_TMPL_PATH} ${YAML_CONFIG_PATH}
+    Replace "<whether_use_yaml_config>" with true in the file ${YAML_CONFIG_PATH}
+    Replace "<broker_password>" with ${BROKER_PASSWORD} in the file ${YAML_CONFIG_PATH}
+
+Prepare deployment of service broker 
+    Run Keyword If      ${USE_YAML_CONFIG}      Prepare deployment of service broker configured by yaml configuration file
+    Run Keyword Unless  ${USE_YAML_CONFIG}      Prepare deployment of service broker configured by environment variables
+
+Prepare deployment of service broker configured by environment variables
+	${MANIFEST_PATH}= 	Get file path ${DEPLOY_PATH} manifest.yml
+    Create manifest file ${MANIFEST_PATH} based on manifest.tmpl.yml
+
+Prepare deployment of service broker configured by yaml configuration file
+    ${BINARY_JAR_DIR_NAME}=    Generate Random String
+    ${BINARY_JAR_EXPLODED_PATH}=	Get directory path ${DEPLOY_PATH} ${BINARY_JAR_DIR_NAME}
+    Execute command: 	unzip -q ${BINARY_JAR_PATH} -d ${BINARY_JAR_EXPLODED_PATH}
+    ${YAML_CONFIG_PATH}=		Get file path ${BINARY_JAR_EXPLODED_PATH} application.yml
+    ${YAML_CONFIG_TMPL_PATH}=	Get file path ${BINARY_JAR_EXPLODED_PATH} application.tmpl.yml
+    Create yaml configuration file ${YAML_CONFIG_PATH} based on template ${YAML_CONFIG_TMPL_PATH}
+    ${MANIFEST_PATH}= 	Get file path ${DEPLOY_PATH} manifest.yml
+    Create manifest file ${MANIFEST_PATH} based on manifest.tmpl.yaml-config.yml with <binary_jar_exploded_path> ${BINARY_JAR_EXPLODED_PATH}
+
+Deploy service broker 
     [Documentation]     Deploy the broker as an application on the Cloud Foundry.
-    Edit manifest file
-    ${result}=	Execute:     cf push    cwd=${BINARY_DIRECTORY}
+    ${DEPLOY_DIR_NAME}=    Generate Random String
+    ${DEPLOY_PATH}=		Get directory path ${BINARY_DIRECTORY} ${DEPLOY_DIR_NAME}
+    Execute command: 	mkdir ${DEPLOY_DIR_NAME} 	current_working_directory=${BINARY_DIRECTORY}
+    Execute command: 	cp ${BINARY_JAR_PATH} ${DEPLOY_PATH}
+    Set Suite Variable  ${DEPLOY_PATH}
+    Prepare deployment of service broker
+    ${result}=	Execute:     cf push    current_working_directory=${DEPLOY_PATH}
     Log	    ${result}
     Should Not Contain  ${result}   FAILED
     ${result}=  Execute:     cf apps
@@ -120,3 +166,11 @@ Get application environment ${app_name}
     Log     ${result}
     Should Contain  ${result}   OK
     [return]     ${result}
+
+Get file path ${dir_path} ${file_name}
+    ${file_path}=     Catenate    SEPARATOR=     ${dir_path}     ${file_name}
+    [return]    ${file_path}
+
+Get directory path ${parent_dir_path} ${dir_name}
+    ${dir_path}=	Catenate    SEPARATOR=     ${parent_dir_path}     ${dir_name}  /
+    [return]    ${dir_path}   
