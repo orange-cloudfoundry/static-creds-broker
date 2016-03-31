@@ -88,23 +88,20 @@ public class ParserApplicationProperties extends ParserProperties{
 	}
 
 	@Override
-	public CredentialsRepository parseCredentialsProperties() {
-		CredentialsRepository credentialsRepository = new CredentialsRepository();
+	public ParsingCredentialsRepository parseCredentialsProperties() {
+		ParsingCredentialsRepository credentialsRepository = new ParsingCredentialsRepository();
 		for (Map.Entry<String, Object> entry : services.entrySet()) {
-			checkServiceMandatoryPropertiesDefined(entry.getKey());
 			if (entry.getValue() instanceof Map<?, ?>) {
 				Map<?, ?> servicesProperties = (Map<?, ?>) entry.getValue();
 				for (Map.Entry<?, ?> serviceProperties : servicesProperties.entrySet()) {
 					if ("CREDENTIALS".equals(serviceProperties.getKey())) {
 						if (serviceProperties.getValue() instanceof Map<?, ?>) {
 							for (Map.Entry<?, ?> credentialProperty : ((Map<?, ?>)serviceProperties.getValue()).entrySet() ) {
-								ServicePlan servicePlan = new ServicePlanBuilder().withServiceID(entry.getKey()).build();
-								credentialsRepository.save(servicePlan, credentialProperty.getKey().toString(), credentialProperty.getValue().toString());
+								credentialsRepository.save(entry.getKey(), credentialProperty.getKey().toString(), credentialProperty.getValue().toString(), this);
 							}
 						}
 						else if (serviceProperties.getValue() instanceof String) {
-							ServicePlan servicePlan = new ServicePlanBuilder().withServiceID(entry.getKey()).build();
-							credentialsRepository.save(servicePlan, parseCredentialsJSON(serviceProperties.getValue().toString()));
+							credentialsRepository.save(entry.getKey(), parseCredentialsJSON(serviceProperties.getValue().toString()), this);
 						}
 					}
 					if ("PLAN".equals(serviceProperties.getKey())) {
@@ -115,13 +112,11 @@ public class ParserApplicationProperties extends ParserProperties{
 										if ("CREDENTIALS".equals(planProperty.getKey())) {
 											if (planProperty.getValue() instanceof Map<?, ?>) {
 												for (Map.Entry<?, ?> credentialProperty : ((Map<?, ?>)planProperty.getValue()).entrySet() ) {
-													ServicePlan servicePlan = new ServicePlanBuilder().withServiceID(entry.getKey()).withPlanID(planProperties.getKey().toString()).build();
-													credentialsRepository.save(servicePlan, credentialProperty.getKey().toString(), credentialProperty.getValue().toString());
+													credentialsRepository.save(entry.getKey(), planProperties.getKey().toString(), credentialProperty.getKey().toString(), credentialProperty.getValue().toString(), this);
 												}
 											}
 											else if (planProperty.getValue() instanceof String) {
-												ServicePlan servicePlan = new ServicePlanBuilder().withServiceID(entry.getKey()).withPlanID(planProperties.getKey().toString()).build();
-												credentialsRepository.save(servicePlan, parseCredentialsJSON(planProperty.getValue().toString()));
+												credentialsRepository.save(entry.getKey(), planProperties.getKey().toString(), parseCredentialsJSON(planProperty.getValue().toString()), this);
 											}
 										}
 									}

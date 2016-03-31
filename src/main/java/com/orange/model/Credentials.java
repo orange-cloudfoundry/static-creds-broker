@@ -19,7 +19,7 @@ public class Credentials {
         return Collections.unmodifiableMap(credentials);
     }
 
-    public void put(String credentialName, Object credentialValue) {
-        this.credentials.put(credentialName,credentialValue);
+    public void put(String credentialKey, Object credentialValue) {
+        this.credentials.put(credentialKey,credentialValue);
     }
 }

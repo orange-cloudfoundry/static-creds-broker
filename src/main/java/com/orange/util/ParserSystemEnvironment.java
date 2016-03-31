@@ -1,7 +1,6 @@
 package com.orange.util;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -150,8 +149,8 @@ public class ParserSystemEnvironment extends ParserProperties {
 	 *         Object>)
 	 */
 	@Override
-	public CredentialsRepository parseCredentialsProperties() {
-		CredentialsRepository credentialsRepository = new CredentialsRepository();
+	public ParsingCredentialsRepository parseCredentialsProperties() {
+		ParsingCredentialsRepository credentialsRepository = new ParsingCredentialsRepository();
 		Map<String, String> env = environment.get();
 		for (Map.Entry<String, String> entry : env.entrySet()) {
 			String key = entry.getKey();
@@ -162,9 +161,7 @@ public class ParserSystemEnvironment extends ParserProperties {
 			Matcher serviceCredentialJsonMatcher = serviceCredentialJsonPattern.matcher(key);
 			if (serviceCredentialJsonMatcher.find()) {
 				String serviceID = serviceCredentialJsonMatcher.group("serviceid");
-				checkServiceMandatoryPropertiesDefined(serviceID);
-				ServicePlan servicePlan = new ServicePlanBuilder().withServiceID(serviceID).build();
-				credentialsRepository.save(servicePlan, parseCredentialsJSON(entry.getValue()));
+				credentialsRepository.save(serviceID, parseCredentialsJSON(entry.getValue()), this);
 				continue;
 			}
 
@@ -174,10 +171,8 @@ public class ParserSystemEnvironment extends ParserProperties {
 			Matcher serviceCredentialPropertyMatcher = serviceCredentialPropertyPattern.matcher(key);
 			if (serviceCredentialPropertyMatcher.find()) {
 				String serviceID = serviceCredentialPropertyMatcher.group("serviceid");
-				checkServiceMandatoryPropertiesDefined(serviceID);
 				String credentialProperty = serviceCredentialPropertyMatcher.group("credentialProperty");
-				ServicePlan servicePlan = new ServicePlanBuilder().withServiceID(serviceID).build();
-				credentialsRepository.save(servicePlan, credentialProperty, entry.getValue());
+				credentialsRepository.save(serviceID, credentialProperty, entry.getValue(), this);
 				continue;
 			}
 
@@ -189,9 +184,7 @@ public class ParserSystemEnvironment extends ParserProperties {
 			if (planCredentialJsonMatcher.find()) {
 				String serviceID = planCredentialJsonMatcher.group("serviceid");
 				String planID = planCredentialJsonMatcher.group("planid");
-				checkServiceMandatoryPropertiesDefined(serviceID);
-				ServicePlan servicePlan = new ServicePlanBuilder().withServiceID(serviceID).withPlanID(planID).build();
-				credentialsRepository.save(servicePlan, parseCredentialsJSON(entry.getValue()));
+				credentialsRepository.save(serviceID, planID, parseCredentialsJSON(entry.getValue()), this);
 				continue;
 			}
 
@@ -202,10 +195,8 @@ public class ParserSystemEnvironment extends ParserProperties {
 			if (planCredentialPropertyMatcher.find()) {
 				String serviceID = planCredentialPropertyMatcher.group("serviceid");
 				String planID = planCredentialPropertyMatcher.group("planid");
-				checkServiceMandatoryPropertiesDefined(serviceID);
 				String credentialProperty = planCredentialPropertyMatcher.group("credentialProperty");
-				ServicePlan servicePlan = new ServicePlanBuilder().withServiceID(serviceID).withPlanID(planID).build();
-				credentialsRepository.save(servicePlan, credentialProperty, entry.getValue());
+				credentialsRepository.save(serviceID, planID, credentialProperty, entry.getValue(), this);
 				continue;
 			}
 		}

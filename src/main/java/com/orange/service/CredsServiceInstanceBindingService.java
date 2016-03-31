@@ -8,14 +8,14 @@ import org.springframework.cloud.servicebroker.model.DeleteServiceInstanceBindin
 import org.springframework.cloud.servicebroker.service.ServiceInstanceBindingService;
 import org.springframework.stereotype.Service;
 
-import com.orange.model.CredentialsRepository;
+import com.orange.model.ParsedCredentialsRepository;
 
 @Service
 public class CredsServiceInstanceBindingService implements ServiceInstanceBindingService {
-    private CredentialsRepository credentialsRepository;
+    private ParsedCredentialsRepository credentialsRepository;
 
     @Autowired
-    public CredsServiceInstanceBindingService(CredentialsRepository credentialsRepository) {
+    public CredsServiceInstanceBindingService(ParsedCredentialsRepository credentialsRepository) {
         this.credentialsRepository = credentialsRepository;
     }
 
