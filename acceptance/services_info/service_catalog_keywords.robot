@@ -12,7 +12,7 @@ Execute: CF_TRACE=true ${cmd}
     [return]		${result}
 
 Delete file ${file_path}
-    Execute command: rm ${file_path}
+    Execute command:    rm ${file_path}
 
 Write service ${service_name} catalog info in marketplace to the file ${service_name}.txt
     [Documentation]     Get service catalog info from Cloud Foundry marketplace, write it to ${service_name}.txt file.
