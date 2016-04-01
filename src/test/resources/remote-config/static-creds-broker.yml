@@ -1,3 +1,4 @@
+enable: true
 services:
     API_DIRECTORY:
         NAME: API_DIRECTORY_test_Service
