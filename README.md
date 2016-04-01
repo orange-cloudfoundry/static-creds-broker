@@ -14,12 +14,12 @@ $ LATEST_RELEASE_URL=$(curl -s https://api.github.com/repos/Orange-OpenSource/st
 $ echo "Downloading $LATEST_RELEASE_URL"
 $ curl -O -L $LATEST_RELEASE_URL
 
-# Unzip the zip release of this broker. The zip contains binary release and manifest file.
+# Unzip the zip release of this broker. The zip contains binary release and manifest template file.
 $ unzip static-creds-broker.zip
 
 # Configure the broker through environment variables, possibly captured in a CF CLI manifest file
-# Example manifest files (manifest.tmpl.yml, manifest.tmpl.remote-config.yml) are provided, create a manifest.yml file by adapting it to your environment (in particular set the domain)
-# Remember that credentials can be set using env variables (see manifest.tmpl.yml) or by referencing external configuration properties backed in a remote git repository (see manifest.tmpl.remote-config.yml)
+# Example manifest files (manifest.tmpl.yml, manifest.tmpl.yaml-config.yml, manifest.tmpl.remote-config.yml) are provided, create a manifest.yml file by adapting it to your environment (in particular set the domain)
+# Remember that credentials can be set using env variables (see manifest.tmpl.yml), using local configuration properties (see manifest.tmpl.yaml-config.yml) or by referencing external configuration properties backed in a remote git repository (see manifest.tmpl.remote-config.yml)
 Note: Be careful that services and plans name should be unique in the scope of your Cloud Foundry platform.
 
 $ vi manifest.yml
@@ -82,7 +82,7 @@ The catalog exposed by the broker is controlled by environment variables matchin
 * SERVICES_{SERVICE_ID}_NAME (mandatory String, no default): the technical name of the service which should be unique among the cloudfoundry installation to register with (among orgs and spaces).
 * SERVICES_{SERVICE_ID}_DESCRIPTION (mandatory String, no default)
 * SERVICES_{SERVICE_ID}_BINDEABLE (default is "true"). Useful for service keys.
-* SERVICES_{SERVICE_ID}_TAGS (array-of-strings, default is ```[]```)
+* SERVICES_{SERVICE_ID}_TAGS (String holding an array-of-strings, multiple tags are separated by comma, as ```tag1,tag2,tag3```, default is ```[]```)
 * SERVICES_{SERVICE_ID}_METADATA_DISPLAYNAME (String, default is SERVICES_ID_NAME). The user-facing name of the service.
 * SERVICES_{SERVICE_ID}_METADATA_IMAGEURL (String, default is "")
 * SERVICES_{SERVICE_ID}_METADATA_SUPPORTURL (String, default is "")
@@ -144,7 +144,7 @@ Acceptance tests source code is available in the "acceptance" folder. To run it 
   - source it ```source {ACCEPTANCE_TEST_DIRECTORY}/acceptance.env```
 - Run the acceptance test with the command: 
 ```
-robot --pythonpath {ACCEPTANCE_TEST_DIRECTORY} {ACCEPTANCE_TEST_DIRECTORY}
+robot --pythonpath {ACCEPTANCE_TEST_DIRECTORY}/classes/ {ACCEPTANCE_TEST_DIRECTORY}
 ```
 
 # FAQ
