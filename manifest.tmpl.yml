@@ -10,6 +10,7 @@ applications:
   env:
     # mandatory variables
     SECURITY_USER_PASSWORD: <broker_password>
+    SPRING_PROFILES_ACTIVE: native
     # The following environment settings is a example configuration, and used for acceptance test. Please change it to your own services definitions.
     # Note: - At least one service is required to be defined.
     #       - For each service defined, its 'NAME' and 'DESCRIPTION' is required.

@@ -10,3 +10,4 @@ applications:
   env:
     # mandatory variables
     SECURITY_USER_PASSWORD: <broker_password>
+    SPRING_PROFILES_ACTIVE: native
