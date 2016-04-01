@@ -11,7 +11,7 @@ import java.util.UUID;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cloud.servicebroker.model.Catalog;
 import org.springframework.cloud.servicebroker.model.Plan;
 import org.springframework.cloud.servicebroker.model.ServiceDefinition;
@@ -24,21 +24,16 @@ import com.orange.model.PlanPropertyName;
 import com.orange.model.PlansMap;
 import com.orange.model.ServicePropertyName;
 import com.orange.model.ServicesMap;
-import com.orange.util.Environment;
-import com.orange.util.ParserApplicationProperties;
 import com.orange.util.ParserProperties;
-import com.orange.util.ParserSystemEnvironment;
 
 @Configuration
 public class CatalogConfig {
 	private ServicesMap servicesMap = new ServicesMap();
-	@Value("${enable:false}")
-	private boolean useApplicationProperties;
 	@Autowired
-	private ParserApplicationProperties parserApplicationProperties;
+	@Qualifier("parserProperties")
+	private ParserProperties parserProperties;
 	@Bean
 	public Catalog catalog() {
-		ParserProperties parserProperties = useApplicationProperties ? parserApplicationProperties : new ParserSystemEnvironment(new Environment());
 		parserProperties.checkPasswordDefined();
 		servicesMap = parserProperties.parseServicesProperties();
 		parserProperties.checkAtLeastOneServiceDefined(servicesMap);

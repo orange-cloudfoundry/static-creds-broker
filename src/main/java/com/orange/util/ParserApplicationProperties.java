@@ -3,6 +3,7 @@ package com.orange.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import com.orange.model.*;
 
 @Configuration
+@Qualifier("parserApplicationProperties")
 @ConfigurationProperties
 public class ParserApplicationProperties extends ParserProperties{
 	private Map<String, Object> services = new HashMap<>();
