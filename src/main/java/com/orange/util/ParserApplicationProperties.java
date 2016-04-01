@@ -58,25 +58,17 @@ public class ParserApplicationProperties extends ParserProperties{
 	@Override
 	public PlansMap parsePlansProperties(String serviceID) {
 		PlansMap plansMap = new PlansMap();
-		Object serviceProperties = services.get(serviceID);
-		if (serviceProperties instanceof Map<?, ?>) {
-			Map<?, ?> servicePropertiesMap = (Map<?, ?>)serviceProperties;
-			Object plansProperties = servicePropertiesMap.get("PLAN");
-			if (plansProperties instanceof Map<?, ?>) {
-				Map<?, ?> plansPropertiesMap = (Map<?, ?>)plansProperties;
-				for(Map.Entry<?, ?> entry: plansPropertiesMap.entrySet()){
-					if (entry.getKey() instanceof String) {
-						String planID = (String)entry.getKey();
-						plansMap.addPlanWithoutProperty(planID);
-						Object planProperties = entry.getValue();
-						if (planProperties instanceof Map<?, ?>) {
-							Map<?, ?> planPropertiesMap = (Map<?, ?>)planProperties;
-							for (PlanPropertyName planPropertyName : PlanPropertyName.values()) {
-								Object planPropertyValue = planPropertiesMap.get(planPropertyName.toString());
-								if (planPropertyValue != null) {
-									plansMap.addPlanProperty(planID, planPropertyName, planPropertyValue.toString());
-								}
-							}
+		Object plansProperties = getNestedMapValue(services, serviceID, "PLAN");
+		if (plansProperties instanceof Map<?, ?>) {
+			for (Map.Entry<?, ?> planProperties : ((Map<?, ?>) plansProperties).entrySet()) {
+				String planID = planProperties.getKey().toString();
+				plansMap.addPlanWithoutProperty(planID);
+				if (planProperties.getValue() instanceof Map<?, ?>) {
+					Map<?, ?> planPropertiesMap = (Map<?, ?>) planProperties.getValue();
+					for (PlanPropertyName planPropertyName : PlanPropertyName.values()) {
+						Object planPropertyValue = planPropertiesMap.get(planPropertyName.toString());
+						if (planPropertyValue != null) {
+							plansMap.addPlanProperty(planID, planPropertyName, planPropertyValue.toString());
 						}
 					}
 				}
@@ -91,36 +83,31 @@ public class ParserApplicationProperties extends ParserProperties{
 	public ParsingCredentialsRepository parseCredentialsProperties() {
 		ParsingCredentialsRepository credentialsRepository = new ParsingCredentialsRepository();
 		for (Map.Entry<String, Object> entry : services.entrySet()) {
-			if (entry.getValue() instanceof Map<?, ?>) {
-				Map<?, ?> servicesProperties = (Map<?, ?>) entry.getValue();
-				for (Map.Entry<?, ?> serviceProperties : servicesProperties.entrySet()) {
-					if ("CREDENTIALS".equals(serviceProperties.getKey())) {
-						if (serviceProperties.getValue() instanceof Map<?, ?>) {
-							for (Map.Entry<?, ?> credentialProperty : ((Map<?, ?>)serviceProperties.getValue()).entrySet() ) {
-								credentialsRepository.save(entry.getKey(), credentialProperty.getKey().toString(), credentialProperty.getValue().toString(), this);
-							}
-						}
-						else if (serviceProperties.getValue() instanceof String) {
-							credentialsRepository.save(entry.getKey(), parseCredentialsJSON(serviceProperties.getValue().toString()), this);
-						}
+			String serviceID = entry.getKey();
+			Map<?, ?> servicesProperties = (Map<?, ?>) entry.getValue();
+			if (servicesProperties instanceof Map<?, ?>) {
+				Object serviceCredentials = getNestedMapValue((Map<?, ?>) servicesProperties, "CREDENTIALS");
+				if (serviceCredentials instanceof Map<?, ?>) {
+					for (Map.Entry<?, ?> credentialProperty : ((Map<?, ?>)serviceCredentials).entrySet() ) {
+						credentialsRepository.save(serviceID, credentialProperty.getKey().toString(), credentialProperty.getValue().toString(), this);
 					}
-					if ("PLAN".equals(serviceProperties.getKey())) {
-						if (serviceProperties.getValue() instanceof Map<?, ?>) {
-							for (Map.Entry<?, ?> planProperties : ((Map<?, ?>)serviceProperties.getValue()).entrySet()) {
-								if (planProperties.getValue() instanceof Map<?, ?>) {
-									for (Map.Entry<?, ?> planProperty : ((Map<?, ?>)planProperties.getValue()).entrySet()) {
-										if ("CREDENTIALS".equals(planProperty.getKey())) {
-											if (planProperty.getValue() instanceof Map<?, ?>) {
-												for (Map.Entry<?, ?> credentialProperty : ((Map<?, ?>)planProperty.getValue()).entrySet() ) {
-													credentialsRepository.save(entry.getKey(), planProperties.getKey().toString(), credentialProperty.getKey().toString(), credentialProperty.getValue().toString(), this);
-												}
-											}
-											else if (planProperty.getValue() instanceof String) {
-												credentialsRepository.save(entry.getKey(), planProperties.getKey().toString(), parseCredentialsJSON(planProperty.getValue().toString()), this);
-											}
-										}
-									}
+				}
+				else if (serviceCredentials instanceof String) {
+					credentialsRepository.save(serviceID, parseCredentialsJSON(serviceCredentials.toString()), this);
+				}
+				Object plansProperties = getNestedMapValue((Map<?, ?>) servicesProperties, "PLAN");
+				if (plansProperties instanceof Map<?, ?>) {
+					for (Map.Entry<?, ?> planProperties : ((Map<?, ?>) plansProperties).entrySet()) {
+						String planID = planProperties.getKey().toString();
+						if (planProperties.getValue() instanceof Map<?, ?>) {
+							Object plansCredentials = getNestedMapValue((Map<?, ?>) planProperties.getValue(), "CREDENTIALS");
+							if (plansCredentials instanceof Map<?, ?>) {
+								for (Map.Entry<?, ?> credentialProperty : ((Map<?, ?>)plansCredentials).entrySet() ) {
+									credentialsRepository.save(serviceID, planID, credentialProperty.getKey().toString(), credentialProperty.getValue().toString(), this);
 								}
+							}
+							else if (plansCredentials instanceof String) {
+								credentialsRepository.save(serviceID, planID, parseCredentialsJSON(plansCredentials.toString()), this);
 							}
 						}
 					}
@@ -132,26 +119,12 @@ public class ParserApplicationProperties extends ParserProperties{
 
 	@Override
 	public String getServiceName(String serviceID) {
-		Object serviceProperties = this.services.get(serviceID);
-		if (serviceProperties instanceof Map<?, ?>) {
-			return ((Map<?, ?>)serviceProperties).get("NAME").toString();
-		}
-		return null;
+		return getNestedMapValue(services, serviceID, "NAME").toString();
 	}
 
 	@Override
 	public String getPlanName(String serviceID, String planID) {
-		Object serviceProperties = this.services.get(serviceID);
-		if (serviceProperties instanceof Map<?, ?>) {
-			Object plansProperties = ((Map<?, ?>)serviceProperties).get("PLAN");
-			if (plansProperties instanceof Map<?, ?>) {
-				Object planProperties = ((Map<?, ?>)plansProperties).get(planID);
-				if (planProperties instanceof Map<?, ?>) {
-					return ((Map<?, ?>)planProperties).get("NAME").toString();
-				}
-			}
-		}
-		return null;
+		return getNestedMapValue(services, serviceID, "PLAN", planID, "NAME").toString();
 	}
 
 	@Override
@@ -175,7 +148,7 @@ public class ParserApplicationProperties extends ParserProperties{
 		}
 	}
 	
-	public static Object getNestedMapValue(Map<String, Object> nestedMap, String... nestedKeys) {
+	public static Object getNestedMapValue(Map<?, ?> nestedMap, String... nestedKeys) {
 		Map<?, ?> currentLevelMap = nestedMap;
 		for (int i = 0; i < nestedKeys.length; i++) {
 			String key = nestedKeys[i];
