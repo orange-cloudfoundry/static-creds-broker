@@ -75,7 +75,6 @@ Prepare deployment of service broker configured by yaml configuration file
     ${BINARY_JAR_EXPLODED_PATH}=	Get directory path ${DEPLOY_PATH} ${BINARY_JAR_DIR_NAME}
     Execute command: 	unzip -q ${BINARY_JAR_PATH} -d ${BINARY_JAR_EXPLODED_PATH}
     ${YAML_CONFIG_PATH}=		Get file path ${BINARY_JAR_EXPLODED_PATH} application.yml
-    ${YAML_CONFIG_TMPL_PATH}=	Get file path ${BINARY_JAR_EXPLODED_PATH} application.tmpl.yml
     Create yaml configuration file ${YAML_CONFIG_PATH} based on template ${YAML_CONFIG_TMPL_PATH}
     ${MANIFEST_PATH}= 	Get file path ${DEPLOY_PATH} manifest.yml
     Create manifest file ${MANIFEST_PATH} based on manifest.tmpl.yaml-config.yml with <binary_jar_exploded_path> ${BINARY_JAR_EXPLODED_PATH}

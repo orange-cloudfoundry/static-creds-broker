@@ -22,7 +22,8 @@ We need to unzip .jar binary release to create the configuration file applicatio
 ```
 $ unzip static-creds-broker-$LATEST_RELEASE_VERSION.jar -d static-creds-broker-exploded/
 $ cd static-creds-broker-exploded/
-$ cp application.tmpl.yml application.yml
+$ cp ../application.tmpl.yml application.yml
+# edit the configuration file application.yml to your proper services properties.
 $ vi application.yml
 enable: true
 security:

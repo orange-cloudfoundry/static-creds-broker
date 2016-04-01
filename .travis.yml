@@ -3,7 +3,7 @@ sudo: true
 jdk:
 - oraclejdk8
 after_success:
-- zip -j static-creds-broker manifest.tmpl.yml manifest.tmpl.yaml-config.yml manifest.tmpl.remote-config.yml target/*.jar
+- zip -j static-creds-broker manifest.tmpl.yml manifest.tmpl.yaml-config.yml manifest.tmpl.remote-config.yml application.tmpl.yml target/*.jar
 deploy:
   provider: releases
   skip_cleanup: true

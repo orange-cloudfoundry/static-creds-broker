@@ -26,3 +26,4 @@ TEST_APP_NAME = os.environ.get("test_application_name").replace("\r","")
 
 MANIFEST_TMPL_YAML_CONFIG_PATH = BINARY_DIRECTORY + "manifest.tmpl.yaml-config.yml"
 BINARY_JAR_PATH = BINARY_DIRECTORY + "static-creds-broker-" + BROKER_RELEASE_VERSION + ".jar"
+YAML_CONFIG_TMPL_PATH = BINARY_DIRECTORY + "application.tmpl.yml"
