@@ -25,7 +25,6 @@ $ cd static-creds-broker-exploded/
 $ cp ../application.tmpl.yml application.yml
 # edit the configuration file application.yml to your proper services properties.
 $ vi application.yml
-enable: true
 security:
     user:
         password: MySecurePwd
@@ -66,7 +65,6 @@ Note: broker security properties could be configured either in application.yml o
 Note: <service_id> and <plan_id> should not contain "."
 The properties meaning and default value could be consulted in [README](https://github.com/Orange-OpenSource/static-creds-broker#config-reference)
 ```
-enable: <whether_use_yaml_config>
 security:
     user:
         name: <broker_username>

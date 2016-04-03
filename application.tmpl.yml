@@ -1,4 +1,3 @@
-enable: <whether_use_yaml_config>
 # security properties could be removed, if it's configured in the manifest.yml through environment variable SECURITY_USER_NAME and SECURITY_USER_PASSWORD
 security:
     user:

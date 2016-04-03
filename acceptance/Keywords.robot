@@ -59,7 +59,6 @@ Create manifest file ${MANIFEST_PATH} based on manifest.tmpl.yaml-config.yml wit
 Create yaml configuration file ${YAML_CONFIG_PATH} based on template ${YAML_CONFIG_TMPL_PATH}
     [Documentation]     create the application.yml file based on template application.tmpl.yml
     Execute command: 	cp ${YAML_CONFIG_TMPL_PATH} ${YAML_CONFIG_PATH}
-    Replace "<whether_use_yaml_config>" with true in the file ${YAML_CONFIG_PATH}
     Replace "<broker_password>" with ${BROKER_PASSWORD} in the file ${YAML_CONFIG_PATH}
 
 Prepare deployment of service broker 
