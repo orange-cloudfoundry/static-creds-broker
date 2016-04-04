@@ -94,8 +94,9 @@ public class ParserApplicationProperties extends ParserProperties{
 						credentialsRepository.save(serviceID, credentialProperty.getKey().toString(), credentialProperty.getValue().toString(), this);
 					}
 				}
-				else if (serviceCredentials instanceof String) {
-					credentialsRepository.save(serviceID, parseCredentialsJSON(serviceCredentials.toString()), this);
+				Object serviceCredentialsJson = getNestedMapValue((Map<?, ?>) servicesProperties, "CREDENTIALS_JSON");
+				if (serviceCredentialsJson instanceof String) {
+					credentialsRepository.save(serviceID, parseCredentialsJSON(serviceCredentialsJson.toString()), this);
 				}
 				Object plansProperties = getNestedMapValue((Map<?, ?>) servicesProperties, "PLAN");
 				if (plansProperties instanceof Map<?, ?>) {
@@ -108,8 +109,9 @@ public class ParserApplicationProperties extends ParserProperties{
 									credentialsRepository.save(serviceID, planID, credentialProperty.getKey().toString(), credentialProperty.getValue().toString(), this);
 								}
 							}
-							else if (plansCredentials instanceof String) {
-								credentialsRepository.save(serviceID, planID, parseCredentialsJSON(plansCredentials.toString()), this);
+							Object plansCredentialsJson = getNestedMapValue((Map<?, ?>) planProperties.getValue(), "CREDENTIALS_JSON");
+							if (plansCredentialsJson instanceof String) {
+								credentialsRepository.save(serviceID, planID, parseCredentialsJSON(plansCredentialsJson.toString()), this);
 							}
 						}
 					}

@@ -8,6 +8,9 @@ import org.junit.rules.ExpectedException;
 
 import com.orange.model.*;
 
+import java.util.Map;
+import java.util.Set;
+
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.MapAssert.entry;
 
@@ -69,7 +72,7 @@ public abstract class ParserPropertiesTestBase<T extends ParserProperties> {
 	protected static final String TRIPADVISOR_SERVICE_CREDENTIALS_VALUE1 = "admin";
 	protected static final String TRIPADVISOR_SERVICE_CREDENTIALS_KEY2 = "password";
 	protected static final String TRIPADVISOR_SERVICE_CREDENTIALS_VALUE2 = "pa55woRD";
-	protected static final String TRIPADVISOR_CREDENTIALS = "{\"" + TRIPADVISOR_SERVICE_CREDENTIALS_KEY1 + "\":\""
+	protected static final String TRIPADVISOR_CREDENTIALS_JSON = "{\"" + TRIPADVISOR_SERVICE_CREDENTIALS_KEY1 + "\":\""
 			+ TRIPADVISOR_SERVICE_CREDENTIALS_VALUE1 + "\",\"" + TRIPADVISOR_SERVICE_CREDENTIALS_KEY2 + "\":\""
 			+ TRIPADVISOR_SERVICE_CREDENTIALS_VALUE2 + "\"}";
 	protected static final String TEST_SERVICE_SERVICE_ID = "TEST_SERVICE";
@@ -267,6 +270,7 @@ public abstract class ParserPropertiesTestBase<T extends ParserProperties> {
 	@Test
 	public void should_get_credentials_map_which_have_been_set_in_property() {
 		final ParsingCredentialsRepository credentialsRepository = parser.parseCredentialsProperties();
+		final Set<Map.Entry<String, Credentials>> allServicesCredentials = credentialsRepository.findAllServicesCredentials();
 		Assert.assertNotNull(credentialsRepository);
 		Assert.assertEquals(3, credentialsRepository.findAllServicesCredentials().size());
 		Assert.assertEquals(6, credentialsRepository.findAllPlansCredentials().size());

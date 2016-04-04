@@ -52,4 +52,4 @@ applications:
     #SERVICES_ID_PLAN_1_FREE: false
     SERVICES_ID_CREDENTIALS_uri: mysql://USERNAME:PASSWORD@HOSTNAME:PORT/NAME
     SERVICES_ID_CREDENTIALS_HOSTNAME: us-cdbr-east-03.cleardb.com
-    SERVICES_ID_CREDENTIALS: '{"username":"admin","password":"pa55woRD"}' #if same key defined SERVICES_ID_CREDENTIALS_MYOWNKEY, value will replace that in SERVICES_ID_CREDENTIALS_MYOWNKEY
+    SERVICES_ID_CREDENTIALS_JSON: '{"username":"admin","password":"pa55woRD"}' #if same key defined SERVICES_ID_CREDENTIALS_MYOWNKEY, value will replace that in SERVICES_ID_CREDENTIALS_MYOWNKEY

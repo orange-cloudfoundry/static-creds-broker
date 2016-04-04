@@ -25,7 +25,7 @@ public class ParserApplicationPropertiesTest extends ParserPropertiesTestBase<Pa
 	protected ParserApplicationProperties createInstanceWithServiceNoCredential() {
 		ParserApplicationProperties parserApplicationProperties = new ParserApplicationProperties();
 		Map<String, Object> servicesProperty = getServicesProperty();
-		((Map<?, ?>)(servicesProperty.get(TRIPADVISOR_SERVICE_ID))).remove("CREDENTIALS");
+		((Map<?, ?>)(servicesProperty.get(TRIPADVISOR_SERVICE_ID))).remove("CREDENTIALS_JSON");
 		parserApplicationProperties.setServices(servicesProperty);
 		return parserApplicationProperties;
 	}
@@ -90,7 +90,7 @@ public class ParserApplicationPropertiesTest extends ParserPropertiesTestBase<Pa
 		service_TRIPADVISOR.put("DESCRIPTION", TRIPADVISOR_DESCRIPTION);
 		service_TRIPADVISOR.put("TAGS", TRIPADVISOR_TAGS);
 		service_TRIPADVISOR.put("METADATA", getTRIPADVISORServiceMetadataProperty());
-		service_TRIPADVISOR.put("CREDENTIALS", TRIPADVISOR_CREDENTIALS);
+		service_TRIPADVISOR.put("CREDENTIALS_JSON", TRIPADVISOR_CREDENTIALS_JSON);
 		services.put(TRIPADVISOR_SERVICE_ID, service_TRIPADVISOR);
 		Map<String, Object> service_TEST_SERVICE = new HashMap<>();
 		service_TEST_SERVICE.put("NAME", TEST_SERVICE_NAME);

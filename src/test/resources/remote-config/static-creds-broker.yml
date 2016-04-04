@@ -1,9 +1,4 @@
-services:  
-    TRIPADVISOR:
-        NAME: TRIPADVISOR_test_Service
-        DESCRIPTION: My existing service 
-        CREDENTIALS:
-            URI: http://....
+services:
     API_DIRECTORY:
         NAME: API_DIRECTORY_test_Service
         DESCRIPTION: My existing service
@@ -38,11 +33,13 @@ services:
             SUPPORTURL: https://github.com/tao-xinxiu/static-creds-broker
             DOCUMENTATIONURL: https://github.com/tao-xinxiu/static-creds-broker
             PROVIDERDISPLAYNAME: provider display name
-            LONGDESCRIPTION: A long description for my service
+            LONGDESCRIPTION: A long description for my services
         PLAN:
             1:
                 NAME: myplan
                 DESCRIPTION: The description of the plan
                 #METADATA: '{"bullets":["20 GB of messages","20 connections"],"costs":[{"amount":{"usd":99.0,"eur":49.0},"unit":"MONTHLY"},{"amount":{"usd":0.99,"eur":0.49},"unit":"1GB of messages over 20GB"}],"displayName":"Big Bunny"}'
                 #FREE: false
-        CREDENTIALS: '{"username":"admin", "password":"pa55woRD", "uri":"mysql://USERNAME:PASSWORD@HOSTNAME:PORT/NAME", "HOSTNAME": "us-cdbr-east-03.cleardb.com"}'
+        CREDENTIALS_JSON: '{"username":"admin","password":"pa55woRD"}'
+            # uri: mysql://USERNAME:PASSWORD@HOSTNAME:PORT/NAME
+            # HOSTNAME: us-cdbr-east-03.cleardb.com
