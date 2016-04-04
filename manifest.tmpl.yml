@@ -1,6 +1,6 @@
 ---
 applications:
-- name: static-creds-broker-test
+- name: <broker_app_name>
   instances: 1
   memory: 256M
   host: <broker_hostname>

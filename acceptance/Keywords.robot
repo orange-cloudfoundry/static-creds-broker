@@ -7,19 +7,23 @@ Variables       Configuration.py
 Execute:
     [Documentation]     Execute command which uses cf-cli, return the standard output of the command result.  
     [arguments]     ${cmd}  ${CF_TRACE}=false    ${current_working_directory}=.
-    ${result}=		Run Process    ${cmd}   cwd=${current_working_directory}  env:CF_COLOR=false    env:CF_TRACE=${CF_TRACE}		shell=True
+    ${result}=		Run Process    ${cmd}   cwd=${current_working_directory}  env:CF_COLOR=false    env:CF_TRACE=${CF_TRACE}	stdout=${DEPLOY_PATH}/stdout.txt 	shell=True
     [return]		${result.stdout}
 
 Execute command:
 	[arguments]     ${cmd}  ${current_working_directory}=.
     [Documentation]     Execute command which not uses cf-cli, and verify the command was executed successfully.
-    ${result}=      Run Process    ${cmd}    cwd=${current_working_directory}     shell=True
+    ${result}=      Run Process    ${cmd}    cwd=${current_working_directory}     stdout=${DEPLOY_PATH}/stdout.txt 	shell=True
     Log     ${result.stdout}
     Log     ${result.stderr}
     Should Be Equal As Integers     ${result.rc}    0
 
-Cloud Foundry config and target
-    [Documentation]     Configure Cloud Foundry local to en_US and no color, and login to Cloud Foundry.
+Prepare test environment
+    [Documentation]     Prepare a testing env, create a temporary directory, configure Cloud Foundry local to en_US and no color, and login to Cloud Foundry.
+    ${DEPLOY_DIR_NAME}=    Generate Random String
+    ${DEPLOY_PATH}=		Get directory path ${BINARY_DIRECTORY} ${DEPLOY_DIR_NAME}
+    Run Process    mkdir ${DEPLOY_DIR_NAME} 	cwd=${BINARY_DIRECTORY} 	shell=True
+    Set Global Variable  ${DEPLOY_PATH}
     Execute:    cf config --locale en_US --color false
     ${result}=  Run Keyword If 	${CF_SKIP_SSL}     Execute:    cf login -a ${CF_ENDPOINT} -u ${CF_USER} -p ${CF_PASSWORD} -o ${ORGANIZATION_NAME} -s ${SPACE_NAME} --skip-ssl-validation
     ...     ELSE    Execute:    cf login -a ${CF_ENDPOINT} -u ${CF_USER} -p ${CF_PASSWORD} -o ${ORGANIZATION_NAME} -s ${SPACE_NAME}
@@ -33,7 +37,7 @@ Unregister and undeploy broker
 Clean all service broker data
     [Documentation]     Delete the service broker, deployed broker application and deploy directory if exist.
     Unregister and undeploy broker
-    Execute command: 	rm -rf ${DEPLOY_PATH}
+    Run Process    rm -rf ${DEPLOY_PATH} 	shell=True
 
 Replace ${old_str} with ${new_str} in the file ${file_path}
     Execute command: 	sed -i s#${old_str}#${new_str}# ${file_path}
@@ -61,9 +65,26 @@ Create yaml configuration file ${YAML_CONFIG_PATH} based on template ${YAML_CONF
     Execute command: 	cp ${YAML_CONFIG_TMPL_PATH} ${YAML_CONFIG_PATH}
     Replace "<broker_password>" with ${BROKER_PASSWORD} in the file ${YAML_CONFIG_PATH}
 
-Prepare deployment of service broker 
-    Run Keyword If      ${USE_YAML_CONFIG}      Prepare deployment of service broker configured by yaml configuration file
-    Run Keyword Unless  ${USE_YAML_CONFIG}      Prepare deployment of service broker configured by environment variables
+Create manifest file ${MANIFEST_PATH} based on manifest.tmpl.remote-config.yml
+    [Documentation]     create the manifest.yml based on template ${MANIFEST_TMPL_REMOTE_CONFIG_PATH} and adapt it to the running environment
+    Execute command:    cp ${MANIFEST_TMPL_REMOTE_CONFIG_PATH} ${MANIFEST_PATH}
+    Replace "<broker_app_name>" with ${BROKER_APP_NAME} in the file ${MANIFEST_PATH}
+    Replace "<broker_hostname>" with ${BROKER_HOSTNAME} in the file ${MANIFEST_PATH}
+    Replace "<my-admin-domain.cf.io>" with ${BROKER_DOMAIN} in the file ${MANIFEST_PATH}
+    Replace "<LATEST_RELEASE_VERSION>" with ${BROKER_RELEASE_VERSION} in the file ${MANIFEST_PATH}
+    Replace "<broker_password>" with ${BROKER_PASSWORD} in the file ${MANIFEST_PATH}
+    Run keyword If  ${USE_PROXY}    
+    ...             Run keywords
+    ...             Replace "\\\\#JAVA_OPTS:" with "JAVA_OPTS:" in the file ${MANIFEST_PATH}
+    ...             Replace "http_proxyhost" with ${HTTP_PROXYHOST} in the file ${MANIFEST_PATH}
+    ...             Replace "http_proxyport" with ${HTTP_PROXYPORT} in the file ${MANIFEST_PATH}
+    ...             Replace "https_proxyhost" with ${HTTPS_PROXYHOST} in the file ${MANIFEST_PATH}
+    ...             Replace "https_proxyport" with ${HTTPS_PROXYPORT} in the file ${MANIFEST_PATH}
+
+Prepare deployment of service broker
+    Run Keyword If      ${USE_REMOTE_CONFIG}    Prepare deployment of service broker configured by remote yaml configuration file
+    ...                 ELSE IF                 ${USE_YAML_CONFIG}      Prepare deployment of service broker configured by yaml configuration file
+    ...                 ELSE                    Prepare deployment of service broker configured by environment variables
 
 Prepare deployment of service broker configured by environment variables
 	${MANIFEST_PATH}= 	Get file path ${DEPLOY_PATH} manifest.yml
@@ -72,19 +93,19 @@ Prepare deployment of service broker configured by environment variables
 Prepare deployment of service broker configured by yaml configuration file
     ${BINARY_JAR_DIR_NAME}=    Generate Random String
     ${BINARY_JAR_EXPLODED_PATH}=	Get directory path ${DEPLOY_PATH} ${BINARY_JAR_DIR_NAME}
-    Execute command: 	unzip -q ${BINARY_JAR_PATH} -d ${BINARY_JAR_EXPLODED_PATH}
+    Execute command: 	unzip ${BINARY_JAR_PATH} -d ${BINARY_JAR_EXPLODED_PATH}
     ${YAML_CONFIG_PATH}=		Get file path ${BINARY_JAR_EXPLODED_PATH} application.yml
     Create yaml configuration file ${YAML_CONFIG_PATH} based on template ${YAML_CONFIG_TMPL_PATH}
     ${MANIFEST_PATH}= 	Get file path ${DEPLOY_PATH} manifest.yml
     Create manifest file ${MANIFEST_PATH} based on manifest.tmpl.yaml-config.yml with <binary_jar_exploded_path> ${BINARY_JAR_EXPLODED_PATH}
 
+Prepare deployment of service broker configured by remote yaml configuration file
+    ${MANIFEST_PATH}=   Get file path ${DEPLOY_PATH} manifest.yml
+    Create manifest file ${MANIFEST_PATH} based on manifest.tmpl.remote-config.yml
+
 Deploy service broker 
     [Documentation]     Deploy the broker as an application on the Cloud Foundry.
-    ${DEPLOY_DIR_NAME}=    Generate Random String
-    ${DEPLOY_PATH}=		Get directory path ${BINARY_DIRECTORY} ${DEPLOY_DIR_NAME}
-    Execute command: 	mkdir ${DEPLOY_DIR_NAME} 	current_working_directory=${BINARY_DIRECTORY}
     Execute command: 	cp ${BINARY_JAR_PATH} ${DEPLOY_PATH}
-    Set Suite Variable  ${DEPLOY_PATH}
     Prepare deployment of service broker
     ${result}=	Execute:     cf push    current_working_directory=${DEPLOY_PATH}
     Log	    ${result}

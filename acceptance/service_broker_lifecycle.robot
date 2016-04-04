@@ -5,7 +5,7 @@ Library         String
 Library         Collections
 Force Tags      Service broker
 
-Suite Setup      Run Keywords  Cloud Foundry config and target   Unregister and undeploy broker
+Suite Setup      Run Keywords  Prepare test environment   Unregister and undeploy broker
 Suite Teardown   Run Keywords  Clean all service broker data
 
 *** Test Cases ***

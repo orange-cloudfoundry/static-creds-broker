@@ -20,6 +20,7 @@ BROKER_RELEASE_VERSION = os.environ.get("broker_release_version").replace("\r","
 BROKER_PASSWORD = os.environ.get("broker_password").replace("\r","")
 
 USE_YAML_CONFIG = os.environ.get("use_yaml_config", "false").replace("\r","").lower() == "true"
+USE_REMOTE_CONFIG = os.environ.get("use_remote_config", "false").replace("\r","").lower() == "true"
 BROKER_NAME = os.environ.get("broker_name").replace("\r","")
 PROTOCOL = os.environ.get("protocol", "http").replace("\r","")
 TEST_APP_NAME = os.environ.get("test_application_name").replace("\r","")
@@ -27,3 +28,9 @@ TEST_APP_NAME = os.environ.get("test_application_name").replace("\r","")
 MANIFEST_TMPL_YAML_CONFIG_PATH = BINARY_DIRECTORY + "manifest.tmpl.yaml-config.yml"
 BINARY_JAR_PATH = BINARY_DIRECTORY + "static-creds-broker-" + BROKER_RELEASE_VERSION + ".jar"
 YAML_CONFIG_TMPL_PATH = BINARY_DIRECTORY + "application.tmpl.yml"
+MANIFEST_TMPL_REMOTE_CONFIG_PATH = BINARY_DIRECTORY + "manifest.tmpl.remote-config.yml"
+USE_PROXY = os.environ.get("use_proxy", "false").replace("\r","").lower() == "true"
+HTTP_PROXYHOST = os.environ.get("http_proxyhost", "").replace("\r","")
+HTTP_PROXYPORT = os.environ.get("http_proxyport", "").replace("\r","")
+HTTPS_PROXYHOST = os.environ.get("https_proxyhost", "").replace("\r","")
+HTTPS_PROXYPORT = os.environ.get("https_proxyport", "").replace("\r","")

@@ -1,21 +1,23 @@
 ---
 applications:
-- name: static-creds-broker-test
+- name: <broker_app_name>
   instances: 1
   memory: 256M
   host: <broker_hostname>
   domain: <my-admin-domain.cf.io>
-  path: static-creds-broker-<LATEST_RELEASE_VERSION>.war
+  path: static-creds-broker-<LATEST_RELEASE_VERSION>.jar
 
   env:
     # mandatory variables
     SECURITY_USER_PASSWORD: <broker_password>
     # The following environment settings is a example configuration, and used for acceptance test. Please change it to your own services definitions.
-    SPRING_CLOUD_CONFIG_SERVER_GIT_URI: https://user:secret@mygit.mycompany.com/myrepo.git
+    # Change this value to the git uri which stores the remote config yaml file, in format https://user:secret@mygit.mycompany.com/myrepo.git
+    SPRING_CLOUD_CONFIG_SERVER_GIT_URI: https://github.com/Orange-OpenSource/static-creds-broker
     # The "label" is useful for rolling back to previous versions of configuration; with the default  Config Server implementation it can be a git label, branch name or commit id.
     SPRING_CLOUD_CONFIG_LABEL: master
     #you may need to set following properties, for details see spring cloud config documentation at http://cloud.spring.io/spring-cloud-static/spring-cloud.html#_spring_cloud_config_server
-    #SPRING_CLOUD_CONFIG_SERVER_GIT_SEARCH_PATHS: aPath_to_config_file
+    # Change this value to the path of your config file, if it is not at the top level directory
+    SPRING_CLOUD_CONFIG_SERVER_GIT_SEARCH_PATHS: src/test/resources/remote-config
     #SPRING_CLOUD_CONFIG_SERVER_GIT_USERNAME: git_user
     #SPRING_CLOUD_CONFIG_SERVER_GIT_PASSWORD: git_password
-    #JAVA_OPTS: "-Dhttp.proxyHost=proxyhost -Dhttp.proxyPort=proxyport"
+    #JAVA_OPTS: "-Dhttp.proxyHost=http_proxyhost -Dhttp.proxyPort=http_proxyport -Dhttps.proxyHost=https_proxyhost -Dhttps.proxyPort=https_proxyport"

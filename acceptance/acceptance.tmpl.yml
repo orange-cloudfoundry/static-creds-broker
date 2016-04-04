@@ -19,6 +19,8 @@ broker_password: __broker_password__
 
 # use application.yml or system environment variables set in manifest.yml to configure the broker (default value: false, which means using system environment variables)
 use_yaml_config: __use_yaml_config__
+# use remote yaml configuration file to configure the broker (default value: false, when it's set to true, the value of use_yaml_config will not be considered)
+use_remote_config:__use_remote_config__
 
 # The names to be used during the test (it should no be conflict with the names which are already in use in your cloud foundry instance)
 broker_name: __broker_name__
@@ -26,3 +28,10 @@ broker_name: __broker_name__
 protocol: __protocol__
 # The test application used to test service binding
 test_application_name: __test_application_name__
+
+# If your cloud foundry environment requires proxy for connecting git for remote configuration file, set use_proxy to true, and set your proxy. (Otherwise, the following variables are not required)
+use_proxy: __use_proxy__
+http_proxyhost: __http_proxyhost__
+http_proxyport: __http_proxyport__
+https_proxyhost: __https_proxyhost__
+https_proxyport: __https_proxyport__
