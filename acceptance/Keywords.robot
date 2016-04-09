@@ -91,8 +91,7 @@ Prepare deployment of service broker configured by environment variables
     Create manifest file ${MANIFEST_PATH} based on manifest.tmpl.yml
 
 Prepare deployment of service broker configured by yaml configuration file
-    ${BINARY_JAR_DIR_NAME}=    Generate Random String
-    ${BINARY_JAR_EXPLODED_PATH}=	Get directory path ${DEPLOY_PATH} ${BINARY_JAR_DIR_NAME}
+    ${BINARY_JAR_EXPLODED_PATH}=	Get directory path ${DEPLOY_PATH} static-creds-broker-exploded
     Execute command: 	unzip ${BINARY_JAR_PATH} -d ${BINARY_JAR_EXPLODED_PATH}
     ${YAML_CONFIG_PATH}=		Get file path ${BINARY_JAR_EXPLODED_PATH} application.yml
     Create yaml configuration file ${YAML_CONFIG_PATH} based on template ${YAML_CONFIG_TMPL_PATH}
@@ -143,7 +142,7 @@ Create service instance ${service_name} ${plan_name} ${service_instance_name}
     Log     ${result}
     Should Contain  ${result}   OK
 
-Delete service instance ${service_instance_name}
+Delete service instance ${service_instance_name:\S+}
     [Documentation]     Create a service instance.
     ${result}=  Execute:    cf delete-service ${service_instance_name} -f
     Log     ${result}
