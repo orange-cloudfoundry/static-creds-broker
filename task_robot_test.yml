@@ -8,4 +8,4 @@ inputs:
 
 run:
   path: robot
-  args: ["--pythonpath", "./acceptance/", "./acceptance/"]
+  args: ["--pythonpath", "./acceptance/classes/", "./acceptance/"]
