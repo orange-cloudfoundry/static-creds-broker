@@ -4,10 +4,9 @@ image: docker:///maven#latest
 
 inputs:
   - name: static-creds-broker
-    path: .
 
 outputs:
   - name: release
 
 run:
-  path: ./concourse/package.sh
+  path: static-creds-broker/concourse/package.sh
