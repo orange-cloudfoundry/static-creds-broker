@@ -4,7 +4,7 @@ image: docker:///maven#latest
 
 inputs:
   - name: static-creds-broker
-  	path: .
+    path: .
 
 run:
   path: ./package.sh
