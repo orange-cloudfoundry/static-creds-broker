@@ -4,8 +4,8 @@ image: docker:///tao1101/robotframework_cloudfoundry-client
 
 inputs:
   - name: static-creds-broker
-    path: .
+  - name: release
 
 run:
   path: robot
-  args: ["--pythonpath", "./acceptance/classes/", "./acceptance/"]
+  args: ["--pythonpath", "static-creds-broker/acceptance/classes/", "static-creds-broker/acceptance/"]
