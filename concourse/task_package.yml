@@ -4,7 +4,7 @@ image: docker:///maven#latest
 
 inputs:
   - name: static-creds-broker
-  	path: .
 
 run:
-  path: ./package.sh
+  path: mvn
+  args: ["-f", "static-creds-broker/pom.xml", "-DskipTests=true", "package"]
