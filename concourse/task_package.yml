@@ -6,5 +6,8 @@ inputs:
   - name: static-creds-broker
     path: .
 
+outputs:
+  - name: release
+
 run:
   path: ./concourse/package.sh
