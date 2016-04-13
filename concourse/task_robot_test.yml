@@ -1,6 +1,6 @@
 ---
 platform: linux
-image: docker:///tao1101/robotframework_cloudfoundry-client
+image: docker:///tao1101/robotframework_cf-cli
 
 inputs:
   - name: static-creds-broker
