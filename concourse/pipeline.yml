@@ -1,0 +1,29 @@
+---
+resources:
+- name: static-creds-broker  
+  type: git  
+  source:
+    uri: https://github.com/Orange-OpenSource/static-creds-broker.git
+    branch: concourse-acceptance-test
+
+jobs:
+- name: acceptance-test
+  public: true
+  plan: 
+  - get: static-creds-broker
+    trigger: true
+  - task: package
+    privileged: true
+    file: static-creds-broker/concourse/task_package.yml
+  - task: acceptance-test    
+    file: static-creds-broker/concourse/task_robot_test.yml    
+    ensure: 
+      task: print_log
+      config:
+        platform: linux
+        image: docker:///busybox
+        inputs:
+          - name: report
+        run:
+          path: cat
+          args: ["report/output.xml"]
