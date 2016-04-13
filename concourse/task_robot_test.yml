@@ -6,6 +6,8 @@ inputs:
   - name: static-creds-broker
   - name: release
 
+outputs:
+  - name: report
+
 run:
-  path: robot
-  args: ["--pythonpath", "static-creds-broker/acceptance/classes/", "static-creds-broker/acceptance/"]
+  path: static-creds-broker/concourse/acceptance_test.sh
