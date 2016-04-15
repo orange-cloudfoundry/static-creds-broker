@@ -1,6 +1,8 @@
 ---
 platform: linux
-image: docker:///tao1101/robotframework_cf-cli
+image_resource:
+  type: docker-image
+  source: {repository: tao1101/robotframework_cf-cli}
 
 inputs:
   - name: static-creds-broker
