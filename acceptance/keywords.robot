@@ -108,6 +108,7 @@ Deploy service broker
     Prepare deployment of service broker
     ${result}=	Execute:     cf push    current_working_directory=${DEPLOY_PATH}
     Log	    ${result}
+    Run Keyword If      'FAILED' in $result      Execute:   cf logs ${BROKER_APP_NAME} --recent
     Should Not Contain  ${result}   FAILED
     ${result}=  Execute:     cf apps
     Log     ${result}
