@@ -106,9 +106,10 @@ Deploy service broker
     [Documentation]     Deploy the broker as an application on the Cloud Foundry.
     Execute command: 	cp ${BINARY_JAR_PATH} ${DEPLOY_PATH}
     Prepare deployment of service broker
-    ${result}=	Execute:     cf push    current_working_directory=${DEPLOY_PATH}
+    ${result}=  Execute:    cf push    current_working_directory=${DEPLOY_PATH}
     Log	    ${result}
-    Run Keyword If      'FAILED' in $result      Execute:   cf logs ${BROKER_APP_NAME} --recent
+    ${appLog}=  Execute:    cf logs ${BROKER_APP_NAME} --recent
+    Log     ${appLog}
     Should Not Contain  ${result}   FAILED
     ${result}=  Execute:     cf apps
     Log     ${result}
