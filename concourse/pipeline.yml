@@ -15,33 +15,71 @@ jobs:
   - task: package
     privileged: true
     file: static-creds-broker/concourse/task_package.yml
-  - task: acceptance-test    
-    file: static-creds-broker/concourse/task_robot_test.yml
-    config:
-      params:         
-        cf_target_endpoint: {{cf_target_endpoint}}        
-        skip_ssl_verification: {{skip_ssl_verification}}        
-        cf_username: {{cf_username}}        
-        cf_password: {{cf_password}}        
-        organization_name: {{organization_name}}        
-        space_name: {{space_name}}
-        broker_app_name: {{broker_app_name}}
-        broker_hostname: {{broker_hostname}}
-        broker_domain: {{broker_domain}}
-        broker_release_version: {{broker_release_version}}
-        broker_password: {{broker_password}}
-        use_yaml_config: false
-        use_remote_config: false
-        broker_name: {{broker_name}}
-        protocol: {{protocol}}
-        test_application_name: {{test_application_name}}
-    ensure: 
-      task: print_log
+  - try:
+      task: acceptance-test-local-env
+      file: static-creds-broker/concourse/task_robot_test.yml
+      attempts: 2
       config:
-        platform: linux
-        image: docker:///busybox
-        inputs:
-          - name: report
-        run:
-          path: cat
-          args: ["report/output.xml"]
+        params:         
+          cf_target_endpoint: {{cf_target_endpoint}}        
+          skip_ssl_verification: {{skip_ssl_verification}}        
+          cf_username: {{cf_username}}        
+          cf_password: {{cf_password}}        
+          organization_name: {{organization_name}}        
+          space_name: {{space_name}}
+          broker_app_name: {{broker_app_name}}
+          broker_hostname: {{broker_hostname}}
+          broker_domain: {{broker_domain}}
+          broker_release_version: {{broker_release_version}}
+          broker_password: {{broker_password}}
+          broker_name: {{broker_name}}
+          protocol: {{protocol}}
+          test_application_name: {{test_application_name}} 
+  - task: print_log
+    file: static-creds-broker/concourse/task_print_test_log.yml
+  - try:
+      task: acceptance-test-local-config
+      file: static-creds-broker/concourse/task_robot_test.yml
+      attempts: 2
+      config:
+        params:         
+          cf_target_endpoint: {{cf_target_endpoint}}        
+          skip_ssl_verification: {{skip_ssl_verification}}        
+          cf_username: {{cf_username}}        
+          cf_password: {{cf_password}}        
+          organization_name: {{organization_name}}        
+          space_name: {{space_name}}
+          broker_app_name: {{broker_app_name}}
+          broker_hostname: {{broker_hostname}}
+          broker_domain: {{broker_domain}}
+          broker_release_version: {{broker_release_version}}
+          broker_password: {{broker_password}}
+          use_yaml_config: true
+          broker_name: {{broker_name}}
+          protocol: {{protocol}}
+          test_application_name: {{test_application_name}}
+  - task: print_log
+    file: static-creds-broker/concourse/task_print_test_log.yml
+  - try:
+      task: acceptance-test-remote-config
+      file: static-creds-broker/concourse/task_robot_test.yml
+      attempts: 2
+      config:
+        params:         
+          cf_target_endpoint: {{cf_target_endpoint}}        
+          skip_ssl_verification: {{skip_ssl_verification}}        
+          cf_username: {{cf_username}}        
+          cf_password: {{cf_password}}        
+          organization_name: {{organization_name}}        
+          space_name: {{space_name}}
+          broker_app_name: {{broker_app_name}}
+          broker_hostname: {{broker_hostname}}
+          broker_domain: {{broker_domain}}
+          broker_release_version: {{broker_release_version}}
+          broker_password: {{broker_password}}
+          use_remote_config: true
+          broker_name: {{broker_name}}
+          protocol: {{protocol}}
+          test_application_name: {{test_application_name}}
+  - task: print_log
+    file: static-creds-broker/concourse/task_print_test_log.yml
