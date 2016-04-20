@@ -17,7 +17,7 @@ jobs:
     file: static-creds-broker/concourse/task_package.yml
   - aggregate:
     - task: acceptance-test-local-env
-      file: static-creds-broker/concourse/task_robot_test.yml
+      file: static-creds-broker/concourse/task_acceptance_test.yml
       attempts: 2
       config:
         params:         
@@ -40,7 +40,7 @@ jobs:
         task: print_log
         file: static-creds-broker/concourse/task_print_test_log.yml
     - task: acceptance-test-local-config
-      file: static-creds-broker/concourse/task_robot_test.yml
+      file: static-creds-broker/concourse/task_acceptance_test.yml
       attempts: 2
       config:
         params:         
@@ -63,7 +63,7 @@ jobs:
         task: print_log
         file: static-creds-broker/concourse/task_print_test_log.yml
     - task: acceptance-test-remote-config
-      file: static-creds-broker/concourse/task_robot_test.yml
+      file: static-creds-broker/concourse/task_acceptance_test.yml
       attempts: 2
       config:
         params:         
