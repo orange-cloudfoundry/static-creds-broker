@@ -15,8 +15,8 @@ jobs:
   - task: package
     privileged: true
     file: static-creds-broker/concourse/task_package.yml
-  - try:
-      task: acceptance-test-local-env
+  - aggregate:
+    - task: acceptance-test-local-env
       file: static-creds-broker/concourse/task_robot_test.yml
       attempts: 2
       config:
@@ -35,10 +35,11 @@ jobs:
           broker_name: {{broker_name}}
           protocol: {{protocol}}
           test_application_name: {{test_application_name}} 
-  - task: print_log
-    file: static-creds-broker/concourse/task_print_test_log.yml
-  - try:
-      task: acceptance-test-local-config
+          test_dir: static-creds-broker/acceptance/local_env/
+      ensure:
+        task: print_log
+        file: static-creds-broker/concourse/task_print_test_log.yml
+    - task: acceptance-test-local-config
       file: static-creds-broker/concourse/task_robot_test.yml
       attempts: 2
       config:
@@ -54,14 +55,14 @@ jobs:
           broker_domain: {{broker_domain}}
           broker_release_version: {{broker_release_version}}
           broker_password: {{broker_password}}
-          use_yaml_config: true
           broker_name: {{broker_name}}
           protocol: {{protocol}}
           test_application_name: {{test_application_name}}
-  - task: print_log
-    file: static-creds-broker/concourse/task_print_test_log.yml
-  - try:
-      task: acceptance-test-remote-config
+          test_dir: static-creds-broker/acceptance/local_config/
+      ensure:
+        task: print_log
+        file: static-creds-broker/concourse/task_print_test_log.yml
+    - task: acceptance-test-remote-config
       file: static-creds-broker/concourse/task_robot_test.yml
       attempts: 2
       config:
@@ -77,9 +78,10 @@ jobs:
           broker_domain: {{broker_domain}}
           broker_release_version: {{broker_release_version}}
           broker_password: {{broker_password}}
-          use_remote_config: true
           broker_name: {{broker_name}}
           protocol: {{protocol}}
           test_application_name: {{test_application_name}}
-  - task: print_log
-    file: static-creds-broker/concourse/task_print_test_log.yml
+          test_dir: static-creds-broker/acceptance/remote_config/
+      ensure:
+        task: print_log
+        file: static-creds-broker/concourse/task_print_test_log.yml
