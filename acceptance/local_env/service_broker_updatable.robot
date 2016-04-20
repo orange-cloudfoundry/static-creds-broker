@@ -3,7 +3,7 @@ Documentation   Test whether service broker could be updated
 Resource        local_env_resource.robot
 Resource 		../services_credentials_keywords.robot
 Force Tags		Service broker
-Suite Setup		Run Keywords  Prepare test environment   Unregister and undeploy broker
+Suite Setup		Run Keywords  Prepare test environment   Unregister and undeploy broker 	Deploy service broker 	Register service broker
 Suite Teardown	Run Keywords  Clean all service broker data
 
 *** Variables ***
@@ -11,26 +11,12 @@ Suite Teardown	Run Keywords  Clean all service broker data
 &{updated_API_DIRECTORY_prod_credentials}	HOSTNAME=http://company.com			URI=http://myprod-api.org		ACCESS_KEY=prodAZERT23456664DFDSFSDFDSF
 
 *** Test Cases ***
-0) Deploy broker
-    [Documentation]     Deploy the broker as an application on the Cloud Foundry.
-    Deploy service broker
-
-1) Register broker
-	[Documentation]		Register the broker as a private service broker for one space.
-	Register service broker
-
-2) Credential info should match initial configuration 
-	[Documentation]     Test whether credential info returned by service-key matches initial configuration.
+Credential info should always match broker's current configuration 
+	[Documentation]     Credential info returned by service-key should match initial configuration, and after service broker configuration updated, credential info should match updated configuration.
 	Credential info in service key of service API_DIRECTORY_test_Service1 plan prod should match configuration &{API_DIRECTORY_prod_credentials}
-
-3) Update service broker configuration
-	[Documentation]		Test the updating of service broker configuration
 	Run Keyword If      ${USE_REMOTE_CONFIG}    Update service broker configured by remote yaml configuration file
     ...                 ELSE IF                 ${USE_YAML_CONFIG}      Update service broker configured by yaml configuration file
     ...                 ELSE                    Update service broker configured by environment variables
-
-4) Credential info should match updated configuration 
-	[Documentation]     Test whether credential info returned by service-key matches updated configuration.
 	Credential info in service key of service API_DIRECTORY_test_Service1 plan prod should match configuration &{updated_API_DIRECTORY_prod_credentials}
 
 *** Keywords ***
