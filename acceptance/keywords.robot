@@ -18,12 +18,6 @@ Execute command:
     Log     ${result.stderr}
     Should Be Equal As Integers     ${result.rc}    0
 
-Log in
-    ${result}=  Run Keyword If  ${CF_SKIP_SSL}     Execute:    cf login -a ${CF_ENDPOINT} -u ${CF_USER} -p ${CF_PASSWORD} -o ${ORGANIZATION_NAME} -s ${SPACE_NAME} --skip-ssl-validation
-    ...     ELSE    Execute:    cf login -a ${CF_ENDPOINT} -u ${CF_USER} -p ${CF_PASSWORD} -o ${ORGANIZATION_NAME} -s ${SPACE_NAME}
-    Log     ${result}
-    Should Contain  ${result}   OK
-
 Prepare test environment
     [Documentation]     Prepare a testing env, create a temporary directory, configure Cloud Foundry local to en_US and no color, and login to Cloud Foundry.
     ${DEPLOY_DIR_NAME}=    Generate Random String
@@ -109,7 +103,13 @@ Prepare deployment of service broker configured by remote yaml configuration fil
     ${MANIFEST_PATH}=   Get file path ${DEPLOY_PATH} manifest.yml
     Create manifest file ${MANIFEST_PATH} based on manifest.tmpl.remote-config.yml
 
-Deploy service broker
+Try log in
+    ${result}=  Run Keyword If  ${CF_SKIP_SSL}     Execute:    cf login -a ${CF_ENDPOINT} -u ${CF_USER} -p ${CF_PASSWORD} -o ${ORGANIZATION_NAME} -s ${SPACE_NAME} --skip-ssl-validation
+    ...     ELSE    Execute:    cf login -a ${CF_ENDPOINT} -u ${CF_USER} -p ${CF_PASSWORD} -o ${ORGANIZATION_NAME} -s ${SPACE_NAME}
+    Log     ${result}
+    Should Contain  ${result}   OK
+
+Try deploy service broker
     [Documentation]     Deploy the broker as an application on the Cloud Foundry.
     Execute command: 	cp ${BINARY_JAR_PATH} ${DEPLOY_PATH}
     Prepare deployment of service broker
@@ -123,13 +123,13 @@ Deploy service broker
     ${broker_app_route}= 	Catenate    SEPARATOR=.     ${BROKER_HOSTNAME}  ${BROKER_DOMAIN}
     Should Match Regexp  ${result}   ${BROKER_APP_NAME}\\s*started.*${broker_app_route}
 
-Undeploy service broker
+Try undeploy service broker
     [Documentation]     Delete the deployed broker application from the Cloud Foundry.
     ${result}=  Execute:     cf delete ${BROKER_APP_NAME} -f
     Log     ${result}
     Should Contain  ${result}   OK
 
-Register service broker
+Try register service broker
     [Documentation]     Register the broker as a private service broker for one space.
 	${broker_app_url}= 	Catenate    SEPARATOR=     ${PROTOCOL} 	:// 	${BROKER_HOSTNAME}	.  ${BROKER_DOMAIN}
     ${result}=	Execute:    cf create-service-broker ${BROKER_NAME} user ${BROKER_PASSWORD} ${broker_app_url} --space-scoped
@@ -139,60 +139,101 @@ Register service broker
     Log     ${result}
     Should Match Regexp  ${result}  ${BROKER_NAME}\\s*${broker_app_url}
 
-Unregister service broker
-    [Documentation]     Remove the registered private broker, which means remove all services and plans in the broker’s catalog from the Cloud Foundry Marketplace.
+Try unregister service broker
+    [Documentation]     Remove the registered private broker, which means remove all services and plans in the broker's catalog from the Cloud Foundry Marketplace.
     ${result}=  Execute:    cf delete-service-broker ${BROKER_NAME} -f
     Log     ${result}
     Should Contain  ${result}   OK
 
-Create service instance ${service_name} ${plan_name} ${service_instance_name}
+Try create service instance ${service_name} ${plan_name} ${service_instance_name}
     [Documentation]     Create a service instance.
 	${result}=	Execute:    cf create-service ${service_name} ${plan_name} ${service_instance_name}
     Log     ${result}
     Should Contain  ${result}   OK
 
-Delete service instance ${service_instance_name:\S+}
+Try delete service instance ${service_instance_name:\S+}
     [Documentation]     Create a service instance.
     ${result}=  Execute:    cf delete-service ${service_instance_name} -f
     Log     ${result}
     Should Contain  ${result}   OK
 
-Create service key ${service_instance_name} ${service_key_name}
+Try create service key ${service_instance_name} ${service_key_name}
     [Documentation]     Create a service key.
     ${result}=  Execute:    cf create-service-key ${service_instance_name} ${service_key_name}
     Log     ${result}
     Should Contain  ${result}   OK
 
-Delete service key ${service_instance_name} ${service_key_name}
+Try delete service key ${service_instance_name} ${service_key_name}
     [Documentation]     Delete the service key.
     ${result}=  Execute:    cf delete-service-key ${service_instance_name} ${service_key_name} -f
     Log     ${result}
     Should Contain  ${result}   OK
 
-Get service key ${service_instance_name} ${service_key_name}
+Try get service key ${service_instance_name} ${service_key_name}
     [Documentation]     Create a service key.
     ${result}=  Execute:    cf service-key ${service_instance_name} ${service_key_name}
     Log     ${result}
     [return]     ${result}
 
-Bind service ${TEST_APP_NAME} ${service_instance_name}
+Try bind service ${TEST_APP_NAME} ${service_instance_name}
     [Documentation]    Bind application [${TEST_APP_NAME}] to the service instance [${service_instance_name}].
     ${result}=  Execute:    cf bind-service ${TEST_APP_NAME} ${service_instance_name}
     Log     ${result}
     Should Contain  ${result}   OK
 
-Unbind service ${TEST_APP_NAME} ${service_instance_name}
+Try unbind service ${TEST_APP_NAME} ${service_instance_name}
     [Documentation]    Unbind application [${TEST_APP_NAME}] from the service instance [${service_instance_name}].
     ${result}=  Execute:    cf unbind-service ${TEST_APP_NAME} ${service_instance_name}
     Log     ${result}
     Should Match Regexp  ${result}   (OK|not found)
 
-Get application environment ${app_name}
+Try get application environment ${app_name}
     [Documentation]    Get application [${app_name}] environment variables
     ${result}=  Execute:    cf env ${app_name}
     Log     ${result}
     Should Contain  ${result}   OK
     [return]     ${result}
+
+Log in
+    Wait Until Keyword Succeeds     3x  30s    Try log in
+
+Deploy service broker
+    Wait Until Keyword Succeeds     3x  30s    Try deploy service broker
+
+Undeploy service broker
+    Wait Until Keyword Succeeds     3x  30s    Try undeploy service broker
+
+Register service broker
+    Wait Until Keyword Succeeds     3x  30s    Try register service broker
+
+Unregister service broker
+    Wait Until Keyword Succeeds     3x  30s    Try unregister service broker
+
+Create service instance ${service_name} ${plan_name} ${service_instance_name}
+    Wait Until Keyword Succeeds     3x  30s    Try create service instance ${service_name} ${plan_name} ${service_instance_name}
+
+Delete service instance ${service_instance_name:\S+}
+    Wait Until Keyword Succeeds     3x  30s    Try delete service instance ${service_instance_name}
+
+Create service key ${service_instance_name} ${service_key_name}
+    Wait Until Keyword Succeeds     3x  30s    Try create service key ${service_instance_name} ${service_key_name}
+
+Delete service key ${service_instance_name} ${service_key_name}
+    Wait Until Keyword Succeeds     3x  30s    Try delete service key ${service_instance_name} ${service_key_name}
+
+Get service key ${service_instance_name} ${service_key_name}
+    ${result}=  Wait Until Keyword Succeeds     3x  30s    Try get service key ${service_instance_name} ${service_key_name}
+    [return]    ${result}
+
+Bind service ${TEST_APP_NAME} ${service_instance_name}
+    Wait Until Keyword Succeeds     3x  30s    Try bind service ${TEST_APP_NAME} ${service_instance_name}
+
+Unbind service ${TEST_APP_NAME} ${service_instance_name}
+    Wait Until Keyword Succeeds     3x  30s    Try unbind service ${TEST_APP_NAME} ${service_instance_name}
+
+Get application environment ${app_name}
+    ${result}=  Wait Until Keyword Succeeds     3x  30s    Try get application environment ${app_name}
+    [return]    ${result}
 
 Get file path ${dir_path} ${file_name}
     ${file_path}=     Catenate    SEPARATOR=     ${dir_path}     ${file_name}

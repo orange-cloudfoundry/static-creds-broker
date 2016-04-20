@@ -25,7 +25,7 @@ Suite Teardown  Run Keywords  Clean all service broker data
     "static-creds-service-test2"     "myplan"
 
 3) Unregister borker
-	[Documentation]		Remove the registered private broker, which means remove all services and plans in the broker’s catalog from the Cloud Foundry Marketplace.
+	[Documentation]		Remove the registered private broker, which means remove all services and plans in the broker's catalog from the Cloud Foundry Marketplace.
 	Unregister service broker
 
 4) Undeploy broker
