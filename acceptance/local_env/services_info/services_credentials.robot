@@ -1,6 +1,6 @@
 *** Settings ***
 Documentation   Test static-creds-broker services credentials infomation
-Resource        services_credentials_keywords.robot
+Resource        ../../services_credentials_keywords.robot
 
 *** Variables ***
 &{TRIPADVISOR_credentials}				URI=http://....
@@ -13,17 +13,17 @@ Resource        services_credentials_keywords.robot
 Credential info in service key of each service plan should match configuration
 	[Documentation]     Test whether credential info returned by service-key matches configuration.
 	[Template]		Credential info in service key of service ${service_name} plan ${plan_name} should match configuration ${expected_credentials_dict}
-	TRIPADVISOR_test_Service		default		&{TRIPADVISOR_credentials}		
-	API_DIRECTORY_test_Service		dev 		&{API_DIRECTORY_dev_credentials}
-    API_DIRECTORY_test_Service      preprod     &{API_DIRECTORY_preprod_credentials}
-    API_DIRECTORY_test_Service      prod        &{API_DIRECTORY_prod_credentials}
-	static-creds-service-test		myplan 		&{ID_credentials}
+	TRIPADVISOR_test_Service1		default		&{TRIPADVISOR_credentials}		
+	API_DIRECTORY_test_Service1		dev 		&{API_DIRECTORY_dev_credentials}
+    API_DIRECTORY_test_Service1 	preprod     &{API_DIRECTORY_preprod_credentials}
+    API_DIRECTORY_test_Service1 	prod        &{API_DIRECTORY_prod_credentials}
+	static-creds-service-test1 		myplan 		&{ID_credentials}
 
 Credential info in bound application should match configuration for each service plan 
     [Documentation]     Test whether credential info configured in bound application envrionment variables matches configuration.
     [Template]		Credential info in bound application for service ${service_name} plan ${plan_name} should match configuration ${expected_credentials_dict}
-	TRIPADVISOR_test_Service		default		&{TRIPADVISOR_credentials}		
-	API_DIRECTORY_test_Service		dev         &{API_DIRECTORY_dev_credentials}
-    API_DIRECTORY_test_Service      preprod     &{API_DIRECTORY_preprod_credentials}
-    API_DIRECTORY_test_Service      prod        &{API_DIRECTORY_prod_credentials}
-	static-creds-service-test		myplan 		&{ID_credentials}
+	TRIPADVISOR_test_Service1		default		&{TRIPADVISOR_credentials}		
+	API_DIRECTORY_test_Service1		dev         &{API_DIRECTORY_dev_credentials}
+    API_DIRECTORY_test_Service1 	preprod     &{API_DIRECTORY_preprod_credentials}
+    API_DIRECTORY_test_Service1 	prod        &{API_DIRECTORY_prod_credentials}
+	static-creds-service-test1 		myplan 		&{ID_credentials}

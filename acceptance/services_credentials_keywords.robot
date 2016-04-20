@@ -1,5 +1,5 @@
 *** Settings ***
-Resource        ../keywords.robot
+Resource        keywords.robot
 Library         String
 Library         Collections
 Library         CFServiceCredentialsParser

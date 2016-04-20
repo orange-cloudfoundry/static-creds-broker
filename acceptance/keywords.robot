@@ -5,7 +5,7 @@ Variables       Configuration.py
 
 *** Keywords ***
 Execute:
-    [Documentation]     Execute command which uses cf-cli, return the standard output of the command result.  
+    [Documentation]     Execute command which uses cf-cli, return the standard output of the command result.
     [arguments]     ${cmd}  ${CF_TRACE}=false    ${current_working_directory}=.
     ${result}=		Run Process    ${cmd}   cwd=${current_working_directory}  env:CF_COLOR=false    env:CF_TRACE=${CF_TRACE}	stdout=${DEPLOY_PATH}/stdout.txt 	shell=True
     [return]		${result.stdout}
@@ -18,6 +18,12 @@ Execute command:
     Log     ${result.stderr}
     Should Be Equal As Integers     ${result.rc}    0
 
+Log in
+    ${result}=  Run Keyword If  ${CF_SKIP_SSL}     Execute:    cf login -a ${CF_ENDPOINT} -u ${CF_USER} -p ${CF_PASSWORD} -o ${ORGANIZATION_NAME} -s ${SPACE_NAME} --skip-ssl-validation
+    ...     ELSE    Execute:    cf login -a ${CF_ENDPOINT} -u ${CF_USER} -p ${CF_PASSWORD} -o ${ORGANIZATION_NAME} -s ${SPACE_NAME}
+    Log     ${result}
+    Should Contain  ${result}   OK
+
 Prepare test environment
     [Documentation]     Prepare a testing env, create a temporary directory, configure Cloud Foundry local to en_US and no color, and login to Cloud Foundry.
     ${DEPLOY_DIR_NAME}=    Generate Random String
@@ -25,10 +31,11 @@ Prepare test environment
     Run Process    mkdir ${DEPLOY_DIR_NAME} 	cwd=${BINARY_DIRECTORY} 	shell=True
     Set Global Variable  ${DEPLOY_PATH}
     Execute:    cf config --locale en_US --color false
-    ${result}=  Run Keyword If 	${CF_SKIP_SSL}     Execute:    cf login -a ${CF_ENDPOINT} -u ${CF_USER} -p ${CF_PASSWORD} -o ${ORGANIZATION_NAME} -s ${SPACE_NAME} --skip-ssl-validation
-    ...     ELSE    Execute:    cf login -a ${CF_ENDPOINT} -u ${CF_USER} -p ${CF_PASSWORD} -o ${ORGANIZATION_NAME} -s ${SPACE_NAME}
-    Log		${result}
-    Should Contain  ${result}   OK
+    ${result}=  Execute:    cf target
+    Run Keyword If      'Not logged in' in $result or $CF_ENDPOINT not in $result       Log in
+    @{matches}=     Get Regexp Matches  ${result}    No.*targeted
+    ${len}=     Get Length  ${matches}
+    Run Keyword If      ${len}!=0       Execute:    cf target -o ${ORGANIZATION_NAME} -s ${SPACE_NAME}
 
 Unregister and undeploy broker
     Unregister service broker
@@ -73,7 +80,7 @@ Create manifest file ${MANIFEST_PATH} based on manifest.tmpl.remote-config.yml
     Replace "<my-admin-domain.cf.io>" with ${BROKER_DOMAIN} in the file ${MANIFEST_PATH}
     Replace "<LATEST_RELEASE_VERSION>" with ${BROKER_RELEASE_VERSION} in the file ${MANIFEST_PATH}
     Replace "<broker_password>" with ${BROKER_PASSWORD} in the file ${MANIFEST_PATH}
-    Run keyword If  ${USE_PROXY}    
+    Run keyword If  ${USE_PROXY}
     ...             Run keywords
     ...             Replace "\\\\#JAVA_OPTS:" with "JAVA_OPTS:" in the file ${MANIFEST_PATH}
     ...             Replace "http_proxyhost" with ${HTTP_PROXYHOST} in the file ${MANIFEST_PATH}
@@ -102,7 +109,7 @@ Prepare deployment of service broker configured by remote yaml configuration fil
     ${MANIFEST_PATH}=   Get file path ${DEPLOY_PATH} manifest.yml
     Create manifest file ${MANIFEST_PATH} based on manifest.tmpl.remote-config.yml
 
-Deploy service broker 
+Deploy service broker
     [Documentation]     Deploy the broker as an application on the Cloud Foundry.
     Execute command: 	cp ${BINARY_JAR_PATH} ${DEPLOY_PATH}
     Prepare deployment of service broker
@@ -176,7 +183,7 @@ Bind service ${TEST_APP_NAME} ${service_instance_name}
 
 Unbind service ${TEST_APP_NAME} ${service_instance_name}
     [Documentation]    Unbind application [${TEST_APP_NAME}] from the service instance [${service_instance_name}].
-    ${result}=  Execute:    cf unbind-service ${TEST_APP_NAME} ${service_instance_name} 
+    ${result}=  Execute:    cf unbind-service ${TEST_APP_NAME} ${service_instance_name}
     Log     ${result}
     Should Match Regexp  ${result}   (OK|not found)
 
@@ -193,4 +200,4 @@ Get file path ${dir_path} ${file_name}
 
 Get directory path ${parent_dir_path} ${dir_name}
     ${dir_path}=	Catenate    SEPARATOR=     ${parent_dir_path}     ${dir_name}  /
-    [return]    ${dir_path}   
+    [return]    ${dir_path}

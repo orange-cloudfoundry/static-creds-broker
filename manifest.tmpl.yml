@@ -16,11 +16,11 @@ applications:
     # Note: - At least one service is required to be defined.
     #       - For each service defined, its 'NAME' and 'DESCRIPTION' is required.
     #       - For each plan defined, at least one credential property is required. (Service credential definitions are automatically applied to all its plans.)
-    SERVICES_TRIPADVISOR_NAME: TRIPADVISOR_test_Service
+    SERVICES_TRIPADVISOR_NAME: TRIPADVISOR_test_Service1
     SERVICES_TRIPADVISOR_DESCRIPTION: My existing service
     SERVICES_TRIPADVISOR_CREDENTIALS_URI: http://....
 
-    SERVICES_API_DIRECTORY_NAME: API_DIRECTORY_test_Service
+    SERVICES_API_DIRECTORY_NAME: API_DIRECTORY_test_Service1
     SERVICES_API_DIRECTORY_DESCRIPTION: My existing service
     SERVICES_API_DIRECTORY_METADATA_LONGDESCRIPTION: A long description for my service
     SERVICES_API_DIRECTORY_CREDENTIALS_HOSTNAME: http://company.com
@@ -36,7 +36,7 @@ applications:
     # Credential value for particular plan will override the value which is set for whole service
     SERVICES_API_DIRECTORY_PLAN_3_CREDENTIALS_HOSTNAME: http://prod.company.com
 
-    SERVICES_ID_NAME: static-creds-service-test
+    SERVICES_ID_NAME: static-creds-service-test1
     SERVICES_ID_DESCRIPTION: static-creds service for test
     # other variables
     SERVICES_ID_TAGS: tag1,tag2,tag3 #no espace, no quote, separated by comma if multiple tags

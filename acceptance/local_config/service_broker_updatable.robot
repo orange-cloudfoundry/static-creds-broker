@@ -1,11 +1,10 @@
 *** Settings ***
 Documentation   Test whether service broker could be updated
-Resource		keywords.robot
-Resource 		services_info/services_credentials_keywords.robot
-Force Tags      Service broker
-
-Suite Setup      Run Keywords  Prepare test environment   Unregister and undeploy broker
-Suite Teardown   Run Keywords  Clean all service broker data
+Resource        local_config_resource.robot
+Resource 		../services_credentials_keywords.robot
+Force Tags		Service broker
+Suite Setup		Run Keywords  Prepare test environment   Unregister and undeploy broker
+Suite Teardown	Run Keywords  Clean all service broker data
 
 *** Variables ***
 &{API_DIRECTORY_prod_credentials}			HOSTNAME=http://prod.company.com 	URI=http://myprod-api.org		ACCESS_KEY=prodAZERT23456664DFDSFSDFDSF
@@ -22,7 +21,7 @@ Suite Teardown   Run Keywords  Clean all service broker data
 
 2) Credential info should match initial configuration 
 	[Documentation]     Test whether credential info returned by service-key matches initial configuration.
-	Credential info in service key of service API_DIRECTORY_test_Service plan prod should match configuration &{API_DIRECTORY_prod_credentials}
+	Credential info in service key of service API_DIRECTORY_test_Service2 plan prod should match configuration &{API_DIRECTORY_prod_credentials}
 
 3) Update service broker configuration
 	[Documentation]		Test the updating of service broker configuration
@@ -32,7 +31,7 @@ Suite Teardown   Run Keywords  Clean all service broker data
 
 4) Credential info should match updated configuration 
 	[Documentation]     Test whether credential info returned by service-key matches updated configuration.
-	Credential info in service key of service API_DIRECTORY_test_Service plan prod should match configuration &{updated_API_DIRECTORY_prod_credentials}
+	Credential info in service key of service API_DIRECTORY_test_Service2 plan prod should match configuration &{updated_API_DIRECTORY_prod_credentials}
 
 *** Keywords ***
 Update service broker configured by remote yaml configuration file

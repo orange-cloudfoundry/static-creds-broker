@@ -1,5 +1,5 @@
 *** Settings ***
-Resource		../keywords.robot
+Resource        keywords.robot
 Library         Collections
 
 *** Variables ***
@@ -37,4 +37,4 @@ Service [${service_name}] plan [${plan_name}] catalog info [${property_key}] in 
     &{cf_plans_info}=     Get cloud foundry service plan catalog info   ${plan_name}
     Log     ${cf_plans_info}
     ${cf_property_value}=   Get From Dictionary     ${cf_plans_info}  ${property_key}
-    Should Be Equal         ${expected_property_value}      ${cf_property_value}  
+    Should Be Equal         ${expected_property_value}      ${cf_property_value}

@@ -1,12 +1,10 @@
 *** Settings ***
-Resource            keywords.robot
+Resource        local_env_resource.robot
 Documentation   Test basic service broker lifecycle
 Library         String
-Library         Collections
 Force Tags      Service broker
-
-Suite Setup      Run Keywords  Prepare test environment   Unregister and undeploy broker
-Suite Teardown   Run Keywords  Clean all service broker data
+Suite Setup     Run Keywords  Prepare test environment   Unregister and undeploy broker
+Suite Teardown  Run Keywords  Clean all service broker data
 
 *** Test Cases ***
 0) Deploy broker
@@ -20,11 +18,11 @@ Suite Teardown   Run Keywords  Clean all service broker data
 2) Test service instance lifecycle
 	[Documentation]		Test for each plan of each service defined (Create/Delete a service instance; Create/Delete a service key; Bind/Unbind service instance to the application [${TEST_APP_NAME}]).
     [Template]      Test service instance lifecycle for the service ${service_name} plan ${plan_name}
-    "TRIPADVISOR_test_Service"      "default"
-    "API_DIRECTORY_test_Service"    "dev"
-    "API_DIRECTORY_test_Service"    "preprod"
-    "API_DIRECTORY_test_Service"    "prod"
-    "static-creds-service-test"     "myplan"
+    "TRIPADVISOR_test_Service1"      "default"
+    "API_DIRECTORY_test_Service1"    "dev"
+    "API_DIRECTORY_test_Service1"    "preprod"
+    "API_DIRECTORY_test_Service1"    "prod"
+    "static-creds-service-test1"     "myplan"
 
 3) Unregister borker
 	[Documentation]		Remove the registered private broker, which means remove all services and plans in the broker’s catalog from the Cloud Foundry Marketplace.
