@@ -195,44 +195,44 @@ Try get application environment ${app_name}
     [return]     ${result}
 
 Log in
-    Wait Until Keyword Succeeds     3x  30s    Try log in
+    Wait Until Keyword Succeeds     5x  30s    Try log in
 
 Deploy service broker
-    Wait Until Keyword Succeeds     3x  30s    Try deploy service broker
+    Wait Until Keyword Succeeds     5x  30s    Try deploy service broker
 
 Undeploy service broker
-    Wait Until Keyword Succeeds     3x  30s    Try undeploy service broker
+    Wait Until Keyword Succeeds     5x  30s    Try undeploy service broker
 
 Register service broker
-    Wait Until Keyword Succeeds     3x  30s    Try register service broker
+    Wait Until Keyword Succeeds     5x  30s    Try register service broker
 
 Unregister service broker
-    Wait Until Keyword Succeeds     3x  30s    Try unregister service broker
+    Wait Until Keyword Succeeds     5x  30s    Try unregister service broker
 
 Create service instance ${service_name} ${plan_name} ${service_instance_name}
-    Wait Until Keyword Succeeds     3x  30s    Try create service instance ${service_name} ${plan_name} ${service_instance_name}
+    Wait Until Keyword Succeeds     5x  30s    Try create service instance ${service_name} ${plan_name} ${service_instance_name}
 
 Delete service instance ${service_instance_name:\S+}
-    Wait Until Keyword Succeeds     3x  30s    Try delete service instance ${service_instance_name}
+    Wait Until Keyword Succeeds     5x  30s    Try delete service instance ${service_instance_name}
 
 Create service key ${service_instance_name} ${service_key_name}
-    Wait Until Keyword Succeeds     3x  30s    Try create service key ${service_instance_name} ${service_key_name}
+    Wait Until Keyword Succeeds     5x  30s    Try create service key ${service_instance_name} ${service_key_name}
 
 Delete service key ${service_instance_name} ${service_key_name}
-    Wait Until Keyword Succeeds     3x  30s    Try delete service key ${service_instance_name} ${service_key_name}
+    Wait Until Keyword Succeeds     5x  30s    Try delete service key ${service_instance_name} ${service_key_name}
 
 Get service key ${service_instance_name} ${service_key_name}
-    ${result}=  Wait Until Keyword Succeeds     3x  30s    Try get service key ${service_instance_name} ${service_key_name}
+    ${result}=  Wait Until Keyword Succeeds     5x  30s    Try get service key ${service_instance_name} ${service_key_name}
     [return]    ${result}
 
 Bind service ${TEST_APP_NAME} ${service_instance_name}
-    Wait Until Keyword Succeeds     3x  30s    Try bind service ${TEST_APP_NAME} ${service_instance_name}
+    Wait Until Keyword Succeeds     5x  30s    Try bind service ${TEST_APP_NAME} ${service_instance_name}
 
 Unbind service ${TEST_APP_NAME} ${service_instance_name}
-    Wait Until Keyword Succeeds     3x  30s    Try unbind service ${TEST_APP_NAME} ${service_instance_name}
+    Wait Until Keyword Succeeds     5x  30s    Try unbind service ${TEST_APP_NAME} ${service_instance_name}
 
 Get application environment ${app_name}
-    ${result}=  Wait Until Keyword Succeeds     3x  30s    Try get application environment ${app_name}
+    ${result}=  Wait Until Keyword Succeeds     5x  30s    Try get application environment ${app_name}
     [return]    ${result}
 
 Get file path ${dir_path} ${file_name}

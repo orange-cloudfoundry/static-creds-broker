@@ -17,6 +17,7 @@ Credential info should always match broker's current configuration
 	Run Keyword If      ${USE_REMOTE_CONFIG}    Update service broker configured by remote yaml configuration file
     ...                 ELSE IF                 ${USE_YAML_CONFIG}      Update service broker configured by yaml configuration file
     ...                 ELSE                    Update service broker configured by environment variables
+    Sleep 	20s
 	Credential info in service key of service API_DIRECTORY_test_Service plan prod should match configuration &{updated_API_DIRECTORY_prod_credentials}
 
 *** Keywords ***
