@@ -213,13 +213,13 @@ Create service instance ${service_name} ${plan_name} ${service_instance_name}
     Wait Until Keyword Succeeds     5x  30s    Try create service instance ${service_name} ${plan_name} ${service_instance_name}
 
 Delete service instance ${service_instance_name:\S+}
-    Wait Until Keyword Succeeds     5x  30s    Try delete service instance ${service_instance_name}
+    Wait Until Keyword Succeeds     10x  30s    Try delete service instance ${service_instance_name}
 
 Create service key ${service_instance_name} ${service_key_name}
     Wait Until Keyword Succeeds     5x  30s    Try create service key ${service_instance_name} ${service_key_name}
 
 Delete service key ${service_instance_name} ${service_key_name}
-    Wait Until Keyword Succeeds     5x  30s    Try delete service key ${service_instance_name} ${service_key_name}
+    Wait Until Keyword Succeeds     10x  30s    Try delete service key ${service_instance_name} ${service_key_name}
 
 Get service key ${service_instance_name} ${service_key_name}
     ${result}=  Wait Until Keyword Succeeds     5x  30s    Try get service key ${service_instance_name} ${service_key_name}
