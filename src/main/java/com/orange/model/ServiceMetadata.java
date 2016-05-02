@@ -1,10 +1,7 @@
 package com.orange.model;
 
-import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Cloud Foundry Service Metadata

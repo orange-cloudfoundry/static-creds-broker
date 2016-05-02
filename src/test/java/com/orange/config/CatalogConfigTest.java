@@ -9,8 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by YSBU7453 on 26/04/2016.
  */

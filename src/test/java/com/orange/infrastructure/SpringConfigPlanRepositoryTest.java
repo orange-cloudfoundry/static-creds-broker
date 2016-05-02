@@ -3,7 +3,6 @@ package com.orange.infrastructure;
 import com.orange.model.Plan;
 import org.junit.Test;
 
-import java.util.Map;
 import java.util.Optional;
 
 import static org.fest.assertions.Assertions.assertThat;

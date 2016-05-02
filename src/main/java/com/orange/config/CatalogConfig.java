@@ -1,21 +1,15 @@
 package com.orange.config;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.orange.infrastructure.ServiceMapper;
-import com.orange.model.*;
-import org.apache.commons.beanutils.PropertyUtils;
+import com.orange.model.Service;
+import com.orange.model.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.servicebroker.model.Catalog;
 import org.springframework.cloud.servicebroker.model.ServiceDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 
 @Configuration
 public class CatalogConfig {

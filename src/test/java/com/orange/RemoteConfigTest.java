@@ -1,25 +1,19 @@
 package com.orange;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-
-import com.orange.config.CatalogConfig;
 import com.orange.model.Plan;
 import com.orange.model.PlanRepository;
 import org.fest.assertions.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.cloud.servicebroker.model.Catalog;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.orange.util.ParserApplicationProperties;
-import com.orange.util.ParserProperties;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.MapAssert.entry;
@@ -37,10 +31,6 @@ public class RemoteConfigTest {
 
     @Value("${services.API_DIRECTORY.NAME}")
     String serviceApiDirectoryName;
-    
-    @Autowired
-    @Qualifier("parserProperties")
-	private ParserProperties parserProperties;
 
     @Autowired
     PlanRepository planRepository;
@@ -53,16 +43,7 @@ public class RemoteConfigTest {
         Assertions.assertThat(serviceApiDirectoryName).isEqualTo("API_DIRECTORY_test_Service");
     }
 
-    @Test
-    public void should_get_services_injected() {
-    	 Assertions.assertThat(parserProperties).isInstanceOf(ParserApplicationProperties.class);
-    	 Map<String, Object> services = ((ParserApplicationProperties) parserProperties).getServices();
-    	 Assertions.assertThat(services).isNotNull();
-    	 Assertions.assertThat(services.get("API_DIRECTORY")).isNotNull();
-    	 Assertions.assertThat(services.get("ID")).isNotNull();
-    }
-
-    @Test
+   @Test
     public void should_find_a_service_plan() {
 
         //service plan id for plan dev of service API_DIRECTORY, see static-creds-broker.yml

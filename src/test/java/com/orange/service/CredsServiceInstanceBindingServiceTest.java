@@ -17,7 +17,10 @@
 package com.orange.service;
 
 import com.orange.infrastructure.SpringConfigPlanRepository;
-import com.orange.model.*;
+import com.orange.model.CatalogSettings;
+import com.orange.model.Plan;
+import com.orange.model.PlanRepository;
+import com.orange.model.Service;
 import org.junit.Test;
 import org.springframework.cloud.servicebroker.model.CreateServiceInstanceBindingRequest;
 import org.springframework.cloud.servicebroker.model.CreateServiceInstanceBindingResponse;

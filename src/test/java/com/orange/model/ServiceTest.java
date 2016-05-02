@@ -10,8 +10,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.EnvironmentTestUtils;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import static org.fest.assertions.Assertions.assertThat;
-
 /**
  * Created by YSBU7453 on 04/04/2016.
  */
