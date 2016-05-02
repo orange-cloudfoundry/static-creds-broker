@@ -1,7 +1,7 @@
 package com.orange;
 
-import com.orange.model.Plan;
-import com.orange.model.PlanRepository;
+import com.orange.servicebroker.staticcreds.domain.Plan;
+import com.orange.servicebroker.staticcreds.domain.PlanRepository;
 import org.fest.assertions.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
