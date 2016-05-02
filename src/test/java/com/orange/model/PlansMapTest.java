@@ -20,6 +20,7 @@ public class PlansMapTest {
 	}
 	
 	@Test
+	//done see PlanTest
 	public void should_get_default_info_when_plan_set_which_not_complete_info(){
 		PlansMap plansMap = new PlansMap();
 		plansMap.addPlanWithoutProperty(planOneID);

@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * map of plan id (String) and plan properties definitions (Map<PlanPropertyName, String>)
+ * toServiceDefinition of plan id (String) and plan properties definitions (Map<PlanPropertyName, String>)
  * which store multi plans properties of a specific service
  */
 public class PlansMap {
@@ -36,7 +36,7 @@ public class PlansMap {
 	}
 	
 	/**
-	 * get all plan ids defined in the map
+	 * get all plan ids defined in the toServiceDefinition
 	 * @return
 	 */
 	public Set<String> getIDs(){
@@ -44,7 +44,7 @@ public class PlansMap {
 	}
 	
 	/**
-	 * get all plan names defined in the map
+	 * get all plan names defined in the toServiceDefinition
 	 * @return
 	 */
 	public Set<String> getNames(){

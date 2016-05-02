@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 import com.orange.util.ParserProperties;
 
 /**
- * map of servicePlan (String) and credentials (Map<String, Object>)
+ * toServiceDefinition of servicePlan (String) and credentials (Map<String, Object>)
  * servicePlan is the combination identification of service and plan
  * identification could be "id" named in env. variables or name
  */

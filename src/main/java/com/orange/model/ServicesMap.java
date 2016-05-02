@@ -9,7 +9,7 @@ import java.util.Set;
 import com.orange.util.ParserProperties;
 
 /**
- * map of service id (String) and service properties definitions (Map<ServicePropertyName, String>)
+ * toServiceDefinition of service id (String) and service properties definitions (Map<ServicePropertyName, String>)
  */
 public class ServicesMap {
 	private Map<String, Map<ServicePropertyName, String>> servicesMap = new HashMap<>();
@@ -50,7 +50,7 @@ public class ServicesMap {
 		if (service == null) {
 			// when parsing a new id, check its mandatory properties
 			parserProperties.checkServiceMandatoryPropertiesDefined(serviceID);
-			// if mandatory properties defined, add it into map
+			// if mandatory properties defined, add it into toServiceDefinition
 			service = new HashMap<>();
 			servicesMap.put(serviceID, service);
 		}

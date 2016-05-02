@@ -4,8 +4,17 @@ package com.orange.model;
  * Plan metadata costs
  */
 public class Cost {
+
 	private Amount amount;
 	private String unit;
+
+	public Cost() {
+	}
+
+	public Cost(Amount amount, String unit) {
+		this.amount = amount;
+		this.unit = unit;
+	}
 
 	public Amount getAmount() {
 		return amount;
@@ -23,4 +32,30 @@ public class Cost {
 		this.unit = unit;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Cost cost = (Cost) o;
+
+		if (!amount.equals(cost.amount)) return false;
+		return unit.equals(cost.unit);
+
+	}
+
+	@Override
+	public int hashCode() {
+		int result = amount.hashCode();
+		result = 31 * result + unit.hashCode();
+		return result;
+	}
+
+	@Override
+	public String toString() {
+		return "Cost{" +
+				"amount=" + amount +
+				", unit='" + unit + '\'' +
+				'}';
+	}
 }
