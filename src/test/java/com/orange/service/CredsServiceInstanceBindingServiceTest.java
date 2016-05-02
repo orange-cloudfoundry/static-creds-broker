@@ -16,12 +16,18 @@
 
 package com.orange.service;
 
-import com.orange.model.ParsedCredentialsRepository;
-import com.orange.model.ServicePlanName;
-import org.junit.Assert;
+import com.orange.infrastructure.SpringConfigPlanRepository;
+import com.orange.model.*;
 import org.junit.Test;
 import org.springframework.cloud.servicebroker.model.CreateServiceInstanceBindingRequest;
 import org.springframework.cloud.servicebroker.model.CreateServiceInstanceBindingResponse;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.MapAssert.entry;
 
 
 /**
@@ -32,57 +38,68 @@ public class CredsServiceInstanceBindingServiceTest {
     public static final String API_DIRECTORY_SERVICE = "API_DIRECTORY";
     public static final String DEV_PLAN = "dev";
     public static final String PROD_PLAN = "prod";
-    public static final String DUMMY_PLAN = "dummy";
 
-    public static final ServicePlanName SERVICE_PLAN_DEV= new ServicePlanName(API_DIRECTORY_SERVICE, DEV_PLAN);
-    public static final ServicePlanName SERVICE_PLAN_PROD= new ServicePlanName(API_DIRECTORY_SERVICE, PROD_PLAN);
-    public static final ServicePlanName SERVICE_PLAN_DUMMY= new ServicePlanName(API_DIRECTORY_SERVICE, DUMMY_PLAN);
+    public static final UUID SERVICE_PLAN_DEV_ID = UUID.randomUUID();
+    public static final UUID SERVICE_PLAN_PROD_ID = UUID.randomUUID();
+    public static final UUID SERVICE_PLAN_DUMMY_ID = UUID.randomUUID();
 
 
     @Test
     public void should_bind_with_credentials_that_have_been_set_for_associated_service_plan() throws Exception {
 
-        ParsedCredentialsRepository credentialsRepository = new ParsedCredentialsRepository();
-        //given credentials have been set for dev plan of service API_DIRECTORY
-        credentialsRepository.save(API_DIRECTORY_SERVICE, DEV_PLAN, "CREDENTIALS_URI","http://mydev-api.org");
-        credentialsRepository.save(API_DIRECTORY_SERVICE, DEV_PLAN,"CREDENTIALS_ACCESS_KEY","devAZERTY");
-        //given credentials have been set for prod plan of service API_DIRECTORY
-        credentialsRepository.save(API_DIRECTORY_SERVICE, PROD_PLAN,"CREDENTIALS_URI","http://myprod-api.org");
-        credentialsRepository.save(API_DIRECTORY_SERVICE, PROD_PLAN,"CREDENTIALS_ACCESS_KEY","prodAZERTY");
+        PlanRepository planRepository = new SpringConfigPlanRepository(catalog());
 
         //when I bind my app to a service API_DIRECTORY instance whose plan is dev
-        CredsServiceInstanceBindingService serviceInstanceBindingService = new CredsServiceInstanceBindingService(credentialsRepository);
-        final CreateServiceInstanceBindingResponse response = serviceInstanceBindingService.createServiceInstanceBinding(getCreateServiceInstanceRequestWithServiceAndPlan(SERVICE_PLAN_DEV));
+        CredsServiceInstanceBindingService serviceInstanceBindingService = new CredsServiceInstanceBindingService(planRepository);
+        final CreateServiceInstanceBindingResponse response = serviceInstanceBindingService.createServiceInstanceBinding(getCreateServiceInstanceRequestWithServiceAndPlan(SERVICE_PLAN_DEV_ID));
 
         //then I should only get credentials that have been set for dev plan of service API_DIRECTORY
-        Assert.assertNotNull(response.getCredentials());
-        Assert.assertEquals(2,response.getCredentials().size());
-        Assert.assertEquals("http://mydev-api.org",response.getCredentials().get("CREDENTIALS_URI"));
-        Assert.assertEquals("devAZERTY",response.getCredentials().get("CREDENTIALS_ACCESS_KEY"));
+        assertThat(response.getCredentials()).hasSize(2).includes(entry("URI", "http://mydev-api.org"), entry("ACCESS_KEY", "devAZERTY"));
 
+    }
+
+    private CatalogSettings catalog() {
+        Plan dev = new Plan(SERVICE_PLAN_DEV_ID);
+        Map<String,Object> credentialsDev = new HashMap<>();
+        credentialsDev.put("URI","http://mydev-api.org");
+        credentialsDev.put("ACCESS_KEY","devAZERTY");
+        dev.setCredentials(credentialsDev);
+
+        Plan prod = new Plan(SERVICE_PLAN_PROD_ID);
+        Map<String,Object> credentialsProd = new HashMap<>();
+        credentialsProd.put("URI","http://myprod-api.org");
+        credentialsProd.put("ACCESS_KEY","prodAZERTY");
+        prod.setCredentials(credentialsProd);
+
+        Service apiDirectoryService = new Service();
+        apiDirectoryService.setName(API_DIRECTORY_SERVICE);
+        final Map<String, Plan> apiDirectoryServicePlans = new HashMap<>();
+        apiDirectoryServicePlans.put(DEV_PLAN,dev);
+        apiDirectoryServicePlans.put(PROD_PLAN,prod);
+        apiDirectoryService.setPlans(apiDirectoryServicePlans);
+
+        final Map<String, Service> services = new HashMap<>();
+        services.put(API_DIRECTORY_SERVICE,apiDirectoryService);
+
+        return new CatalogSettings(services);
     }
 
     @Test
     public void should_bind_with_no_credentials_if_no_credentials_have_been_set_for_associated_service_plan() throws Exception {
-        ParsedCredentialsRepository credentialsRepository = new ParsedCredentialsRepository();
-        //given credentials have been set for dev plan of service API_DIRECTORY
-        credentialsRepository.save(API_DIRECTORY_SERVICE, DEV_PLAN,"CREDENTIALS_URI","http://mydev-api.org");
-        credentialsRepository.save(API_DIRECTORY_SERVICE, DEV_PLAN,"CREDENTIALS_ACCESS_KEY","devAZERTY");
-        //given credentials have been set for prod plan of service API_DIRECTORY
-        credentialsRepository.save(API_DIRECTORY_SERVICE, PROD_PLAN,"CREDENTIALS_URI","http://myprod-api.org");
-        credentialsRepository.save(API_DIRECTORY_SERVICE, PROD_PLAN,"CREDENTIALS_ACCESS_KEY","prodAZERTY");
+        PlanRepository planRepository = new SpringConfigPlanRepository(catalog());
 
         //when I bind my app to a service API_DIRECTORY instance whose plan is dummy
-        CredsServiceInstanceBindingService serviceInstanceBindingService = new CredsServiceInstanceBindingService(credentialsRepository);
-        final CreateServiceInstanceBindingResponse response = serviceInstanceBindingService.createServiceInstanceBinding(getCreateServiceInstanceRequestWithServiceAndPlan(SERVICE_PLAN_DUMMY));
+        CredsServiceInstanceBindingService serviceInstanceBindingService = new CredsServiceInstanceBindingService(planRepository);
+        final CreateServiceInstanceBindingResponse response = serviceInstanceBindingService.createServiceInstanceBinding(getCreateServiceInstanceRequestWithServiceAndPlan(SERVICE_PLAN_DUMMY_ID));
 
         //then I should get no credentials
-        Assert.assertNull(response.getCredentials());
+        assertThat(response.getCredentials()).isNull();
+
 
     }
 
-    private CreateServiceInstanceBindingRequest getCreateServiceInstanceRequestWithServiceAndPlan(ServicePlanName servicePlan) {
-        return new CreateServiceInstanceBindingRequest("serviceDefinitionId", servicePlan.getPlanUid(),"appGuid",null);
+    private CreateServiceInstanceBindingRequest getCreateServiceInstanceRequestWithServiceAndPlan(UUID servicePlan) {
+        return new CreateServiceInstanceBindingRequest("serviceDefinitionId", servicePlan.toString(),"appGuid",null);
     }
 
 }

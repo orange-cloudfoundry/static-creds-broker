@@ -1,6 +1,7 @@
 package com.orange.service;
 
-import com.orange.model.Credentials;
+import com.orange.model.Plan;
+import com.orange.model.PlanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.servicebroker.model.CreateServiceInstanceBindingRequest;
 import org.springframework.cloud.servicebroker.model.CreateServiceInstanceBindingResponse;
@@ -8,22 +9,23 @@ import org.springframework.cloud.servicebroker.model.DeleteServiceInstanceBindin
 import org.springframework.cloud.servicebroker.service.ServiceInstanceBindingService;
 import org.springframework.stereotype.Service;
 
-import com.orange.model.ParsedCredentialsRepository;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class CredsServiceInstanceBindingService implements ServiceInstanceBindingService {
-    private ParsedCredentialsRepository credentialsRepository;
+    private PlanRepository planRepository;
 
     @Autowired
-    public CredsServiceInstanceBindingService(ParsedCredentialsRepository credentialsRepository) {
-        this.credentialsRepository = credentialsRepository;
+    public CredsServiceInstanceBindingService(PlanRepository planRepository) {
+        this.planRepository = planRepository;
     }
 
     @Override
     public CreateServiceInstanceBindingResponse createServiceInstanceBinding(CreateServiceInstanceBindingRequest request) {
-        String planId = request.getPlanId();
-        Credentials credentials = credentialsRepository.findByPlan(planId);
-        return new CreateServiceInstanceBindingResponse(credentials != null ? credentials.toMap() : null);
+        UUID planId = UUID.fromString(request.getPlanId());
+        final Optional<Plan> plan = planRepository.find(planId);
+        return new CreateServiceInstanceBindingResponse(plan.map(Plan::getFullCredentials).orElse(null));
     }
 
     @Override
