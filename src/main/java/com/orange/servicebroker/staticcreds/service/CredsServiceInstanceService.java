@@ -1,20 +1,25 @@
 package com.orange.servicebroker.staticcreds.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.servicebroker.model.*;
 import org.springframework.cloud.servicebroker.service.ServiceInstanceService;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CredsServiceInstanceService implements ServiceInstanceService {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(CredsServiceInstanceService.class);
+
 	@Override
 	public CreateServiceInstanceResponse createServiceInstance(CreateServiceInstanceRequest arg0) {
-		System.out.println("a service instance created.");
+		LOGGER.debug("creating service instance");
 		return new CreateServiceInstanceResponse();
 	}
 
 	@Override
 	public DeleteServiceInstanceResponse deleteServiceInstance(DeleteServiceInstanceRequest arg0) {
-		System.out.println("a service instance deleted.");
+		LOGGER.debug("deleting service instance");
 		return new DeleteServiceInstanceResponse();
 	}
 
@@ -26,6 +31,7 @@ public class CredsServiceInstanceService implements ServiceInstanceService {
 
 	@Override
 	public UpdateServiceInstanceResponse updateServiceInstance(UpdateServiceInstanceRequest arg0) {
+		LOGGER.debug("updating service instance");
 		return new UpdateServiceInstanceResponse();
 	}
 
