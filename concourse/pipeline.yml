@@ -1,0 +1,87 @@
+---
+resources:
+- name: static-creds-broker  
+  type: git  
+  source:
+    uri: https://github.com/Orange-OpenSource/static-creds-broker.git
+    branch: concourse-acceptance-test
+
+jobs:
+- name: acceptance-test
+  public: true
+  plan: 
+  - get: static-creds-broker
+    trigger: true
+  - task: package
+    privileged: true
+    file: static-creds-broker/concourse/task_package.yml
+  - aggregate:
+    - task: acceptance-test-local-env
+      file: static-creds-broker/concourse/task_acceptance_test.yml
+      attempts: 2
+      config:
+        params:         
+          cf_target_endpoint: {{cf_target_endpoint}}        
+          skip_ssl_verification: {{skip_ssl_verification}}        
+          cf_username: {{cf_username}}        
+          cf_password: {{cf_password}}        
+          organization_name: {{organization_name}}        
+          space_name: {{space_name}}
+          broker_app_name: {{broker_app_name}}
+          broker_hostname: {{broker_hostname}}
+          broker_domain: {{broker_domain}}
+          broker_release_version: {{broker_release_version}}
+          broker_password: {{broker_password}}
+          broker_name: {{broker_name}}
+          protocol: {{protocol}}
+          test_application_name: {{test_application_name}} 
+          test_dir: static-creds-broker/acceptance/local_env/
+      ensure:
+        task: print_log
+        file: static-creds-broker/concourse/task_print_test_log.yml
+    - task: acceptance-test-local-config
+      file: static-creds-broker/concourse/task_acceptance_test.yml
+      attempts: 2
+      config:
+        params:         
+          cf_target_endpoint: {{cf_target_endpoint}}        
+          skip_ssl_verification: {{skip_ssl_verification}}        
+          cf_username: {{cf_username}}        
+          cf_password: {{cf_password}}        
+          organization_name: {{organization_name}}        
+          space_name: {{space_name}}
+          broker_app_name: {{broker_app_name}}
+          broker_hostname: {{broker_hostname}}
+          broker_domain: {{broker_domain}}
+          broker_release_version: {{broker_release_version}}
+          broker_password: {{broker_password}}
+          broker_name: {{broker_name}}
+          protocol: {{protocol}}
+          test_application_name: {{test_application_name}}
+          test_dir: static-creds-broker/acceptance/local_config/
+      ensure:
+        task: print_log
+        file: static-creds-broker/concourse/task_print_test_log.yml
+    - task: acceptance-test-remote-config
+      file: static-creds-broker/concourse/task_acceptance_test.yml
+      attempts: 2
+      config:
+        params:         
+          cf_target_endpoint: {{cf_target_endpoint}}        
+          skip_ssl_verification: {{skip_ssl_verification}}        
+          cf_username: {{cf_username}}        
+          cf_password: {{cf_password}}        
+          organization_name: {{organization_name}}        
+          space_name: {{space_name}}
+          broker_app_name: {{broker_app_name}}
+          broker_hostname: {{broker_hostname}}
+          broker_domain: {{broker_domain}}
+          broker_release_version: {{broker_release_version}}
+          broker_password: {{broker_password}}
+          broker_name: {{broker_name}}
+          protocol: {{protocol}}
+          test_application_name: {{test_application_name}}
+          test_dir: static-creds-broker/acceptance/remote_config/
+      ensure:
+        task: print_log
+        file: static-creds-broker/concourse/task_print_test_log.yml

@@ -13,15 +13,21 @@ if not BINARY_DIRECTORY.endswith('/'):
 MANIFEST_TMPL_PATH = BINARY_DIRECTORY + "manifest.tmpl.yml"
 
 # informations about your broker deployment which requires to be defined in the manifest
-BROKER_APP_NAME = os.environ.get("broker_app_name").replace("\r","")
-BROKER_HOSTNAME = os.environ.get("broker_hostname").replace("\r","")
+BROKER_APP_NAME_LOCAL_ENV = os.environ.get("broker_app_name").replace("\r","") + "-1ocal-env"
+BROKER_APP_NAME_LOCAL_CONFIG = os.environ.get("broker_app_name").replace("\r","") + "-1ocal-config"
+BROKER_APP_NAME_REMOTE_CONFIG = os.environ.get("broker_app_name").replace("\r","") + "-remote-config"
+BROKER_HOSTNAME_LOCAL_ENV = os.environ.get("broker_hostname").replace("\r","") + "-1ocal-env"
+BROKER_HOSTNAME_LOCAL_CONFIG = os.environ.get("broker_hostname").replace("\r","") + "-1ocal-config"
+BROKER_HOSTNAME_REMOTE_CONFIG = os.environ.get("broker_hostname").replace("\r","") + "-remote-config"
 BROKER_DOMAIN = os.environ.get("broker_domain").replace("\r","")
 BROKER_RELEASE_VERSION = os.environ.get("broker_release_version").replace("\r","")
 BROKER_PASSWORD = os.environ.get("broker_password").replace("\r","")
 
 USE_YAML_CONFIG = os.environ.get("use_yaml_config", "false").replace("\r","").lower() == "true"
 USE_REMOTE_CONFIG = os.environ.get("use_remote_config", "false").replace("\r","").lower() == "true"
-BROKER_NAME = os.environ.get("broker_name").replace("\r","")
+BROKER_NAME_LOCAL_ENV = os.environ.get("broker_name").replace("\r","")  + "-1ocal-env"
+BROKER_NAME_LOCAL_CONFIG = os.environ.get("broker_name").replace("\r","")  + "-1ocal-config"
+BROKER_NAME_REMOTE_CONFIG = os.environ.get("broker_name").replace("\r","")  + "-remote-config"
 PROTOCOL = os.environ.get("protocol", "http").replace("\r","")
 TEST_APP_NAME = os.environ.get("test_application_name").replace("\r","")
 

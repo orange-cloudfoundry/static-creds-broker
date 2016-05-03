@@ -1,11 +1,12 @@
 *** Settings ***
-Resource        ../keywords.robot
+Resource        keywords.robot
 Library         String
 Library         Collections
 Library         CFServiceCredentialsParser
 
 *** Keywords ***
-Credential info in service key of service ${service_name} plan ${plan_name} should match configuration ${expected_credentials_dict}
+Try credential info in service key of specific service plan should match configuration
+    [Arguments]     ${service_name}     ${plan_name}    ${expected_credentials_dict}
     [Documentation]     Test credential info through service-key for service [${service_name}], plan [${plan_name}].
     ${service_instance_name}=   Generate Random String
     ${service_key_name}=    	Generate Random String
@@ -17,7 +18,8 @@ Credential info in service key of service ${service_name} plan ${plan_name} shou
     Dictionaries Should Be Equal 	${cf_service_key_credentials_dict} 	${expected_credentials_dict}
     [Teardown]      Delete service instance ${service_instance_name} with service key ${service_key_name}
 
-Credential info in bound application for service ${service_name} plan ${plan_name} should match configuration ${expected_credentials_dict}
+Try credential info in bound application for specific service plan should match configuration
+    [Arguments]     ${service_name}     ${plan_name}    ${expected_credentials_dict}
     [Documentation]     Test credential info through bound application [${TEST_APP_NAME}] environment variables for service [${service_name}], plan [${plan_name}].
     ${service_instance_name}=   Generate Random String
     Create service instance ${service_name} ${plan_name} ${service_instance_name}
@@ -35,3 +37,9 @@ Delete service instance ${service_instance_name} with service key ${service_key_
 Delete service instance ${service_instance_name} bound to ${TEST_APP_NAME}
     Unbind service ${TEST_APP_NAME} ${service_instance_name}
     Delete service instance ${service_instance_name}
+
+Credential info in service key of service ${service_name} plan ${plan_name} should match configuration ${expected_credentials_dict}
+    Wait Until Keyword Succeeds     3x  30s    Try credential info in service key of specific service plan should match configuration   ${service_name}     ${plan_name}    ${expected_credentials_dict}
+
+Credential info in bound application for service ${service_name} plan ${plan_name} should match configuration ${expected_credentials_dict}
+    Wait Until Keyword Succeeds     3x  30s    Try credential info in bound application for specific service plan should match configuration    ${service_name}     ${plan_name}    ${expected_credentials_dict}

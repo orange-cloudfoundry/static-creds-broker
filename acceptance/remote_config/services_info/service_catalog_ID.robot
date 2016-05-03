@@ -1,5 +1,5 @@
 *** Settings ***
-Resource		service_catalog_keywords.robot
+Resource		../../service_catalog_keywords.robot
 Documentation   Test static-creds-broker service static-creds-service-test catalog infomation
 
 Suite Setup		Run Keywords	Write service static-creds-service-test catalog info in marketplace to the file static-creds-service-test.txt

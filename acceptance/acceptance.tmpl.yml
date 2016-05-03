@@ -8,19 +8,12 @@ cf_password: __cf_password__
 organization_name: __organization_name__
 space_name: __space_name__
 
-# The path of directory which contains static-creds-broker-*.jar and manifest.tmpl.yml
-binary_directory: __binary_directory__
 # informations about your broker deployment which requires to be defined in the manifest
 broker_app_name: __broker_app_name__
 broker_hostname: __broker_hostname__
 broker_domain: __broker_domain__
 broker_release_version: __broker_release_version__
 broker_password: __broker_password__
-
-# use application.yml or system environment variables set in manifest.yml to configure the broker (default value: false, which means using system environment variables)
-use_yaml_config: __use_yaml_config__
-# use remote yaml configuration file to configure the broker (default value: false, when it's set to true, the value of use_yaml_config will not be considered)
-use_remote_config:__use_remote_config__
 
 # The names to be used during the test (it should no be conflict with the names which are already in use in your cloud foundry instance)
 broker_name: __broker_name__

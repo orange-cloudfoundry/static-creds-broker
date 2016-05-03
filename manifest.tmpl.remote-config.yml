@@ -20,4 +20,5 @@ applications:
     SPRING_CLOUD_CONFIG_SERVER_GIT_SEARCH_PATHS: src/test/resources/remote-config
     #SPRING_CLOUD_CONFIG_SERVER_GIT_USERNAME: git_user
     #SPRING_CLOUD_CONFIG_SERVER_GIT_PASSWORD: git_password
-    #JAVA_OPTS: "-Dhttp.proxyHost=http_proxyhost -Dhttp.proxyPort=http_proxyport -Dhttps.proxyHost=https_proxyhost -Dhttps.proxyPort=https_proxyport"
+    JAVA_OPTS: "-Djava.security.egd=file:///dev/urandom"
+    #JAVA_OPTS: "-Dhttp.proxyHost=http_proxyhost -Dhttp.proxyPort=http_proxyport -Dhttps.proxyHost=https_proxyhost -Dhttps.proxyPort=https_proxyport -Djava.security.egd=file:///dev/urandom"
