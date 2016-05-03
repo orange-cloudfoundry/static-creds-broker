@@ -1,7 +1,7 @@
 package com.orange.servicebroker.staticcreds.service;
 
+import com.orange.servicebroker.staticcreds.domain.CredentialsRepository;
 import com.orange.servicebroker.staticcreds.domain.Plan;
-import com.orange.servicebroker.staticcreds.domain.PlanRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +11,7 @@ import org.springframework.cloud.servicebroker.model.DeleteServiceInstanceBindin
 import org.springframework.cloud.servicebroker.service.ServiceInstanceBindingService;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,19 +20,20 @@ public class CredsServiceInstanceBindingService implements ServiceInstanceBindin
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CredsServiceInstanceService.class);
 
-    private PlanRepository planRepository;
+    private CredentialsRepository credentialsRepository;
 
     @Autowired
-    public CredsServiceInstanceBindingService(PlanRepository planRepository) {
-        this.planRepository = planRepository;
+    public CredsServiceInstanceBindingService(CredentialsRepository credentialsRepository) {
+        this.credentialsRepository = credentialsRepository;
     }
 
     @Override
     public CreateServiceInstanceBindingResponse createServiceInstanceBinding(CreateServiceInstanceBindingRequest request) {
         LOGGER.debug("binding service instance");
         UUID planId = UUID.fromString(request.getPlanId());
-        final Optional<Plan> plan = planRepository.find(planId);
-        return new CreateServiceInstanceBindingResponse(plan.map(Plan::getFullCredentials).orElse(null));
+        final Optional<Map<String, Object>> credentials = credentialsRepository.findByPlan(planId);
+
+        return new CreateServiceInstanceBindingResponse(credentials.orElse(null));
     }
 
     @Override

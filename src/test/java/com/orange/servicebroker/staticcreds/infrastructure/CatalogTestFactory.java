@@ -45,6 +45,11 @@ public class CatalogTestFactory {
 
         Service apiDirectoryService = new Service();
         apiDirectoryService.setName(API_DIRECTORY_TEST_SERVICE);
+        Map<String, Object> credentialsApiDirectoryService = new HashMap<>();
+        credentialsApiDirectoryService.put("A_GLOBAL_KEY", "key_value");
+        credentialsApiDirectoryService.put("URI", "http://default-url.org");
+        credentialsApiDirectoryService.put("ACCESS_KEY", "default");
+        apiDirectoryService.setCredentials(credentialsApiDirectoryService);
         final Map<String, Plan> apiDirectoryServicePlans = new HashMap<>();
         apiDirectoryServicePlans.put("prod", prod);
         apiDirectoryServicePlans.put("preProd", preProd);
@@ -60,7 +65,8 @@ public class CatalogTestFactory {
         Service tripAdvisorService = new Service();
         tripAdvisorService.setName(TRIPADVISOR_TEST_SERVICE);
         final Map<String, Plan> tripAdvisorServicePlans = new HashMap<>();
-        apiDirectoryServicePlans.put("default", defaultTripAdvisorServicePlan);
+        tripAdvisorServicePlans.put("default", defaultTripAdvisorServicePlan);
+        tripAdvisorService.setPlans(tripAdvisorServicePlans);
 
         final Map<String, Service> services = new HashMap<>();
         services.put("API_DIRECTORY", apiDirectoryService);

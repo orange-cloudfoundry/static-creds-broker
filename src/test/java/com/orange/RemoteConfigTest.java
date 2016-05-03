@@ -1,7 +1,7 @@
 package com.orange;
 
+import com.orange.servicebroker.staticcreds.domain.CredentialsRepository;
 import com.orange.servicebroker.staticcreds.domain.Plan;
-import com.orange.servicebroker.staticcreds.domain.PlanRepository;
 import org.fest.assertions.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +12,7 @@ import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.cloud.servicebroker.model.Catalog;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -33,7 +34,7 @@ public class RemoteConfigTest {
     String serviceApiDirectoryName;
 
     @Autowired
-    PlanRepository planRepository;
+    CredentialsRepository credentialsRepository;
 
     @Autowired
     Catalog catalog;
@@ -49,24 +50,11 @@ public class RemoteConfigTest {
         //service plan id for plan dev of service API_DIRECTORY, see static-creds-broker.yml
         UUID servicePlanId = UUID.fromString(API_DIRECTORY_SERVICE_PLAN_DEV_ID);
 
-        final Optional<Plan> plan = planRepository.find(servicePlanId);
+        final Optional<Map<String, Object>> credentials = credentialsRepository.findByPlan(servicePlanId);
 
-        assertThat(plan.get().getId().toString()).isEqualTo(API_DIRECTORY_SERVICE_PLAN_DEV_ID);
-        assertThat(plan.get().getFullCredentials()).hasSize(2).includes(entry("URI", "http://mydev-api.org"), entry("ACCESS_KEY", "devAZERT23456664DFDSFSDFDSF"));
-
-    }
-
-    @Test
-    public void should_find_all_services() {
-
-        //service plan id for plan dev of service API_DIRECTORY, see static-creds-broker.yml
-        UUID servicePlanId = UUID.fromString(API_DIRECTORY_SERVICE_PLAN_DEV_ID);
-
-        final Optional<Plan> plan = planRepository.find(servicePlanId);
-
-        assertThat(plan.get().getId().toString()).isEqualTo(API_DIRECTORY_SERVICE_PLAN_DEV_ID);
-        assertThat(plan.get().getFullCredentials()).hasSize(2).includes(entry("URI", "http://mydev-api.org"), entry("ACCESS_KEY", "devAZERT23456664DFDSFSDFDSF"));
+        assertThat(credentials.get()).hasSize(3).includes(entry("HOSTNAME", "http://company.com"),entry("URI", "http://mydev-api.org"), entry("ACCESS_KEY", "devAZERT23456664DFDSFSDFDSF"));
 
     }
+
 }
 

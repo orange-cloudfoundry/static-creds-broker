@@ -1,6 +1,8 @@
 package com.orange.servicebroker.staticcreds.domain;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.boot.json.JsonParser;
+import org.springframework.boot.json.JsonParserFactory;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -46,6 +48,11 @@ public class Service {
     //@Size(min=1,message = NO_PLAN_ERROR)
     @Valid
     private Map<String,Plan> plans = new HashMap<>();
+
+    private Map<String, Object> credentials = new HashMap<>();
+
+    private Map<String, Object> credentialsJson = new HashMap<>();
+
 
     public Service() {
     }
@@ -112,5 +119,29 @@ public class Service {
 
     public void setPlanUpdateable(Boolean planUpdateable) {
         this.planUpdateable = planUpdateable;
+    }
+
+    public Map<String, Object> getFullCredentials() {
+        final Map<String, Object> full = new HashMap<>();
+        full.putAll(credentials);
+        full.putAll(credentialsJson);
+        return full;
+    }
+
+    public void setCredentials(Map<String, Object> credentials) {
+        this.credentials = credentials;
+    }
+
+    public Map<String, Object> getCredentials() {
+        return credentials;
+    }
+
+    public Map<String, Object> getCredentialsJson() {
+        return credentialsJson;
+    }
+
+    public void setCredentialsJson(String credentialsJson) {
+        JsonParser parser = JsonParserFactory.getJsonParser();
+        this.credentialsJson = parser.parseMap(credentialsJson);
     }
 }
