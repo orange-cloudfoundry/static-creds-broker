@@ -26,12 +26,6 @@ public class ServiceTest {
     }
 
     @Test
-    public void service_has_a_default_id() {
-        Service service = new Service();
-        Assertions.assertThat(service.getId()).isNotNull();
-    }
-
-    @Test
     public void service_is_bindable_by_default() {
         Service service = new Service();
         Assertions.assertThat(service.isBindable()).isTrue();
@@ -44,12 +38,13 @@ public class ServiceTest {
     }
 
     @Test
-    public void should_set_service_with_valid_name_and_description_and_plans() {
+    public void should_set_service_with_valid_id_name_and_description_and_plans() {
         this.context.register(TestConfiguration.class);
         EnvironmentTestUtils.addEnvironment(this.context,
                 "services.tripadvisor.name:a_name",
                 "services.tripadvisor.description:a_description",
-                "services.tripadvisor.plans.default.name:default");
+                "services.tripadvisor.plans.default.name:default",
+                "services.tripadvisor.plans.default.id:default_id");
         this.context.refresh();
     }
 

@@ -13,7 +13,8 @@ import java.util.stream.Collectors;
 public class ServiceMapper {
 
     public static ServiceDefinition toServiceDefinition(Service service) {
-        return new ServiceDefinition(service.getId().toString(),
+        //TODO service.getName().toString()
+        return new ServiceDefinition(service.getId( ).toString(),
                 service.getName(),
                 service.getDescription(),
                 service.isBindable(),

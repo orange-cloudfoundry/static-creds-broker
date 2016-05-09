@@ -1,7 +1,6 @@
 package com.orange.servicebroker.staticcreds.service;
 
 import com.orange.servicebroker.staticcreds.domain.CredentialsRepository;
-import com.orange.servicebroker.staticcreds.domain.Plan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class CredsServiceInstanceBindingService implements ServiceInstanceBindingService {
@@ -30,7 +28,7 @@ public class CredsServiceInstanceBindingService implements ServiceInstanceBindin
     @Override
     public CreateServiceInstanceBindingResponse createServiceInstanceBinding(CreateServiceInstanceBindingRequest request) {
         LOGGER.debug("binding service instance");
-        UUID planId = UUID.fromString(request.getPlanId());
+        String planId = request.getPlanId();
         final Optional<Map<String, Object>> credentials = credentialsRepository.findByPlan(planId);
 
         return new CreateServiceInstanceBindingResponse(credentials.orElse(null));

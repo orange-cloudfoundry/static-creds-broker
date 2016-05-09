@@ -1,21 +1,25 @@
 # security properties could be removed, if it's configured in the manifest.yml through environment variable SECURITY_USER_NAME and SECURITY_USER_PASSWORD
 security:
     user:
-        password: <broker_password>
+        password: pass
 services:  
     TRIPADVISOR:
         NAME: TRIPADVISOR_test_Service2
         DESCRIPTION: My existing service 
         CREDENTIALS:
             URI: http://....
+        plans:
+            DEFAULT:
+              CREDENTIALS:
+                 URI: http://....
     API_DIRECTORY:
         NAME: API_DIRECTORY_test_Service2
         DESCRIPTION: My existing service
         METADATA:
-            LONGDESCRIPTION: A long description for my service
+            LONG_DESCRIPTION: A long description for my service
         CREDENTIALS:
             HOSTNAME: http://company.com
-        PLAN:
+        plans:
             PLAN1:
                 NAME: dev
                 CREDENTIALS:
@@ -42,8 +46,8 @@ services:
             SUPPORTURL: https://github.com/tao-xinxiu/static-creds-broker
             DOCUMENTATIONURL: https://github.com/tao-xinxiu/static-creds-broker
             PROVIDERDISPLAYNAME: provider display name
-            LONGDESCRIPTION: A long description for my service
-        PLAN:
+            LONG_DESCRIPTION: A long description for my service
+        plans:
             1:
                 NAME: myplan
                 DESCRIPTION: The description of the plan

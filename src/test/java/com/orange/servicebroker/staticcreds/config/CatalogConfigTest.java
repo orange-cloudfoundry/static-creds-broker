@@ -7,15 +7,11 @@ import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Created by YSBU7453 on 26/04/2016.
  */
 public class CatalogConfigTest {
-
-    public static final UUID SERVICE_PLAN_DEV_ID = UUID.randomUUID();
-    public static final UUID SERVICE_PLAN_PROD_ID = UUID.randomUUID();
 
     public static final String API_DIRECTORY_SERVICE = "API_DIRECTORY";
     public static final String DEV_PLAN = "dev";
@@ -28,13 +24,13 @@ public class CatalogConfigTest {
     }
 
     private CatalogSettings catalog() {
-        Plan dev = new Plan(SERVICE_PLAN_DEV_ID);
+        Plan dev = new Plan(DEV_PLAN);
         Map<String,Object> credentialsDev = new HashMap<>();
         credentialsDev.put("URI","http://mydev-api.org");
         credentialsDev.put("ACCESS_KEY","devAZERTY");
         dev.setCredentials(credentialsDev);
 
-        Plan prod = new Plan(SERVICE_PLAN_PROD_ID);
+        Plan prod = new Plan(PROD_PLAN);
         Map<String,Object> credentialsProd = new HashMap<>();
         credentialsProd.put("URI","http://myprod-api.org");
         credentialsProd.put("ACCESS_KEY","prodAZERTY");

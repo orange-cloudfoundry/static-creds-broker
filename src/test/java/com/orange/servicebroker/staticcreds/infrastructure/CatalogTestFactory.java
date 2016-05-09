@@ -6,17 +6,16 @@ import com.orange.servicebroker.staticcreds.domain.Service;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Created by YSBU7453 on 28/04/2016.
  */
 public class CatalogTestFactory {
 
-    public static final UUID SERVICE_PLAN_DEV = UUID.randomUUID();
-    public static final UUID SERVICE_PLAN_PROD = UUID.randomUUID();
-    public static final UUID SERVICE_PLAN_PREPROD = UUID.randomUUID();
-    public static final UUID SERVICE_PLAN_DEFAULT = UUID.randomUUID();
+    public static final String SERVICE_PLAN_DEV = "dev";
+    public static final String SERVICE_PLAN_PROD = "prod";
+    public static final String SERVICE_PLAN_PREPROD = "preprod";
+    public static final String SERVICE_PLAN_DEFAULT = "default";
     public static final String TRIPADVISOR_TEST_SERVICE = "TRIPADVISOR_test_Service";
     public static final String API_DIRECTORY_TEST_SERVICE = "API_DIRECTORY_test_Service";
 

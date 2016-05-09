@@ -2,14 +2,12 @@ package com.orange.servicebroker.staticcreds.infrastructure;
 
 import com.orange.servicebroker.staticcreds.domain.CatalogSettings;
 import com.orange.servicebroker.staticcreds.domain.CredentialsRepository;
-import com.orange.servicebroker.staticcreds.domain.Plan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Created by YSBU7453 on 03/05/2016.
@@ -26,7 +24,7 @@ public class SpringConfigCredentialsRepository implements CredentialsRepository 
 
 
     @Override
-    public Optional<Map<String, Object>> findByPlan(UUID servicePlanId) {
+    public Optional<Map<String, Object>> findByPlan(String servicePlanId) {
         return catalog.getServices().entrySet()
                 .stream()
                 .flatMap(serviceEntry -> serviceEntry.getValue().getPlans().entrySet().stream().map(planEntry -> planEntry.getValue())

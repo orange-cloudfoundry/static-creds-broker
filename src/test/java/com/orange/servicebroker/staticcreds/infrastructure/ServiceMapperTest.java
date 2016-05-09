@@ -7,7 +7,6 @@ import org.springframework.cloud.servicebroker.model.ServiceDefinition;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -19,7 +18,7 @@ import static org.fest.assertions.MapAssert.entry;
  */
 public class ServiceMapperTest {
 
-    public static final UUID SERVICE_ID = UUID.randomUUID();
+    public static final String SERVICE_ID = "a service id";
     public static final String SERVICE_DESCRIPTION = "a description";
     public static final String SERVICE_NAME = "a service name";
 
@@ -36,7 +35,7 @@ public class ServiceMapperTest {
     @Test
     public void map_service_description() {
         //GIVEN
-        Service service = new Service();
+        Service service = new Service(SERVICE_ID);
         service.setDescription(SERVICE_DESCRIPTION);
         //WHEN
         final ServiceDefinition res = ServiceMapper.toServiceDefinition(service);
@@ -47,7 +46,7 @@ public class ServiceMapperTest {
     @Test
     public void map_service_name() {
         //GIVEN
-        Service service = new Service();
+        Service service = new Service(SERVICE_ID);
         service.setName(SERVICE_NAME);
         //WHEN
         final ServiceDefinition res = ServiceMapper.toServiceDefinition(service);
@@ -58,7 +57,7 @@ public class ServiceMapperTest {
     @Test
     public void map_service_bindable() {
         //GIVEN
-        Service service = new Service();
+        Service service = new Service(SERVICE_ID);
         service.setBindable(Boolean.FALSE);
         //WHEN
         final ServiceDefinition res = ServiceMapper.toServiceDefinition(service);
@@ -69,7 +68,7 @@ public class ServiceMapperTest {
     @Test
     public void map_service_plan_updateable() {
         //GIVEN
-        Service service = new Service();
+        Service service = new Service(SERVICE_ID);
         service.setPlanUpdateable(Boolean.FALSE);
         //WHEN
         final ServiceDefinition res = ServiceMapper.toServiceDefinition(service);
@@ -88,7 +87,7 @@ public class ServiceMapperTest {
         serviceMetadata.setImageUrl("http://localhost/image.png");
         serviceMetadata.setSupportUrl("http://localhost/support");
 
-        Service service = new Service();
+        Service service = new Service(SERVICE_ID);
         service.setMetadata(serviceMetadata);
 
         //WHEN
@@ -106,7 +105,7 @@ public class ServiceMapperTest {
     @Test
     public void map_service_tags() {
         //GIVEN
-        Service service = new Service();
+        Service service = new Service(SERVICE_ID);
         service.setTags(Stream.of("tag1", "tag2", "tag3").collect(Collectors.toList()));
 
         //WHEN
@@ -118,7 +117,7 @@ public class ServiceMapperTest {
     @Test
     public void does_not_map_requires() {
         //GIVEN
-        Service service = new Service();
+        Service service = new Service(SERVICE_ID);
         //WHEN
         final ServiceDefinition res = ServiceMapper.toServiceDefinition(service);
         //THEN
@@ -128,7 +127,7 @@ public class ServiceMapperTest {
     @Test
     public void does_not_map_dashboard_client() {
         //GIVEN
-        Service service = new Service();
+        Service service = new Service(SERVICE_ID);
         //WHEN
         final ServiceDefinition res = ServiceMapper.toServiceDefinition(service);
         //THEN
@@ -137,9 +136,9 @@ public class ServiceMapperTest {
 
     public void should_map_services() {
         //GIVEN
-        final UUID aServiceId = UUID.randomUUID();
+        final String aServiceId = "a service id";
         Service aService = new Service(aServiceId);
-        final UUID anotherServiceId = UUID.randomUUID();
+        final String anotherServiceId = "another service id";
         Service anotherService = new Service(anotherServiceId);
         //WHEN
         final List<ServiceDefinition> serviceDefinitions = ServiceMapper.toServiceDefinitions(Arrays.asList(aService, anotherService));

@@ -16,40 +16,42 @@ applications:
     # Note: - At least one service is required to be defined.
     #       - For each service defined, its 'NAME' and 'DESCRIPTION' is required.
     #       - For each plan defined, at least one credential property is required. (Service credential definitions are automatically applied to all its plans.)
-    SERVICES_TRIPADVISOR_NAME: TRIPADVISOR_test_Service1
-    SERVICES_TRIPADVISOR_DESCRIPTION: My existing service
-    SERVICES_TRIPADVISOR_CREDENTIALS_URI: http://....
+    SERVICES[TRIPADVISOR]_NAME: TRIPADVISOR_test_Service1
+    SERVICES[TRIPADVISOR]_DESCRIPTION: My existing service
+    SERVICES[TRIPADVISOR]_CREDENTIALS_URI: http://....
+    SERVICES[TRIPADVISOR]_PLANS[DEFAULT]_CREDENTIALS_URI: http://....
 
-    SERVICES_API_DIRECTORY_NAME: API_DIRECTORY_test_Service1
-    SERVICES_API_DIRECTORY_DESCRIPTION: My existing service
-    SERVICES_API_DIRECTORY_METADATA_LONGDESCRIPTION: A long description for my service
-    SERVICES_API_DIRECTORY_CREDENTIALS_HOSTNAME: http://company.com
-    SERVICES_API_DIRECTORY_PLAN_1_NAME: dev
-    SERVICES_API_DIRECTORY_PLAN_1_CREDENTIALS_URI: http://mydev-api.org
-    SERVICES_API_DIRECTORY_PLAN_1_CREDENTIALS_ACCESS_KEY: devAZERT23456664DFDSFSDFDSF
-    SERVICES_API_DIRECTORY_PLAN_2_NAME: preprod
-    SERVICES_API_DIRECTORY_PLAN_2_CREDENTIALS_URI: http://mypreprod-api.org
-    SERVICES_API_DIRECTORY_PLAN_2_CREDENTIALS_ACCESS_KEY: preprodAZERT23456664DFDSFSDFDSF
-    SERVICES_API_DIRECTORY_PLAN_3_NAME: prod
-    SERVICES_API_DIRECTORY_PLAN_3_CREDENTIALS_URI: http://myprod-api.org
-    SERVICES_API_DIRECTORY_PLAN_3_CREDENTIALS_ACCESS_KEY: prodAZERT23456664DFDSFSDFDSF
+    SERVICES[API_DIRECTORY]_NAME: API_DIRECTORY_test_Service1
+    SERVICES[API_DIRECTORY]_DESCRIPTION: My existing service
+    SERVICES[API_DIRECTORY]_METADATA_LONGDESCRIPTION: A long description for my service
+    SERVICES[API_DIRECTORY]_CREDENTIALS_HOSTNAME: http://company.com
+    SERVICES[API_DIRECTORY]_PLANS[DEV]_NAME: dev
+    SERVICES[API_DIRECTORY]_PLANS[DEV]_CREDENTIALS_URI: http://mydev-api.org
+    SERVICES[API_DIRECTORY]_PLANS[DEV]_CREDENTIALS_ACCESS_KEY: devAZERT23456664DFDSFSDFDSF
+    SERVICES[API_DIRECTORY]_PLANS[PREPROD]_NAME: preprod
+    SERVICES[API_DIRECTORY]_PLANS[PREPROD]_CREDENTIALS_URI: http://mypreprod-api.org
+    SERVICES[API_DIRECTORY]_PLANS[PREPROD]_CREDENTIALS_ACCESS_KEY: preprodAZERT23456664DFDSFSDFDSF
+    SERVICES[API_DIRECTORY]_PLANS[PLAN_3]_NAME: prod
+    SERVICES[API_DIRECTORY]_PLANS[PLAN_3]_CREDENTIALS_URI: http://myprod-api.org
+    SERVICES[API_DIRECTORY]_PLANS[PLAN_3]_CREDENTIALS_ACCESS_KEY: prodAZERT23456664DFDSFSDFDSF
     # Credential value for particular plan will override the value which is set for whole service
-    SERVICES_API_DIRECTORY_PLAN_3_CREDENTIALS_HOSTNAME: http://prod.company.com
+    SERVICES[API_DIRECTORY]_PLANS[PLAN_3]_CREDENTIALS_HOSTNAME: http://prod.company.com
 
-    SERVICES_ID_NAME: static-creds-service-test1
-    SERVICES_ID_DESCRIPTION: static-creds service for test
+    SERVICES[ID]_NAME: static-creds-service-test1
+    SERVICES[ID]_DESCRIPTION: static-creds service for test
     # other variables
-    SERVICES_ID_TAGS: tag1,tag2,tag3 #no espace, no quote, separated by comma if multiple tags
-    SERVICES_ID_METADATA_DISPLAYNAME: displayname for my service
-    SERVICES_ID_METADATA_IMAGEURL: https://upload.wikimedia.org/wikipedia/commons/c/c8/Orange_logo.svg
-    SERVICES_ID_METADATA_SUPPORTURL: https://github.com/tao-xinxiu/static-creds-broker
-    SERVICES_ID_METADATA_DOCUMENTATIONURL: https://github.com/tao-xinxiu/static-creds-broker
-    SERVICES_ID_METADATA_PROVIDERDISPLAYNAME: provider display name
-    SERVICES_ID_METADATA_LONGDESCRIPTION: A long description for my service
-    SERVICES_ID_PLAN_1_NAME: myplan
-    SERVICES_ID_PLAN_1_DESCRIPTION: The description of the plan
-    #SERVICES_ID_PLAN_1_METADATA: '{"bullets":["20 GB of messages","20 connections"],"costs":[{"amount":{"usd":99.0,"eur":49.0},"unit":"MONTHLY"},{"amount":{"usd":0.99,"eur":0.49},"unit":"1GB of messages over 20GB"}],"displayName":"Big Bunny"}'
-    #SERVICES_ID_PLAN_1_FREE: false
-    SERVICES_ID_CREDENTIALS_uri: mysql://USERNAME:PASSWORD@HOSTNAME:PORT/NAME
-    SERVICES_ID_CREDENTIALS_HOSTNAME: us-cdbr-east-03.cleardb.com
-    SERVICES_ID_CREDENTIALS_JSON: '{"username":"admin","password":"pa55woRD"}' #if same key defined SERVICES_ID_CREDENTIALS_MYOWNKEY, value will replace that in SERVICES_ID_CREDENTIALS_MYOWNKEY
+    SERVICES[ID]_TAGS: tag1,tag2,tag3 #no espace, no quote, separated by comma if multiple tags
+    SERVICES[ID]_METADATA_DISPLAYNAME: displayname for my service
+    SERVICES[ID]_METADATA_IMAGEURL: https://upload.wikimedia.org/wikipedia/commons/c/c8/Orange_logo.svg
+    SERVICES[ID]_METADATA_SUPPORTURL: https://github.com/tao-xinxiu/static-creds-broker
+    SERVICES[ID]_METADATA_DOCUMENTATIONURL: https://github.com/tao-xinxiu/static-creds-broker
+    SERVICES[ID]_METADATA_PROVIDERDISPLAYNAME: provider display name
+    SERVICES[ID]_METADATA_LONGDESCRIPTION: A long description for my service
+    SERVICES[ID]_PLANS[DEV]_NAME: myplan
+    SERVICES[ID]_PLANS[DEV]_DESCRIPTION: The description of the plan
+    #SERVICES[ID][DEV]_METADATA: '{"bullets":["20 GB of messages","20 connections"],"costs":[{"amount":{"usd":99.0,"eur":49.0},"unit":"MONTHLY"},{"amount":{"usd":0.99,"eur":0.49},"unit":"1GB of messages over 20GB"}],"displayName":"Big Bunny"}'
+    #SERVICES[ID][DEV]_FREE: false
+    SERVICES[ID]_CREDENTIALS_URI: mysql://USERNAME:PASSWORD@HOSTNAME:PORT/NAME
+    SERVICES[ID]_CREDENTIALS_HOSTNAME: us-cdbr-east-03.cleardb.com
+    SERVICES[ID]_CREDENTIALS_JSON: '{"username":"admin","password":"pa55woRD"}' #if same key defined SERVICES[ID]_CREDENTIALS_MYOWNKEY, value will replace that in SERVICES[ID]_CREDENTIALS_MYOWNKEY
+    SERVICES[ID]_PLANS[DEFAULT]_NAME: default

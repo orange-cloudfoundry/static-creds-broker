@@ -27,7 +27,6 @@ import org.springframework.cloud.servicebroker.model.CreateServiceInstanceBindin
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.MapAssert.entry;
@@ -41,10 +40,7 @@ public class CredsServiceInstanceBindingServiceTest {
     public static final String API_DIRECTORY_SERVICE = "API_DIRECTORY";
     public static final String DEV_PLAN = "dev";
     public static final String PROD_PLAN = "prod";
-
-    public static final UUID SERVICE_PLAN_DEV_ID = UUID.randomUUID();
-    public static final UUID SERVICE_PLAN_PROD_ID = UUID.randomUUID();
-    public static final UUID SERVICE_PLAN_DUMMY_ID = UUID.randomUUID();
+    public static final String DUMMY_PLAN = "dummy";
 
 
     @Test
@@ -54,7 +50,7 @@ public class CredsServiceInstanceBindingServiceTest {
 
         //when I bind my app to a service API_DIRECTORY instance whose plan is dev
         CredsServiceInstanceBindingService serviceInstanceBindingService = new CredsServiceInstanceBindingService(credentialsRepository);
-        final CreateServiceInstanceBindingResponse response = serviceInstanceBindingService.createServiceInstanceBinding(getCreateServiceInstanceRequestWithServiceAndPlan(SERVICE_PLAN_DEV_ID));
+        final CreateServiceInstanceBindingResponse response = serviceInstanceBindingService.createServiceInstanceBinding(getCreateServiceInstanceRequestWithServiceAndPlan(DEV_PLAN));
 
         //then I should only get credentials that have been set for dev plan of service API_DIRECTORY
         assertThat(response.getCredentials()).hasSize(2).includes(entry("URI", "http://mydev-api.org"), entry("ACCESS_KEY", "devAZERTY"));
@@ -62,13 +58,13 @@ public class CredsServiceInstanceBindingServiceTest {
     }
 
     private CatalogSettings catalog() {
-        Plan dev = new Plan(SERVICE_PLAN_DEV_ID);
+        Plan dev = new Plan(DEV_PLAN);
         Map<String,Object> credentialsDev = new HashMap<>();
         credentialsDev.put("URI","http://mydev-api.org");
         credentialsDev.put("ACCESS_KEY","devAZERTY");
         dev.setCredentials(credentialsDev);
 
-        Plan prod = new Plan(SERVICE_PLAN_PROD_ID);
+        Plan prod = new Plan(PROD_PLAN);
         Map<String,Object> credentialsProd = new HashMap<>();
         credentialsProd.put("URI","http://myprod-api.org");
         credentialsProd.put("ACCESS_KEY","prodAZERTY");
@@ -93,7 +89,7 @@ public class CredsServiceInstanceBindingServiceTest {
 
         //when I bind my app to a service API_DIRECTORY instance whose plan is dummy
         CredsServiceInstanceBindingService serviceInstanceBindingService = new CredsServiceInstanceBindingService(credentialsRepository);
-        final CreateServiceInstanceBindingResponse response = serviceInstanceBindingService.createServiceInstanceBinding(getCreateServiceInstanceRequestWithServiceAndPlan(SERVICE_PLAN_DUMMY_ID));
+        final CreateServiceInstanceBindingResponse response = serviceInstanceBindingService.createServiceInstanceBinding(getCreateServiceInstanceRequestWithServiceAndPlan(DUMMY_PLAN));
 
         //then I should get no credentials
         assertThat(response.getCredentials()).isNull();
@@ -101,8 +97,8 @@ public class CredsServiceInstanceBindingServiceTest {
 
     }
 
-    private CreateServiceInstanceBindingRequest getCreateServiceInstanceRequestWithServiceAndPlan(UUID servicePlan) {
-        return new CreateServiceInstanceBindingRequest("serviceDefinitionId", servicePlan.toString(),"appGuid",null);
+    private CreateServiceInstanceBindingRequest getCreateServiceInstanceRequestWithServiceAndPlan(String servicePlan) {
+        return new CreateServiceInstanceBindingRequest("serviceDefinitionId", servicePlan,"appGuid",null);
     }
 
 }

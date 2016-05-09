@@ -33,12 +33,6 @@ public class PlanTest {
     }
 
     @Test
-    public void plan_has_a_default_id() {
-        Plan plan = new Plan();
-        Assertions.assertThat(plan.getId()).isNotNull();
-    }
-
-    @Test
     public void plan_is_free_by_default(){
         Plan defaultPlan = new Plan();
         Assertions.assertThat(defaultPlan.getFree()).isTrue();

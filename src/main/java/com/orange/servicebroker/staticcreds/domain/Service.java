@@ -5,11 +5,9 @@ import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Cloud Foundry Service
@@ -22,12 +20,8 @@ public class Service {
     public static final String NO_DESCRIPTION_ERROR = "Invalid configuration. No description has been set for service";
     public static final String NO_PLAN_ERROR = "Invalid configuration. No plans has been set for service";
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    @NotNull(message = NO_ID_ERROR)
-    private UUID id = UUID.randomUUID();
+    //@NotEmpty(message = NO_ID_ERROR)
+    private String id;
 
     @NotEmpty(message = NO_NAME_ERROR)
     private String name;
@@ -47,18 +41,26 @@ public class Service {
     @NotEmpty(message = NO_PLAN_ERROR)
     //@Size(min=1,message = NO_PLAN_ERROR)
     @Valid
-    private Map<String,Plan> plans = new HashMap<>();
+    private Map<String, Plan> plans = new HashMap<>();
 
     private Map<String, Object> credentials = new HashMap<>();
 
     private Map<String, Object> credentialsJson = new HashMap<>();
 
-
     public Service() {
     }
 
-    public Service(UUID id) {
+
+    public Service(String id) {
         this.id = id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public List<String> getTags() {
@@ -107,10 +109,6 @@ public class Service {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public UUID getId() {
-        return id;
     }
 
     public Boolean isPlanUpdateable() {

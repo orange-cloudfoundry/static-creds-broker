@@ -1,7 +1,5 @@
 package com.orange.servicebroker.staticcreds.infrastructure;
 
-import com.orange.servicebroker.staticcreds.domain.Plan;
-import org.fest.assertions.Assertions;
 import org.junit.Test;
 
 import java.util.Map;
@@ -9,7 +7,6 @@ import java.util.Optional;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.MapAssert.entry;
-import static org.junit.Assert.*;
 
 /**
  * Created by YSBU7453 on 03/05/2016.

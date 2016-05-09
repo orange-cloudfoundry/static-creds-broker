@@ -9,7 +9,6 @@ import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Cloud Foundry plan
@@ -23,12 +22,12 @@ public class Plan {
     public static final String PLAN_NAME_DEFAULT = "default";
     public static final String PLAN_DESCRIPTION_DEFAULT = "default description";
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    @NotNull(message = NO_ID_ERROR)
-    private UUID id = UUID.randomUUID();
+    //@NotEmpty(message = NO_ID_ERROR)
+    private String id;
 
     @NotNull
     private String name = PLAN_NAME_DEFAULT;
@@ -48,7 +47,7 @@ public class Plan {
     public Plan() {
     }
 
-    public Plan(UUID id) {
+    public Plan(String id) {
         this.id = id;
     }
 
@@ -113,7 +112,7 @@ public class Plan {
         return credentialsJson;
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
