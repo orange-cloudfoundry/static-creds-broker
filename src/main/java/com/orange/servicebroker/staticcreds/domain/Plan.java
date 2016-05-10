@@ -20,11 +20,6 @@ public class Plan {
 
     public static final Boolean FREE_DEFAULT = Boolean.TRUE;
     public static final String PLAN_NAME_DEFAULT = "default";
-    public static final String PLAN_DESCRIPTION_DEFAULT = "default description";
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     //@NotEmpty(message = NO_ID_ERROR)
     private String id;
@@ -32,22 +27,26 @@ public class Plan {
     @NotNull
     private String name = PLAN_NAME_DEFAULT;
 
-    @NotNull
-    private String description = PLAN_DESCRIPTION_DEFAULT;
+    private String description;
 
     @Valid
-    private PlanMetadata metadata;
+    private PlanMetadata metadata = new PlanMetadata();
 
     @NotNull
     private Boolean free = FREE_DEFAULT;
 
     private Map<String, Object> credentials = new HashMap<>();
+
     private Map<String, Object> credentialsJson = new HashMap<>();
 
     public Plan() {
     }
 
     public Plan(String id) {
+        this.id = id;
+    }
+
+    public void setId(String id) {
         this.id = id;
     }
 

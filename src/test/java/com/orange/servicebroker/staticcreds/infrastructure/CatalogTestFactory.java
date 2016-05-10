@@ -18,6 +18,7 @@ public class CatalogTestFactory {
     public static final String SERVICE_PLAN_DEFAULT = "default";
     public static final String TRIPADVISOR_TEST_SERVICE = "TRIPADVISOR_test_Service";
     public static final String API_DIRECTORY_TEST_SERVICE = "API_DIRECTORY_test_Service";
+    public static final String NO_ID_PLAN = "no_id";
 
     public static CatalogSettings newInstance() {
 
@@ -61,15 +62,20 @@ public class CatalogTestFactory {
         credentialsDefaulTripAdvisorServicePlan.put("URI", "http://my-api.org");
         defaultTripAdvisorServicePlan.setCredentials(credentialsDefaulTripAdvisorServicePlan);
 
+        Plan noIDTripAdvisorServicePlan = new Plan();
+        noIDTripAdvisorServicePlan.setName(NO_ID_PLAN);
+
         Service tripAdvisorService = new Service();
         tripAdvisorService.setName(TRIPADVISOR_TEST_SERVICE);
         final Map<String, Plan> tripAdvisorServicePlans = new HashMap<>();
-        tripAdvisorServicePlans.put("default", defaultTripAdvisorServicePlan);
+        tripAdvisorServicePlans.put(SERVICE_PLAN_DEFAULT, defaultTripAdvisorServicePlan);
+        tripAdvisorServicePlans.put(NO_ID_PLAN,noIDTripAdvisorServicePlan);
         tripAdvisorService.setPlans(tripAdvisorServicePlans);
 
         final Map<String, Service> services = new HashMap<>();
-        services.put("API_DIRECTORY", apiDirectoryService);
-        services.put("TRIPADVISOR", tripAdvisorService);
+        services.put(API_DIRECTORY_TEST_SERVICE, apiDirectoryService);
+        services.put(TRIPADVISOR_TEST_SERVICE, tripAdvisorService);
+
         return new CatalogSettings(services);
     }
 

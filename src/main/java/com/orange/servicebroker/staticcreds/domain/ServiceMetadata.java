@@ -9,12 +9,12 @@ import java.util.Map;
  */
 public class ServiceMetadata {
 
-    private String displayName;
-    private String imageUrl;
-    private String supportUrl;
-    private String documentationUrl;
-    private String providerDisplayName;
-    private String longDescription;
+    private String displayName = "";
+    private String imageUrl = "";
+    private String supportUrl = "";
+    private String documentationUrl = "";
+    private String providerDisplayName = "";
+    private String longDescription = "";
 
     public String getDisplayName() {
         return displayName;

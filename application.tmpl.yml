@@ -41,11 +41,11 @@ services:
         DESCRIPTION: static-creds service for test
         TAGS: tag1,tag2,tag3
         METADATA:
-            DISPLAYNAME: displayname for my service
-            IMAGEURL: https://upload.wikimedia.org/wikipedia/commons/c/c8/Orange_logo.svg
-            SUPPORTURL: https://github.com/tao-xinxiu/static-creds-broker
-            DOCUMENTATIONURL: https://github.com/tao-xinxiu/static-creds-broker
-            PROVIDERDISPLAYNAME: provider display name
+            DISPLAY_NAME: displayname for my service
+            IMAGE_URL: https://upload.wikimedia.org/wikipedia/commons/c/c8/Orange_logo.svg
+            SUPPORT_URL: https://github.com/tao-xinxiu/static-creds-broker
+            DOCUMENTATION_URL: https://github.com/tao-xinxiu/static-creds-broker
+            PROVIDER_DISPLAY_NAME: provider display name
             LONG_DESCRIPTION: A long description for my service
         plans:
             1:

@@ -45,10 +45,4 @@ public class PlanTest {
         Assertions.assertThat(defaultPlan.getName()).isEqualTo("default");
     }
 
-    @Test
-    public void plan_has_a_default_description(){
-        Plan defaultPlan = new Plan();
-        Assertions.assertThat(defaultPlan.getDescription()).isNotEmpty();
-    }
-
 }

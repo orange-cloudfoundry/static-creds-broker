@@ -20,7 +20,7 @@ public class ServiceMetadataTest {
         serviceMetadata.setImageUrl("http://localhost/image.png");
         serviceMetadata.setSupportUrl("http://localhost/support");
 
-        Assertions.assertThat(serviceMetadata.asMap()).as("get service metatada content as a toServiceDefinition").hasSize(6).includes(
+        Assertions.assertThat(serviceMetadata.asMap()).as("get service metatada content as map").hasSize(6).includes(
                 entry("displayName", "aDisplayName"),
                 entry("longDescription", "a long description"),
                 entry("providerDisplayName", "a provider"),

@@ -36,7 +36,7 @@ public class Service {
     private List<String> tags;
 
     @Valid
-    private ServiceMetadata metadata;
+    private ServiceMetadata metadata = new ServiceMetadata();
 
     @NotEmpty(message = NO_PLAN_ERROR)
     //@Size(min=1,message = NO_PLAN_ERROR)
@@ -49,7 +49,6 @@ public class Service {
 
     public Service() {
     }
-
 
     public Service(String id) {
         this.id = id;
