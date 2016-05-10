@@ -43,9 +43,9 @@ public class Service {
     @Valid
     private Map<String, Plan> plans = new HashMap<>();
 
-    private Map<String, Object> credentials = new HashMap<>();
+    private Map<String, Object> credentials;
 
-    private Map<String, Object> credentialsJson = new HashMap<>();
+    private Map<String, Object> credentialsJson;
 
     public Service() {
     }
@@ -121,9 +121,13 @@ public class Service {
 
     public Map<String, Object> getFullCredentials() {
         final Map<String, Object> full = new HashMap<>();
-        full.putAll(credentials);
-        full.putAll(credentialsJson);
-        return full;
+        if (credentials != null) {
+            full.putAll(credentials);
+        }
+        if (credentialsJson != null) {
+            full.putAll(credentialsJson);
+        }
+        return full.isEmpty() ? null : full;
     }
 
     public void setCredentials(Map<String, Object> credentials) {
