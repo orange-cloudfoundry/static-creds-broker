@@ -5,6 +5,7 @@ import org.junit.Test;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.orange.servicebroker.staticcreds.infrastructure.CatalogTestFactory.HOSTNAME_PLAN_PROD_VALUE;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.MapAssert.entry;
 
@@ -21,9 +22,9 @@ public class SpringConfigCredentialsRepositoryTest {
         //some overlaps
         SpringConfigCredentialsRepository repository = new SpringConfigCredentialsRepository(CatalogTestFactory.newInstance());
 
-        final Optional<Map<String, Object>> credentials = repository.findByPlan(CatalogTestFactory.SERVICE_PLAN_DEV);
+        final Optional<Map<String, Object>> credentials = repository.findByPlan(CatalogTestFactory.SERVICE_PLAN_PROD);
 
-        assertThat(credentials.get()).hasSize(3).includes(entry("A_GLOBAL_KEY", "key_value"),entry("URI", "http://mydev-api.org"), entry("ACCESS_KEY", "dev"));
+        assertThat(credentials.get()).hasSize(3).includes(entry("HOSTNAME", HOSTNAME_PLAN_PROD_VALUE),entry("URI", "http://myprod-api.org"), entry("ACCESS_KEY", "prod"));
 
     }
 

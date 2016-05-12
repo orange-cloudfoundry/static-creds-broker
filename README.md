@@ -34,10 +34,10 @@ applications:
 
   env:
     SECURITY_USER_PASSWORD: MySecurePwd
-    SERVICES_ID_NAME: MyService
-    SERVICES_ID_DESCRIPTION: My existing service
-    SERVICES_ID_METADATA_LONGDESCRIPTION: A long description for my service
-    SERVICES_ID_CREDENTIALS_URI: mysql://USERNAME:PASSWORD@HOSTNAME:PORT/NAME
+    SERVICES[ID]_NAME: MyService
+    SERVICES[ID]_DESCRIPTION: My existing service
+    SERVICES[ID]_METADATA_LONGDESCRIPTION: A long description for my service
+    SERVICES[ID]_CREDENTIALS[URI]: mysql://USERNAME:PASSWORD@HOSTNAME:PORT/NAME
 
 # deploy the broker    
 $ cf push 
@@ -69,32 +69,41 @@ NOTE:
 - {SERVICE_ID} should be replaced be your own service id which is a string used to identify service. 
 - {PLAN_ID} should be replaced be your own plan id which is a string used to identify different plans defined in a service.
 
-The constraint of {SERVICE_ID}: 
-- not contains "_CREDENTIALS"
-- not contains "\_PLAN\_"
+Please notice that from 2.X version, there has been a complete refactoring leading to non backward compatible API changes.
+Thus, to benefit from new 2.X version, you will need to review your exiting configuration to ensure it is compliant with new config reference.
 
-The constraint of {PLAN_ID}: 
-- not contains "_CREDENTIALS"
+| 1.x version   | 2.X version |
+| ------------- | ------------- |
+| SERVICES_{SERVICE_ID}_NAME  |SERVICES[{SERVICE_ID}]_NAME  |
+| SERVICES_{SERVICE_ID}\_PLAN\_{PLAN_ID}_NAME  | SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]_NAME  |
+| SERVICES_{SERVICE_ID}_CREDENTIALS_URI  |SERVICES[{SERVICE_ID}]\_CREDENTIALS\[URI] |
+| ..._METADATA_DISPLAYNAME | _METADATA_DISPLAY_NAME |
+| ..._METADATA_IMAGEURL | _METADATA_IMAGE_URL |
+| ..._METADATA_SUPPORTURL | _METADATA_SUPPORT_URL |
+| ..._METADATA_DOCUMENTATIONURL | _METADATA_DOCUMENTATION_URL |
+| ..._METADATA_PROVIDERDISPLAYNAME | _METADATA_PROVIDER_DISPLAY_NAME |
+| ..._METADATA_LONGDESCRIPTION | METADATA_LONG_DESCRIPTION |
+
 
 ## Catalog
 
 The catalog exposed by the broker is controlled by environment variables matching the [service broker catalog endpoint response](http://docs.cloudfoundry.org/services/api.html#catalog-mgmt). 
-* SERVICES_{SERVICE_ID}_NAME (mandatory String, no default): the technical name of the service which should be unique among the cloudfoundry installation to register with (among orgs and spaces).
-* SERVICES_{SERVICE_ID}_DESCRIPTION (mandatory String, no default)
-* SERVICES_{SERVICE_ID}_BINDEABLE (default is "true"). Useful for service keys.
-* SERVICES_{SERVICE_ID}_TAGS (String holding an array-of-strings, multiple tags are separated by comma, as ```tag1,tag2,tag3```, default is ```[]```)
-* SERVICES_{SERVICE_ID}_METADATA_DISPLAYNAME (String, default is SERVICES_ID_NAME). The user-facing name of the service.
-* SERVICES_{SERVICE_ID}_METADATA_IMAGEURL (String, default is "")
-* SERVICES_{SERVICE_ID}_METADATA_SUPPORTURL (String, default is "")
-* SERVICES_{SERVICE_ID}_METADATA_DOCUMENTATIONURL (String, default is "")
-* SERVICES_{SERVICE_ID}_METADATA_PROVIDERDISPLAYNAME (String, default is "")
-* SERVICES_{SERVICE_ID}_METADATA_LONGDESCRIPTION (String, default is "")
+* SERVICES[{SERVICE_ID}]_NAME (mandatory String, no default): the technical name of the service which should be unique among the cloudfoundry installation to register with (among orgs and spaces).
+* SERVICES[{SERVICE_ID}]_DESCRIPTION (mandatory String, no default)
+* SERVICES[{SERVICE_ID}]_BINDEABLE (default is "true"). Useful for service keys.
+* SERVICES[{SERVICE_ID}]_TAGS (String holding an array-of-strings, multiple tags are separated by comma, as ```tag1,tag2,tag3```, default is ```[]```)
+* SERVICES[{SERVICE_ID}]_METADATA_DISPLAY_NAME (String, default is SERVICES_ID_NAME). The user-facing name of the service.
+* SERVICES[{SERVICE_ID}]_METADATA_IMAGE_URL (String, default is "")
+* SERVICES[{SERVICE_ID}]_METADATA_SUPPORT_URL (String, default is "")
+* SERVICES[{SERVICE_ID}]_METADATA_DOCUMENTATION_URL (String, default is "")
+* SERVICES[{SERVICE_ID}]_METADATA_PROVIDER_DISPLAY_NAME (String, default is "")
+* SERVICES[{SERVICE_ID}]_METADATA_LONG_DESCRIPTION (String, default is "")
 
 Multiple plans are supported. Use the following environment variables to configure it, or let the default values apply:
-* SERVICES_{SERVICE_ID}\_PLAN\_{PLAN_ID}_NAME (String, default is "default")
-* SERVICES_{SERVICE_ID}\_PLAN\_{PLAN_ID}_DESCRIPTION (String, default is "Default plan")
-* SERVICES_{SERVICE_ID}\_PLAN\_{PLAN_ID}_METADATA (String holding a JSON object, default is "{}")
-* SERVICES_{SERVICE_ID}\_PLAN\_{PLAN_ID}_FREE (String, default is "true")
+* SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]_NAME (String, default is "default")
+* SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]_DESCRIPTION (String, default is "Default plan")
+* SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]_METADATA (String holding a JSON object, default is "{}")
+* SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]_FREE (String, default is "true")
 
 A number of catalog variables are not configureable, the broker always return the following default value:
 * requires: ```[]``` (empty array)
@@ -106,16 +115,16 @@ A number of catalog variables are not configureable, the broker always return th
 The returned credentials are identical for all bound service instances of a specific plan~~, with at least one define~~.
 
 The credentials could be defined for a service, it will be applied for all plans of the service. It is configured by the following environment variables:
-* SERVICES_{SERVICE_ID}_CREDENTIALS_URI String. Recommended see http://docs.cloudfoundry.org/services/binding-credentials.html
-* SERVICES_{SERVICE_ID}_CREDENTIALS_HOSTNAME String. Optional
-* SERVICES_{SERVICE_ID}\_CREDENTIALS\_{MYOWNKEY} String. It is for flat custom keys. Note, it's case sensitive. For example. you could specify ```SERVICES_{SERVICE_ID}_CREDENTIALS_ACCESS_KEY: azert```, the returned credentials will contain a key named "ACCESS_KEY" ```{..., "ACCESS_KEY":"azert", ...}```
-* SERVICES_{SERVICE_ID}_CREDENTIALS: a String holding a Json hash potentially compound the same format as 'cf cups', e.g. ```'{"username":"admin","password":"pa55woRD"}'```
+* SERVICES[{SERVICE_ID}]\_CREDENTIALS\[URI] String. Recommended see http://docs.cloudfoundry.org/services/binding-credentials.html
+* SERVICES[{SERVICE_ID}]\_CREDENTIALS\[HOSTNAME] String. Optional
+* SERVICES[{SERVICE_ID}]\_CREDENTIALS\[{MYOWNKEY}] String. It is for flat custom keys. Note, it's case sensitive. For example. you could specify ```SERVICES[{SERVICE_ID}]_CREDENTIALS_ACCESS_KEY: azert```, the returned credentials will contain a key named "ACCESS_KEY" ```{..., "ACCESS_KEY":"azert", ...}```
+* SERVICES[{SERVICE_ID}]\_CREDENTIALS\_JSON: a String holding a Json hash potentially compound the same format as 'cf cups', e.g. ```'{"username":"admin","password":"pa55woRD"}'```
 
 The credentials could also be defined for a particular plan, if it contains conflict credential key between the service credentials and plan credentials, the values of the plan credentials will be taken. It is configured by the following environment variables:
-* SERVICES_{SERVICE_ID}\_PLAN\_{PLAN_ID}_CREDENTIALS_URI String. 
-* SERVICES_{SERVICE_ID}\_PLAN\_{PLAN_ID}_CREDENTIALS_HOSTNAME String. Optional
-* SERVICES_{SERVICE_ID}\_PLAN\_{PLAN_ID}\_CREDENTIALS\_{MYOWNKEY} String. It is for flat custom keys, as SERVICES_{SERVICE_ID}\_CREDENTIALS\_{MYOWNKEY}
-* SERVICES_{SERVICE_ID}\_PLAN\_{PLAN_ID}_CREDENTIALS: a String holding a Json hash potentially compound the same format as 'cf cups', e.g. ```'{"username":"admin","password":"pa55woRD"}'```
+* SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]_CREDENTIALS_URI String.
+* SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]_CREDENTIALS[HOSTNAME] String. Optional
+* SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]\_CREDENTIALS\_[{MYOWNKEY}] String. It is for flat custom keys, as SERVICES[{SERVICE_ID}]\_CREDENTIALS\_{MYOWNKEY}
+* SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]_CREDENTIALS_JSON: a String holding a Json hash potentially compound the same format as 'cf cups', e.g. ```'{"username":"admin","password":"pa55woRD"}'```
 
 This is mapped to [spring-cloud-cloudfoundry-service-broker](https://github.com/spring-cloud/spring-cloud-cloudfoundry-service-broker/blob/master/src%2Fmain%2Fjava%2Forg%2Fspringframework%2Fcloud%2Fservicebroker%2Fmodel%2FCreateServiceInstanceBindingResponse.java#L35) 
 

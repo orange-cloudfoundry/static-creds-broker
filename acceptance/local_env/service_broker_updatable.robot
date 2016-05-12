@@ -40,7 +40,7 @@ Update service broker configured by yaml configuration file
 
 Update service broker configured by environment variables
 	[Documentation] 	Change service broker environment variables, then restage the broker.
-	${result}= 	Execute:    cf unset-env ${BROKER_APP_NAME} SERVICES_API_DIRECTORY_PLAN_3_CREDENTIALS_HOSTNAME
+	${result}= 	Execute:    cf unset-env ${BROKER_APP_NAME} SERVICES[API_DIRECTORY]_PLANS[PROD]_CREDENTIALS[HOSTNAME]
 	Log	    ${result}
 	Should Contain  ${result}   OK
 	${result}= 	Execute:    cf restage ${BROKER_APP_NAME}

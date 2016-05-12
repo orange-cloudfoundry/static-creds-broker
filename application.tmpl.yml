@@ -2,16 +2,12 @@
 security:
     user:
         password: pass
-services:  
+services:
     TRIPADVISOR:
         NAME: TRIPADVISOR_test_Service2
-        DESCRIPTION: My existing service 
+        DESCRIPTION: My existing service
         CREDENTIALS:
             URI: http://....
-        plans:
-            DEFAULT:
-              CREDENTIALS:
-                 URI: http://....
     API_DIRECTORY:
         NAME: API_DIRECTORY_test_Service2
         DESCRIPTION: My existing service
@@ -20,17 +16,17 @@ services:
         CREDENTIALS:
             HOSTNAME: http://company.com
         plans:
-            PLAN1:
+            DEV:
                 NAME: dev
                 CREDENTIALS:
                     URI: http://mydev-api.org
                     ACCESS_KEY: devAZERT23456664DFDSFSDFDSF
-            PLAN2:
+            PREPROD:
                 NAME: preprod
                 CREDENTIALS:
                     URI: http://mypreprod-api.org
                     ACCESS_KEY: preprodAZERT23456664DFDSFSDFDSF
-            PLAN3:
+            PROD:
                 NAME: prod
                 CREDENTIALS:
                     URI: http://myprod-api.org

@@ -19,6 +19,7 @@ public class CatalogTestFactory {
     public static final String TRIPADVISOR_TEST_SERVICE = "TRIPADVISOR_test_Service";
     public static final String API_DIRECTORY_TEST_SERVICE = "API_DIRECTORY_test_Service";
     public static final String NO_ID = "no_id";
+    public static final String HOSTNAME_PLAN_PROD_VALUE = "http://prod.company.com";
 
     public static CatalogSettings newInstance() {
 
@@ -34,6 +35,7 @@ public class CatalogTestFactory {
         Map<String, Object> credentialsProd = new HashMap<>();
         credentialsProd.put("URI", "http://myprod-api.org");
         credentialsProd.put("ACCESS_KEY", "prod");
+        credentialsProd.put("HOSTNAME", HOSTNAME_PLAN_PROD_VALUE);
         prod.setCredentials(credentialsProd);
 
         //no id plan
@@ -47,9 +49,7 @@ public class CatalogTestFactory {
         Service apiDirectoryService = new Service();
         apiDirectoryService.setName(API_DIRECTORY_TEST_SERVICE);
         Map<String, Object> credentialsApiDirectoryService = new HashMap<>();
-        credentialsApiDirectoryService.put("A_GLOBAL_KEY", "key_value");
-        credentialsApiDirectoryService.put("URI", "http://default-url.org");
-        credentialsApiDirectoryService.put("ACCESS_KEY", "default");
+        credentialsApiDirectoryService.put("HOSTNAME", "http://company.com");
         apiDirectoryService.setCredentials(credentialsApiDirectoryService);
         final Map<String, Plan> apiDirectoryServicePlans = new HashMap<>();
         apiDirectoryServicePlans.put(SERVICE_PLAN_PROD, prod);

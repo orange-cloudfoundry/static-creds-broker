@@ -33,7 +33,7 @@ services:
         NAME: MyService
         DESCRIPTION: My existing service 
         METADATA:
-            LONGDESCRIPTION: A long description for my service
+            LONG_DESCRIPTION: A long description for my service
         CREDENTIALS:
             URI: mysql://USERNAME:PASSWORD@HOSTNAME:PORT/NAME
             ACCESS_KEY: AZERT23456664DFDSFSDFDSF
@@ -75,12 +75,12 @@ services:
         DESCRIPTION: <service_description> 
         TAGS: <service_tags_separated_by_comma>
         METADATA:
-            DISPLAYNAME: <service_displayname>
-            IMAGEURL: <service_imageurl>
-            SUPPORTURL: <service_supporturl>
-            DOCUMENTATIONURL: <service_documentationurl>
-            PROVIDERDISPLAYNAME: <service_provider_displayname>
-            LONGDESCRIPTION: <service_long_description>
+            DISPLAY_NAME: <service_displayname>
+            IMAGE_URL: <service_imageurl>
+            SUPPORT_URL: <service_supporturl>
+            DOCUMENTATION_URL: <service_documentationurl>
+            PROVIDER_DISPLAY_NAME: <service_provider_displayname>
+            LONG_DESCRIPTION: <service_long_description>
         CREDENTIALS:
             <service_credential_key>: <service_credential_value>
         PLAN:
