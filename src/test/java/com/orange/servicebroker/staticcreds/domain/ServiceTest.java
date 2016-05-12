@@ -72,17 +72,6 @@ public class ServiceTest {
         this.context.refresh();
     }
 
-    @Test
-    public void fail_to_set_service_with_no_plan() {
-        this.context.register(TestConfiguration.class);
-        EnvironmentTestUtils.addEnvironment(this.context,
-                "services.tripadvisor.name:a_name",
-                "services.tripadvisor.description:a_description");
-        this.thrown.expect(BeanCreationException.class);
-        this.thrown.expectMessage(Service.NO_PLAN_ERROR);
-        this.context.refresh();
-    }
-
     @SpringBootApplication(scanBasePackages = {"com.orange.servicebroker.staticcreds.domain"})
     protected static class TestConfiguration {
     }

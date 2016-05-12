@@ -15,12 +15,9 @@ import java.util.Map;
  */
 public class Service {
 
-    public static final String NO_ID_ERROR = "Invalid configuration. No id has been set for service";
     public static final String NO_NAME_ERROR = "Invalid configuration. No name has been set for service";
     public static final String NO_DESCRIPTION_ERROR = "Invalid configuration. No description has been set for service";
-    public static final String NO_PLAN_ERROR = "Invalid configuration. No plans has been set for service";
 
-    //@NotEmpty(message = NO_ID_ERROR)
     private String id;
 
     @NotEmpty(message = NO_NAME_ERROR)
@@ -38,7 +35,7 @@ public class Service {
     @Valid
     private ServiceMetadata metadata = new ServiceMetadata();
 
-    @NotEmpty(message = NO_PLAN_ERROR)
+    //@NotEmpty(message = NO_PLAN_ERROR)
     //@Size(min=1,message = NO_PLAN_ERROR)
     @Valid
     private Map<String, Plan> plans = new HashMap<>();

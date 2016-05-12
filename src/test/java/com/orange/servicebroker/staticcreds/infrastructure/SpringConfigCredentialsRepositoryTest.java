@@ -27,16 +27,4 @@ public class SpringConfigCredentialsRepositoryTest {
 
     }
 
-    @Test
-    public void only_plan_credentials() throws Exception {
-
-        //GIVEN credentials have been set only at plan level
-        SpringConfigCredentialsRepository repository = new SpringConfigCredentialsRepository(CatalogTestFactory.newInstance());
-
-        final Optional<Map<String, Object>> credentials = repository.findByPlan(CatalogTestFactory.SERVICE_PLAN_DEFAULT);
-
-        assertThat(credentials.get()).hasSize(1).includes(entry("URI", "http://my-api.org"));
-
-    }
-
 }

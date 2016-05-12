@@ -4,10 +4,6 @@ services:
         DESCRIPTION: My existing service
         CREDENTIALS:
           URI: http://....
-        plans:
-          DEFAULT:
-            CREDENTIALS:
-              URI: http://....
     API_DIRECTORY:
         NAME: API_DIRECTORY_test_Service
         DESCRIPTION: My existing service

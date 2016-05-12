@@ -44,6 +44,7 @@ public class CatalogSettings {
     public void init() {
         setDefaultServiceIds();
         setDefaultServiceDisplayName();
+        setDefaultPlan();
         setDefaultPlanIds();
         setDefaultPlanDescriptions();
     }
@@ -100,6 +101,18 @@ public class CatalogSettings {
                         plan.setDescription("plan " + plan.getName());
                     }
                 });
+            }
+        });
+    }
+
+    private void setDefaultPlan() {
+        services.keySet().forEach(serviceKey -> {
+            final Service service = services.get(serviceKey);
+            if (service.getPlans() == null || service.getPlans().isEmpty()) {
+                Map<String, Plan> plans = new HashMap<>();
+                Plan plan = new Plan();
+                plans.put(plan.getName(), plan);
+                service.setPlans(plans);
             }
         });
     }
