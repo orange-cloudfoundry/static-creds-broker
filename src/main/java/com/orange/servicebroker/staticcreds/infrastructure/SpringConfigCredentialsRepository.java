@@ -45,15 +45,4 @@ public class SpringConfigCredentialsRepository implements CredentialsRepository 
                 .findFirst();
     }
 
-    /*
-    @Override
-    public Optional<Map<String, Object>> findByPlan(UUID servicePlanId) {
-        catalog.getServices().entrySet()
-                .stream()
-                .flatMap(serviceEntry -> serviceEntry.getValue().getPlans().entrySet().stream()
-                        .filter(plan -> servicePlanId.equals(plan.getValue().getId())).map(plan -> serviceEntry.getValue().getName()))
-                .forEach(System.out::println);
-        return null;
-    }
-    */
 }
