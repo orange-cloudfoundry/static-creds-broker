@@ -28,13 +28,13 @@ public class ServiceTest {
     @Test
     public void service_is_bindable_by_default() {
         Service service = new Service();
-        Assertions.assertThat(service.isBindable()).isTrue();
+        Assertions.assertThat(service.getBindable()).isTrue();
     }
 
     @Test
     public void service_is_plan_updateable_by_default() {
         Service service = new Service();
-        Assertions.assertThat(service.isPlanUpdateable()).isTrue();
+        Assertions.assertThat(service.getPlanUpdateable()).isTrue();
     }
 
     @Test

@@ -1,5 +1,10 @@
 package com.orange.servicebroker.staticcreds.domain;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,6 +12,10 @@ import java.util.Map;
  * Cloud Foundry Service Metadata
  * see http://docs.cloudfoundry.org/services/catalog-metadata.html#service-metadata-fields
  */
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
 public class ServiceMetadata {
 
     private String displayName = "";
@@ -16,52 +25,7 @@ public class ServiceMetadata {
     private String providerDisplayName = "";
     private String longDescription = "";
 
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public String getSupportUrl() {
-        return supportUrl;
-    }
-
-    public void setSupportUrl(String supportUrl) {
-        this.supportUrl = supportUrl;
-    }
-
-    public String getDocumentationUrl() {
-        return documentationUrl;
-    }
-
-    public void setDocumentationUrl(String documentationUrl) {
-        this.documentationUrl = documentationUrl;
-    }
-
-    public String getProviderDisplayName() {
-        return providerDisplayName;
-    }
-
-    public void setProviderDisplayName(String providerDisplayName) {
-        this.providerDisplayName = providerDisplayName;
-    }
-
-    public String getLongDescription() {
-        return longDescription;
-    }
-
-    public void setLongDescription(String longDescription) {
-        this.longDescription = longDescription;
+    public ServiceMetadata() {
     }
 
     public Map<String, Object> asMap() {

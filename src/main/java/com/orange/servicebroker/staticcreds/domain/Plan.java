@@ -1,6 +1,10 @@
 package com.orange.servicebroker.staticcreds.domain;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
 
@@ -14,6 +18,10 @@ import java.util.Map;
  * Cloud Foundry plan
  * see http://docs.cloudfoundry.org/services/catalog-metadata.html#plan-metadata-fields
  */
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
 public class Plan {
 
     public static final String NO_ID_ERROR = "Invalid configuration. No id has been set for plan";
@@ -46,51 +54,11 @@ public class Plan {
         this.id = id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public Map<String, Object> getCredentials() {
-        return credentials;
-    }
-
     public Map<String, Object> getFullCredentials() {
         final Map<String, Object> full = new HashMap<>();
         full.putAll(credentials);
         full.putAll(credentialsJson);
         return full;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setCredentials(Map<String, Object> credentials) {
-        this.credentials = credentials;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setFree(Boolean free) {
-        this.free = free;
-    }
-
-    public Boolean getFree() {
-        return free;
-    }
-
-    public PlanMetadata getMetadata() {
-        return metadata;
     }
 
     public void setMetadata(String metadataJson) {
@@ -107,15 +75,4 @@ public class Plan {
         this.credentialsJson = parser.parseMap(credentialsJson);
     }
 
-    public Map<String, Object> getCredentialsJson() {
-        return credentialsJson;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public boolean isFree() {
-        return free;
-    }
 }

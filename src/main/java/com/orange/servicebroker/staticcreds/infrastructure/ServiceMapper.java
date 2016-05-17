@@ -13,12 +13,11 @@ import java.util.stream.Collectors;
 public class ServiceMapper {
 
     public static ServiceDefinition toServiceDefinition(Service service) {
-        //TODO service.getName().toString()
-        return new ServiceDefinition(service.getId( ).toString(),
+        return new ServiceDefinition(service.getId().toString(),
                 service.getName(),
                 service.getDescription(),
-                service.isBindable(),
-                service.isPlanUpdateable(),
+                service.getBindable(),
+                service.getPlanUpdateable(),
                 PlanMapper.toServiceBrokerPlans(service.getPlans().entrySet().stream().map(Map.Entry::getValue).collect(Collectors.toList())),
                 service.getTags(),
                 service.getMetadata() != null ? service.getMetadata().asMap() : null,
@@ -28,7 +27,7 @@ public class ServiceMapper {
 
     public static List<ServiceDefinition> toServiceDefinitions(List<Service> services) {
         return services.stream()
-                       .map(ServiceMapper::toServiceDefinition)
-                       .collect(Collectors.toList());
+                .map(ServiceMapper::toServiceDefinition)
+                .collect(Collectors.toList());
     }
 }

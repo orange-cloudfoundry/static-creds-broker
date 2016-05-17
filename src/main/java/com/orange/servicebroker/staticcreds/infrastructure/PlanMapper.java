@@ -13,11 +13,11 @@ public class PlanMapper {
 
     public static org.springframework.cloud.servicebroker.model.Plan toServiceBrokerPlan(Plan plan) {
 
-        return new org.springframework.cloud.servicebroker.model.Plan(plan.getId().toString(),
+        return new org.springframework.cloud.servicebroker.model.Plan(plan.getId(),
                 plan.getName(),
                 plan.getDescription(),
                 plan.getMetadata() != null ? plan.getMetadata().toMap() : null,
-                plan.isFree());
+                plan.getFree());
     }
 
     public static List<org.springframework.cloud.servicebroker.model.Plan> toServiceBrokerPlans(List<Plan> plans) {
