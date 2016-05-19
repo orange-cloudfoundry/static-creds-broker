@@ -25,23 +25,23 @@ public class SpringConfigCredentialsRepository implements CredentialsRepository 
 
     @Override
     public Optional<Map<String, Object>> findByPlan(String servicePlanId) {
-        return catalog.getServices().entrySet()
+        return catalog.getServices().values()
                 .stream()
-                .flatMap(serviceEntry -> serviceEntry.getValue().getPlans().entrySet().stream().map(planEntry -> planEntry.getValue())
-                        .filter(plan -> servicePlanId.equals(plan.getId())).map(plan -> {
-                            final Map<String, Object> credentials = new HashMap<>();
-                            final Map<String, Object> serviceCredentials = serviceEntry.getValue().getFullCredentials();
-                            final Map<String, Object> planCredentials = plan.getFullCredentials();
+                .flatMap(service -> service.getPlans().values().stream()
+                                                               .filter(plan -> servicePlanId.equals(plan.getId())).map(plan -> {
+                                                                        final Map<String, Object> credentials = new HashMap<>();
+                                                                        final Map<String, Object> serviceCredentials = service.getFullCredentials();
+                                                                        final Map<String, Object> planCredentials = plan.getFullCredentials();
 
-                            if (serviceCredentials != null) {
-                                credentials.putAll(serviceCredentials);
-                            }
-                            if (planCredentials != null) {
-                                credentials.putAll(planCredentials);
-                            }
+                                                                        if (serviceCredentials != null) {
+                                                                            credentials.putAll(serviceCredentials);
+                                                                        }
+                                                                        if (planCredentials != null) {
+                                                                            credentials.putAll(planCredentials);
+                                                                        }
 
-                            return credentials;
-                        }))
+                                                                        return credentials;
+                                                                    }))
                 .findFirst();
     }
 
