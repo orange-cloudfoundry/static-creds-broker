@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  * Cloud Foundry Catalog
@@ -47,6 +48,21 @@ public class CatalogSettings {
         setDefaultPlan();
         setDefaultPlanIds();
         setDefaultPlanDescriptions();
+        assertPlanCredentialsExists();
+    }
+
+    private void assertPlanCredentialsExists() {
+        final Predicate<Plan> planWithoutCredential = plan -> plan.getFullCredentials() == null || plan.getFullCredentials().isEmpty();
+        final Predicate<Service> serviceWithoutCredential = service -> service.getFullCredentials() == null || service.getFullCredentials().isEmpty();
+
+        services.values().stream()
+                .filter(serviceWithoutCredential)
+                .flatMap(service -> service.getPlans().values().stream())
+                .filter(planWithoutCredential)
+                .findFirst()
+                .ifPresent(plan -> {
+                    throw new NoCredentialException(plan);
+                });
     }
 
     private void setDefaultServiceDisplayName() {
@@ -115,6 +131,14 @@ public class CatalogSettings {
                 service.setPlans(plans);
             }
         });
+    }
+
+    class NoCredentialException extends IllegalStateException {
+
+
+        public NoCredentialException(Plan plan) {
+            super("No credential has been set for plan " + plan);
+        }
     }
 
 }

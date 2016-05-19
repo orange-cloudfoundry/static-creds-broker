@@ -44,7 +44,8 @@ public class ServiceTest {
                 "services.tripadvisor.name:a_name",
                 "services.tripadvisor.description:a_description",
                 "services.tripadvisor.plans.default.name:default",
-                "services.tripadvisor.plans.default.id:default_id");
+                "services.tripadvisor.plans.default.id:default_id",
+                "services.tripadvisor.plans.default.credentials.uri:http://localhost");
         this.context.refresh();
     }
 

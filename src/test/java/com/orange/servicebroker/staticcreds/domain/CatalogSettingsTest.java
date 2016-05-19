@@ -19,6 +19,9 @@ import com.orange.servicebroker.staticcreds.infrastructure.CatalogTestFactory;
 import org.fest.assertions.Assertions;
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by YSBU7453 on 10/05/2016.
  */
@@ -62,6 +65,28 @@ public class CatalogSettingsTest {
         catalogSettings.init();
 
         Assertions.assertThat(defaultPlan.getId()).isEqualTo(tripAdvisorService.getName() + defaultPlan.getName());
+    }
+
+    @Test(expected = CatalogSettings.NoCredentialException.class)
+    public void fail_if_no_plan_and_service_credentials() {
+        //given plan with no credentials
+        final CatalogSettings catalogSettings = CatalogTestFactory.newInstance();
+
+        final Service serviceWithNoCredentials = new Service("no_credential_service");
+        final Plan planWithNoCredentials = new Plan("no_credential_plan");
+        Map<String,Plan> plans = new HashMap();
+        plans.put("no_credential_plan",planWithNoCredentials);
+        serviceWithNoCredentials.setPlans(plans);
+
+        catalogSettings.getServices().put("no_credential_service",serviceWithNoCredentials);
+
+        final Service tripAdvisorService = catalogSettings.getServices().get(CatalogTestFactory.API_DIRECTORY_TEST_SERVICE);
+        final Plan defaultPlan = tripAdvisorService.getPlans().get(CatalogTestFactory.SERVICE_PLAN_PREPROD);
+        Assertions.assertThat(defaultPlan.getId()).isNull();
+
+        catalogSettings.init();
+
+        //Assertions.assertThat(defaultPlan.getId()).isEqualTo(tripAdvisorService.getName() + defaultPlan.getName());
     }
 
     @Test
