@@ -33,7 +33,7 @@ applications:
   instances: 1
   host: mybroker
   domain: my-admin-domain.cf.io
-  path: static-creds-broker-1.3.jar 
+  path: static-creds-broker-2.0.jar 
 
   env:
     SECURITY_USER_PASSWORD: MySecurePwd
