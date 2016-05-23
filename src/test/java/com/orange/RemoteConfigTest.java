@@ -1,19 +1,21 @@
 package com.orange;
 
-import java.util.Map;
-
+import com.orange.servicebroker.staticcreds.domain.CredentialsRepository;
 import org.fest.assertions.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.WebIntegrationTest;
+import org.springframework.cloud.servicebroker.model.Catalog;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.orange.util.ParserApplicationProperties;
-import com.orange.util.ParserProperties;
+import java.util.Map;
+import java.util.Optional;
+
+import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.MapAssert.entry;
 
 /**
  * Created by YSBU7453 on 21/03/2016.
@@ -24,25 +26,32 @@ import com.orange.util.ParserProperties;
 @WebIntegrationTest({"security.user.password=pass","spring.profiles.active=native","spring.cloud.config.server.native.searchLocations=classpath:/remote-config"})
 public class RemoteConfigTest {
 
+    public static final String API_DIRECTORY_SERVICE_PLAN_DEV_ID = "f7ae3ff9-85ed-3515-bef9-2e4d2f572422";
+
     @Value("${services.API_DIRECTORY.NAME}")
     String serviceApiDirectoryName;
-    
+
     @Autowired
-    @Qualifier("parserProperties")
-	private ParserProperties parserProperties;
-    
+    CredentialsRepository credentialsRepository;
+
+    @Autowired
+    Catalog catalog;
+
     @Test
     public void should_get_remote_config() {
         Assertions.assertThat(serviceApiDirectoryName).isEqualTo("API_DIRECTORY_test_Service");
     }
 
-    @Test
-    public void should_get_services_injected() {
-    	 Assertions.assertThat(parserProperties).isInstanceOf(ParserApplicationProperties.class);
-    	 Map<String, Object> services = ((ParserApplicationProperties) parserProperties).getServices();
-    	 Assertions.assertThat(services).isNotNull();
-    	 Assertions.assertThat(services.get("API_DIRECTORY")).isNotNull();
-    	 Assertions.assertThat(services.get("ID")).isNotNull();
+   @Test
+    public void should_find_a_service_plan() {
+
+        //service plan id for plan dev of service API_DIRECTORY, see static-creds-broker.yml
+
+       final Optional<Map<String, Object>> credentials = credentialsRepository.findByPlan(API_DIRECTORY_SERVICE_PLAN_DEV_ID);
+
+        assertThat(credentials.get()).hasSize(3).includes(entry("HOSTNAME", "http://company.com"),entry("URI", "http://mydev-api.org"), entry("ACCESS_KEY", "devAZERT23456664DFDSFSDFDSF"));
+
     }
+
 }
 
