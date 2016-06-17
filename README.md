@@ -39,7 +39,7 @@ applications:
     SECURITY_USER_PASSWORD: MySecurePwd
     SERVICES[ID]_NAME: MyService
     SERVICES[ID]_DESCRIPTION: My existing service
-    SERVICES[ID]_METADATA_LONGDESCRIPTION: A long description for my service
+    SERVICES[ID]_METADATA_LONG_DESCRIPTION: A long description for my service
     SERVICES[ID]_CREDENTIALS[URI]: mysql://USERNAME:PASSWORD@HOSTNAME:PORT/NAME
 
 # deploy the broker    
