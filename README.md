@@ -5,8 +5,8 @@ A CloudFoundry service broker to ease exposition of static credentials in the CF
 # Intro
 
 This broker is aimed at service providers which would expose an existing service with static credentials.  
-Credentials can be set using env variables (see manifest.tmpl.yml), using local configuration properties  (see manifest.tmpl.yaml-config.yml) or by referencing external configuration properties backed in a remote   git repository
-(see manifest.tmpl.remote-config.yml).
+Credentials can be set using env variables (see [manifest.tmpl.yml](https://github.com/Orange-OpenSource/static-creds-broker/blob/master/manifest.tmpl.yml)), using local configuration properties  (see [manifest.tmpl.yaml-config.yml](https://github.com/Orange-OpenSource/static-creds-broker/blob/master/manifest.tmpl.yaml-config.yml)) or by referencing external configuration properties backed in a remote   git repository
+(see [manifest.tmpl.remote-config.yml](https://github.com/Orange-OpenSource/static-creds-broker/blob/master/manifest.tmpl.remote-config.yml)).
 
 Notice that the default behavior is to get configuration properties from git.  
 To disable the default behavior, please set following env variable : SPRING_PROFILES_ACTIVE: native
