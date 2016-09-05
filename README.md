@@ -11,6 +11,8 @@ Credentials can be set using env variables (see [manifest.tmpl.yml](https://gith
 Notice that the default behavior is to get configuration properties from git.  
 To disable the default behavior, please set following env variable : SPRING_PROFILES_ACTIVE: native
 
+Also note that the 2.X static-creds-broker releases are only compatible with **Diego backends** and do not support DEA backends (more details in [issue 27](https://github.com/orange-cloudfoundry/static-creds-broker/issues/27). To use static-creds-brokers with DEA backends, please use the latest 1.X branch release such as https://github.com/orange-cloudfoundry/static-creds-broker/tree/v1.3 and the associated 1.X configuration syntax.
+
 # Usage overview
 
 ```
