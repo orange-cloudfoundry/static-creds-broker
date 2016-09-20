@@ -53,7 +53,7 @@ applications:
 $ cf push 
 
 # Register the broker system-wise (requires cloudcontroller.admin i.e. admin access to the CloudFoundry instance)
-# refer to http://docs.cloudfoundry.org/services/managing-service-brokers.html#register-brokre
+# refer to http://docs.cloudfoundry.org/services/managing-service-brokers.html#register-broker
 $ cf create-service-broker mybrokername someuser somethingsecure http://mybroker.example.com/
 # Then make individual services visibles in desired orgs or in all orgs,
 # see  http://docs.cloudfoundry.org/services/access-control.html#enable-access
