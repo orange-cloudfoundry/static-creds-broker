@@ -4,11 +4,14 @@ A CloudFoundry service broker to ease exposition of static credentials in the CF
 
 # Intro
 
-This broker is aimed at service providers which would expose an existing service with static credentials.  
+This generic service broker is used by service providers to expose one or more services systematically returning static credentials, along with static service catalog. A static-creds-broker instance is usually configured to return distinct catalog and binding credentials per service and per service plan.
+
+Deploying a static-creds-broker instance takes few minutes: configure the static data to be returned, and ``cf push`` the pre-built static-creds-brokers binaries.
+
 Credentials can be set using env variables (see [manifest.tmpl.yml](https://github.com/Orange-OpenSource/static-creds-broker/blob/master/manifest.tmpl.yml)), using local configuration properties  (see [manifest.tmpl.yaml-config.yml](https://github.com/Orange-OpenSource/static-creds-broker/blob/master/manifest.tmpl.yaml-config.yml)) or by referencing external configuration properties backed in a remote   git repository
 (see [manifest.tmpl.remote-config.yml](https://github.com/Orange-OpenSource/static-creds-broker/blob/master/manifest.tmpl.remote-config.yml)).
 
-Notice that the default behavior is to get configuration properties from git.  
+Notice that the default behavior is to fetch configuration properties from git.  
 To disable the default behavior, please set following env variable : SPRING_PROFILES_ACTIVE: native
 
 Also note that the 2.X static-creds-broker releases are only compatible with **Diego backends** and do not support DEA backends (more details in [issue 27](https://github.com/orange-cloudfoundry/static-creds-broker/issues/27). To use static-creds-brokers with DEA backends, please use the latest 1.X branch release such as https://github.com/orange-cloudfoundry/static-creds-broker/tree/v1.3 and the associated 1.X configuration syntax.
