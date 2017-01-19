@@ -207,26 +207,14 @@ See [examples implementation](http://docs.cloudfoundry.org/services/examples.htm
 
 Proof-of-concept SDK have been contributed for [PHP](https://github.com/cloudfoundry-community/php-cf-service-broker)
 
-Someservice provider teams might find this broker useful because:
-* there is not yet SDK in a programming language the service provider team is confortable with
-* there is not much to program, it's mainly static configuration needed.
+Some service provider teams (or app teams needing to expose services) might find the static-creds-broker useful because:
+* they lack a SDK in a programming language the service provider team is confortable with
+* they don't need to program, it's mainly static configuration needed.
+* they don't have to maintain a broker implementation as the service broker API get enriched or gets possible breaking changes, the static-cred-broker is maintained
 
 # Future work/backlog
 
-* Support for multiple services in a single broker
+See github issues for the list of future features planned. Comments and refinements are welcomes. 
 
-As described, a single set of credentials is returned by the broker. In order to save RAM, multiple ID can be returned
+Please suggest more ideas by submitting new issues.
 
-* UI
-
-As a service-provider, in order to be informed of the number of service instances, with which org/space they are bound to,
-I need a UI to display current service instances/service keys along with the corresponding org/space name
-
-As a service-provider, in order to notify my customers of changes in my services,
-I need a UI to display current service instances/service keys along with the corresponding org/space name to feed into
-the notifications services
-
-* Multi-site support: per site credentials
-   * The service broker is deployed on 3 sites with the same environement variabels.
-   Some credentials are returned identically on all 3 sites, some credentials are returned differently
-   depending on sites (overriding default values)
