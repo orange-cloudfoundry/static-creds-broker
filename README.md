@@ -23,12 +23,12 @@ Also note that the 2.X static-creds-broker releases are only compatible with **D
 
 ```sh
 # Download the latest binary release of this broker
-$ LATEST_RELEASE_URL=$(curl -s https://api.github.com/repos/orange-cloudfoundry/static-creds-broker/releases/latest | grep browser_download_url | head -n 1 | cut -d '"' -f 4)
-$ echo "Downloading $LATEST_RELEASE_URL"
-$ curl -O -L $LATEST_RELEASE_URL
+LATEST_RELEASE_URL=$(curl -s https://api.github.com/repos/orange-cloudfoundry/static-creds-broker/releases/latest | grep browser_download_url | head -n 1 | cut -d '"' -f 4)
+echo "Downloading $LATEST_RELEASE_URL"
+curl -O -L $LATEST_RELEASE_URL
 
 # Unzip the zip release of this broker. The zip contains binary release and manifest template file.
-$ unzip static-creds-broker.zip
+unzip static-creds-broker.zip
 
 # Configure the broker through environment variables, possibly captured in a CF CLI manifest file
 # Example manifest files (manifest.tmpl.yml, manifest.tmpl.yaml-config.yml, manifest.tmpl.remote-config.yml)
@@ -36,9 +36,9 @@ $ unzip static-creds-broker.zip
 # Remember that credentials can be set using env variables (see manifest.tmpl.yml), using local configuration properties
 #(see manifest.tmpl.yaml-config.yml) or by referencing external configuration properties backed in a remote git repository
 #(see manifest.tmpl.remote-config.yml)
-Note: Be careful that services and plans name should be unique in the scope of your Cloud Foundry platform.
+# Note: Be careful that services and plans name should be unique in the scope of your Cloud Foundry platform.
 
-$ vi manifest.yml
+cat <<- EOF > manifest.yml
 ---
 applications:
 - name: my-broker
@@ -54,30 +54,31 @@ applications:
     SERVICES[ID]_DESCRIPTION: My existing service
     SERVICES[ID]_METADATA_LONG_DESCRIPTION: A long description for my service
     SERVICES[ID]_CREDENTIALS[URI]: mysql://USERNAME:PASSWORD@HOSTNAME:PORT/NAME
+EOF
 
 # deploy the broker    
-$ cf push 
+cf push 
 
 # Register the broker system-wise (requires cloudcontroller.admin i.e. admin access to the CloudFoundry instance)
 # refer to http://docs.cloudfoundry.org/services/managing-service-brokers.html#register-broker
-$ cf create-service-broker mybrokername someuser somethingsecure http://mybroker.example.com/
+cf create-service-broker mybrokername someuser somethingsecure http://mybroker.example.com/
 # Then make individual services visibles in desired orgs or in all orgs,
 # see  http://docs.cloudfoundry.org/services/access-control.html#enable-access
-$ cf enable-service-access MyService
+cf enable-service-access MyService
 
 # Alternatively, register as a private service broker for one space or one org
 # get the CF cli 6.16 or the latest edge binaries from https://github.com/cloudfoundry/cli#downloads
 # cf create-service-broker SERVICE_BROKER USERNAME PASSWORD URL [--space-scoped]
-$ cf create-service-broker mybrokername user MySecurePwd http://mybroker.my-admin-domain.cf.io --space-scoped
+cf create-service-broker mybrokername user MySecurePwd http://mybroker.my-admin-domain.cf.io --space-scoped
 
 # Check presence of the service in the marketplace, and proper description of its plan
-$ cf m
-$ cf m -s MyService
+cf m
+cf m -s MyService
 
 # Create a service instance and service key to check proper binding of the static credentials
-$ cf cs MyService myplan static-creds-instance
-$ cf create-service-key static-creds-instance static-service-key
-$ cf service-key static-creds-instance static-service-key
+cf cs MyService myplan static-creds-instance
+cf create-service-key static-creds-instance static-service-key
+cf service-key static-creds-instance static-service-key
 ```
 
 # Config reference
