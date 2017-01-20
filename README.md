@@ -21,7 +21,7 @@ Also note that the 2.X static-creds-broker releases are only compatible with **D
 
 # Usage overview
 
-```
+```sh
 # Download the latest binary release of this broker
 $ LATEST_RELEASE_URL=$(curl -s https://api.github.com/repos/orange-cloudfoundry/static-creds-broker/releases/latest | grep browser_download_url | head -n 1 | cut -d '"' -f 4)
 $ echo "Downloading $LATEST_RELEASE_URL"
