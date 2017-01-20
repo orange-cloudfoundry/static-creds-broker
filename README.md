@@ -8,10 +8,13 @@ This generic service broker is used by service providers to expose one or more s
 
 Deploying a static-creds-broker instance takes few minutes: configure the static data to be returned, and ``cf push`` the pre-built static-creds-brokers binaries.
 
-Credentials can be set using env variables (see [manifest.tmpl.yml](https://github.com/Orange-OpenSource/static-creds-broker/blob/master/manifest.tmpl.yml)), using local configuration properties  (see [manifest.tmpl.yaml-config.yml](https://github.com/Orange-OpenSource/static-creds-broker/blob/master/manifest.tmpl.yaml-config.yml)) or by referencing external configuration properties backed in a remote   git repository
-(see [manifest.tmpl.remote-config.yml](https://github.com/Orange-OpenSource/static-creds-broker/blob/master/manifest.tmpl.remote-config.yml)).
+When deploying a static-creds-broker instance on cloudfoundry, configure it either through 
+- environment variables (see [manifest.tmpl.yml](manifest.tmpl.yml) for an example CF CLI manifest), 
+- a yaml configuration file deployed along with the broker, see [yaml deployment procedure](use_yaml_config.md)
+- a yaml configuration file fetched from a remote git repository over the network
+(see [manifest.tmpl.remote-config.yml](manifest.tmpl.remote-config.yml) for an example CF CLI manifest using this configuration mode).
 
-Notice that the default behavior is to fetch configuration properties from git.  
+Notice that the default behavior is to fetch configuration properties from a remote git repo.  
 To disable the default behavior, please set following env variable : SPRING_PROFILES_ACTIVE: native
 
 Also note that the 2.X static-creds-broker releases are only compatible with **Diego backends** and do not support DEA backends (more details in [issue 27](https://github.com/orange-cloudfoundry/static-creds-broker/issues/27). To use static-creds-brokers with DEA backends, please use the latest 1.X branch release such as https://github.com/orange-cloudfoundry/static-creds-broker/tree/v1.3 and the associated 1.X configuration syntax.
@@ -79,9 +82,11 @@ $ cf service-key static-creds-instance static-service-key
 
 # Config reference
 
-NOTE: 
-- {SERVICE_ID} should be replaced be your own service id which is a string used to identify service. 
-- {PLAN_ID} should be replaced be your own plan id which is a string used to identify different plans defined in a service.
+This section lists the configuration key/values that this broker supports (passed through env vars or yml config files).
+
+Conventional notation: 
+- {SERVICE_ID} should be replaced in keys by your own service id which is a string used to identify service. 
+- {PLAN_ID} should be replaced in key by your own plan id which is a string used to identify different plans defined in a service.
 
 Please notice that from 2.X version, there has been a complete refactoring leading to non backward compatible API changes.
 Thus, to benefit from new 2.X version, you will need to review your exiting configuration to ensure it is compliant
