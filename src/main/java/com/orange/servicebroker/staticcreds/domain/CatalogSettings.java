@@ -1,5 +1,6 @@
 package com.orange.servicebroker.staticcreds.domain;
 
+import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -17,14 +18,11 @@ import java.util.function.Predicate;
  */
 @Component
 @ConfigurationProperties
+@ToString
 public class CatalogSettings {
 
     public static final String NO_SERVICE_ERROR = "Invalid configuration. No service has been defined";
-
-    public void setServices(Map<String, Service> services) {
-        this.services = services;
-    }
-
+    public static final String SYSLOG_DRAIN_REQUIRES = "syslog_drain";
     @NotNull
     @Size(min = 1, message = NO_SERVICE_ERROR)
     @Valid
@@ -41,6 +39,10 @@ public class CatalogSettings {
         return services;
     }
 
+    public void setServices(Map<String, Service> services) {
+        this.services = services;
+    }
+
     @PostConstruct
     public void init() {
         setDefaultServiceIds();
@@ -49,11 +51,12 @@ public class CatalogSettings {
         setDefaultPlanIds();
         setDefaultPlanDescriptions();
         assertPlanCredentialsExists();
+        assertSyslogDrainUrlRequiresExists();
     }
 
     private void assertPlanCredentialsExists() {
         final Predicate<Plan> planWithoutCredential = plan -> plan.getFullCredentials() == null || plan.getFullCredentials().isEmpty();
-        final Predicate<Service> serviceWithoutCredential = service -> service.getFullCredentials() == null || service.getFullCredentials().isEmpty();
+        final Predicate<Service> serviceWithoutCredential = service -> !service.getFullCredentials().isPresent();
 
         services.values().stream()
                 .filter(serviceWithoutCredential)
@@ -63,6 +66,23 @@ public class CatalogSettings {
                 .ifPresent(plan -> {
                     throw new NoCredentialException(plan);
                 });
+    }
+
+    private void assertSyslogDrainUrlRequiresExists() {
+        services.values().stream()
+                .flatMap(service -> service.getPlans().values().stream().filter(plan -> syslogDrainUrlHasText(service, plan) && requiresSyslogDrainUrlNotPresent(service)))
+                .findFirst()
+                .ifPresent(plan -> {
+                    throw new InvalidSyslogDrainUrlException(services);
+                });
+    }
+
+    private boolean syslogDrainUrlHasText(Service service, Plan plan) {
+        return plan.getSyslogDrainUrl() != null || service.getSyslogDrainUrl() != null;
+    }
+
+    private boolean requiresSyslogDrainUrlNotPresent(Service service) {
+        return service.getRequires() == null || !service.getRequires().contains(SYSLOG_DRAIN_REQUIRES);
     }
 
     private void setDefaultServiceDisplayName() {
@@ -138,6 +158,14 @@ public class CatalogSettings {
 
         public NoCredentialException(Plan plan) {
             super("No credential has been set for plan " + plan);
+        }
+    }
+
+    class InvalidSyslogDrainUrlException extends IllegalStateException {
+
+
+        public InvalidSyslogDrainUrlException(Map<String, Service> services) {
+            super(String.format("%s includes a syslog_drain_url but \"requires\":[\"syslog_drain\"] is not present", services));
         }
     }
 

@@ -74,11 +74,11 @@ public class CatalogSettingsTest {
 
         final Service serviceWithNoCredentials = new Service("no_credential_service");
         final Plan planWithNoCredentials = new Plan("no_credential_plan");
-        Map<String,Plan> plans = new HashMap();
-        plans.put("no_credential_plan",planWithNoCredentials);
+        Map<String, Plan> plans = new HashMap();
+        plans.put("no_credential_plan", planWithNoCredentials);
         serviceWithNoCredentials.setPlans(plans);
 
-        catalogSettings.getServices().put("no_credential_service",serviceWithNoCredentials);
+        catalogSettings.getServices().put("no_credential_service", serviceWithNoCredentials);
 
         final Service tripAdvisorService = catalogSettings.getServices().get(CatalogTestFactory.API_DIRECTORY_TEST_SERVICE);
         final Plan defaultPlan = tripAdvisorService.getPlans().get(CatalogTestFactory.SERVICE_PLAN_PREPROD);

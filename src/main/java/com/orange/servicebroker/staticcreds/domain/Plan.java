@@ -47,6 +47,11 @@ public class Plan {
 
     private Map<String, Object> credentialsJson = new HashMap<>();
 
+    /**
+     * The URL to which Cloud Foundry should drain logs for the bound application.
+     */
+    private String syslogDrainUrl;
+
     public Plan() {
     }
 

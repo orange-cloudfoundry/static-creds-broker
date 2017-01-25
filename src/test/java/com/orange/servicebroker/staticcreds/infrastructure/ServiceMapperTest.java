@@ -66,6 +66,18 @@ public class ServiceMapperTest {
     }
 
     @Test
+    public void map_service_requires() {
+        //GIVEN
+        Service service = new Service(SERVICE_ID);
+        service.setRequires(Arrays.asList("syslog_drain"));
+        //WHEN
+        final ServiceDefinition res = ServiceMapper.toServiceDefinition(service);
+        //THEN
+        assertThat(res.getRequires()).as("toServiceDefinition service requires")
+                .containsExactly("syslog_drain");
+    }
+
+    @Test
     public void map_service_plan_updateable() {
         //GIVEN
         Service service = new Service(SERVICE_ID);

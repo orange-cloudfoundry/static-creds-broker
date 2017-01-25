@@ -21,7 +21,7 @@ public class ServiceMapper {
                 PlanMapper.toServiceBrokerPlans(service.getPlans().entrySet().stream().map(Map.Entry::getValue).collect(Collectors.toList())),
                 service.getTags(),
                 service.getMetadata() != null ? service.getMetadata().asMap() : null,
-                null,
+                service.getRequires(),
                 null);
     }
 
