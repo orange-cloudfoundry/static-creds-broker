@@ -1,17 +1,19 @@
 package com.orange.servicebroker.staticcreds.domain;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.*;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
+import org.springframework.cloud.servicebroker.model.EmptyListSerializer;
+import org.springframework.cloud.servicebroker.model.ServiceDefinitionRequires;
 
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Cloud Foundry Service
@@ -48,9 +50,20 @@ public class Service {
     @Valid
     private Map<String, Plan> plans = new HashMap<>();
 
-    private Map<String, Object> credentials;
+    private Map<String, Object> credentials = new HashMap<>();
 
-    private Map<String, Object> credentialsJson;
+    private Map<String, Object> credentialsJson = new HashMap<>();
+
+    /**
+     * The URL to which Cloud Foundry should drain logs for the bound application.
+     */
+    private String syslogDrainUrl;
+
+    /**
+     * A list of permissions that the user would have to give the service, if they provision it. See
+     * {@link ServiceDefinitionRequires} for supported permissions.
+     */
+    private List<String> requires;
 
     public Service() {
     }
@@ -59,7 +72,7 @@ public class Service {
         this.id = id;
     }
 
-    public Map<String, Object> getFullCredentials() {
+    public Optional<Map<String, Object>> getFullCredentials() {
         final Map<String, Object> full = new HashMap<>();
         if (credentials != null) {
             full.putAll(credentials);
@@ -67,7 +80,7 @@ public class Service {
         if (credentialsJson != null) {
             full.putAll(credentialsJson);
         }
-        return full.isEmpty() ? null : full;
+        return full.isEmpty() ? Optional.empty() : Optional.of(full);
     }
 
     public void setCredentialsJson(String credentialsJson) {

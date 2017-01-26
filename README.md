@@ -116,6 +116,8 @@ among the cloudfoundry installation to register with (among orgs and spaces).
 * SERVICES[{SERVICE_ID}]_BINDEABLE (default is "true"). Useful for service keys.
 * SERVICES[{SERVICE_ID}]_TAGS (String holding an array-of-strings, multiple tags are separated by comma,
 as ```tag1,tag2,tag3```, default is ```[]```)
+* SERVICES[{SERVICE_ID}]_REQUIRES (String holding an array-of-strings, multiple requires are separated by comma,
+as ```syslog_drain, route_forwarding```, default is ```[]```). A list of permissions that the user would have to give the service, if they provision it. The only permission currently supported is syslog_drain.
 * SERVICES[{SERVICE_ID}]_METADATA_DISPLAY_NAME (String, default is SERVICES_ID_NAME). The user-facing name of the service.
 * SERVICES[{SERVICE_ID}]_METADATA_IMAGE_URL (String, default is "")
 * SERVICES[{SERVICE_ID}]_METADATA_SUPPORT_URL (String, default is "")
@@ -160,6 +162,21 @@ It is for flat custom keys, as SERVICES[{SERVICE_ID}]\_CREDENTIALS\_[{MYOWNKEY}]
 the same format as 'cf cups', e.g. ```'{"username":"admin","password":"pa55woRD"}'```
 
 This is mapped to [spring-cloud-cloudfoundry-service-broker](https://github.com/spring-cloud/spring-cloud-cloudfoundry-service-broker/blob/master/src%2Fmain%2Fjava%2Forg%2Fspringframework%2Fcloud%2Fservicebroker%2Fmodel%2FCreateServiceInstanceBindingResponse.java#L35) 
+
+## Bound syslog_drain_url
+
+The returned syslog_drain_url is identical for all bound service instances of a specific plan~~, with at least one define~~.
+
+The syslog_drain_url could be defined for a service, it will be applied for all plans of the service.
+It is configured by the following environment variables:
+* SERVICES[{SERVICE_ID}]\_SYSLOG_DRAIN_URL String.
+
+The syslog_drain_url could also be defined for a particular plan, if it contains conflict syslog_drain_url key between the service
+syslog_drain_url and plan syslog_drain_url, the values of the plan syslog_drain_url will be taken.
+It is configured by the following environment variables:
+* SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]_SYSLOG_DRAIN_URL String.
+
+If syslog_drain_url has been defined, ```SERVICES[{SERVICE_ID}]_REQUIRES``` property with a value ```syslog_drain``` must be declared in the Catalog endpoint or the service broker would consider the configuration invalid.
 
 ## Authentication
 

@@ -1,5 +1,6 @@
 package com.orange.servicebroker.staticcreds.infrastructure;
 
+import com.orange.servicebroker.staticcreds.domain.PlanSummary;
 import org.junit.Test;
 
 import java.util.Map;
@@ -20,11 +21,11 @@ public class SpringConfigCredentialsRepositoryTest {
 
         //GIVEN credentials have been set at service and plan level
         //some overlaps
-        SpringConfigCredentialsRepository repository = new SpringConfigCredentialsRepository(CatalogTestFactory.newInstance());
+        SpringConfigPlanSummaryRepository repository = new SpringConfigPlanSummaryRepository(CatalogTestFactory.newInstance());
 
-        final Optional<Map<String, Object>> credentials = repository.findByPlan(CatalogTestFactory.SERVICE_PLAN_PROD);
+        final Optional<PlanSummary> planSummary = repository.find(CatalogTestFactory.SERVICE_PLAN_PROD);
 
-        assertThat(credentials.get()).hasSize(3).includes(entry("HOSTNAME", HOSTNAME_PLAN_PROD_VALUE),entry("URI", "http://myprod-api.org"), entry("ACCESS_KEY", "prod"));
+        assertThat(planSummary.get().getCredentials()).hasSize(3).includes(entry("HOSTNAME", HOSTNAME_PLAN_PROD_VALUE),entry("URI", "http://myprod-api.org"), entry("ACCESS_KEY", "prod"));
 
     }
 

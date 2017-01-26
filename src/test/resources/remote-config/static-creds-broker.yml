@@ -11,6 +11,8 @@ services:
             LONG_DESCRIPTION: A long description for my service
         CREDENTIALS:
             HOSTNAME: http://company.com
+        REQUIRES: syslog_drain
+        SYSLOG_DRAIN_URL: syslog://log.prod.com:5000
         plans:
             DEV:
                 id: f7ae3ff9-85ed-3515-bef9-2e4d2f572422

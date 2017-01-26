@@ -32,7 +32,7 @@ class CFServiceCatalogParser():
         cf_plan_info_json = re.findall(r'(\{.*\})', cf_plans_info_str, re.M | re.S)[0] 
         cf_plan_info = json.loads(cf_plan_info_json)
         plans_number = cf_plan_info['total_results']
-        for plan_index in xrange(0, plans_number):
+        for plan_index in range(0, plans_number):
             plan_info = cf_plan_info['resources'][plan_index]['entity']
             plan_info['extra'] = json.loads(plan_info['extra'])
             plans_info.append(plan_info)
