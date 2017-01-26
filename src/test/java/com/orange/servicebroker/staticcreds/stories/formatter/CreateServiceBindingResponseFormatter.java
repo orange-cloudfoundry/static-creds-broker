@@ -13,7 +13,7 @@
  *
  */
 
-package com.orange.servicebroker.staticcreds.service;
+package com.orange.servicebroker.staticcreds.stories.formatter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

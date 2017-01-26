@@ -15,7 +15,7 @@
 
 package com.orange.servicebroker.staticcreds.domain;
 
-import com.orange.servicebroker.staticcreds.YAML;
+import com.orange.servicebroker.staticcreds.stories.formatter.CatalogYAML;
 import com.tngtech.jgiven.Stage;
 import org.assertj.core.api.Assertions;
 
@@ -26,7 +26,7 @@ public class ConfigureSyslogDrainUrlStage extends Stage<ConfigureSyslogDrainUrlS
 
     private CatalogSettings.InvalidSyslogDrainUrlException invalidSyslogDrainUrlException;
 
-    public ConfigureSyslogDrainUrlStage paas_ops_configures_catalog(@YAML CatalogSettings catalogSettings) {
+    public ConfigureSyslogDrainUrlStage paas_ops_configures_catalog(@CatalogYAML CatalogSettings catalogSettings) {
         try {
             catalogSettings.init();
         } catch (CatalogSettings.InvalidSyslogDrainUrlException e) {

@@ -1,12 +1,12 @@
 package com.orange.servicebroker.staticcreds.domain;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
-import org.springframework.cloud.servicebroker.model.EmptyListSerializer;
 import org.springframework.cloud.servicebroker.model.ServiceDefinitionRequires;
 
 import javax.validation.Valid;
@@ -64,6 +64,12 @@ public class Service {
      * {@link ServiceDefinitionRequires} for supported permissions.
      */
     private List<String> requires;
+
+    /**
+     * The URL of a web-based management user interface for the service instance. Can be <code>null</code> to indicate
+     * that a management dashboard is not provided.
+     */
+    private String dashboardUrl;
 
     public Service() {
     }

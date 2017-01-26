@@ -18,7 +18,7 @@ package com.orange.servicebroker.staticcreds.service;
 import com.orange.servicebroker.staticcreds.domain.CatalogSettings;
 import com.orange.servicebroker.staticcreds.domain.Plan;
 import com.orange.servicebroker.staticcreds.domain.Service;
-import com.orange.servicebroker.staticcreds.infrastructure.SpringConfigPlanSummaryRepository;
+import com.orange.servicebroker.staticcreds.infrastructure.SpringConfigServicePlanDetailRepository;
 import org.junit.Test;
 import org.springframework.cloud.servicebroker.model.CreateServiceInstanceAppBindingResponse;
 import org.springframework.cloud.servicebroker.model.CreateServiceInstanceBindingRequest;
@@ -44,7 +44,7 @@ public class CredsServiceInstanceBindingServiceTest {
     @Test
     public void should_bind_with_credentials_that_have_been_set_for_associated_service_plan() throws Exception {
 
-        SpringConfigPlanSummaryRepository repository = new SpringConfigPlanSummaryRepository(catalog());
+        SpringConfigServicePlanDetailRepository repository = new SpringConfigServicePlanDetailRepository(catalog());
 
         //when I bind my app to a service API_DIRECTORY instance whose plan is dev
         CredsServiceInstanceBindingService serviceInstanceBindingService = new CredsServiceInstanceBindingService(repository);
@@ -83,7 +83,7 @@ public class CredsServiceInstanceBindingServiceTest {
 
     @Test
     public void should_bind_with_no_credentials_if_no_credentials_have_been_set_for_associated_service_plan() throws Exception {
-        SpringConfigPlanSummaryRepository repository = new SpringConfigPlanSummaryRepository(catalog());
+        SpringConfigServicePlanDetailRepository repository = new SpringConfigServicePlanDetailRepository(catalog());
 
         //when I bind my app to a service API_DIRECTORY instance whose plan is dummy
         CredsServiceInstanceBindingService serviceInstanceBindingService = new CredsServiceInstanceBindingService(repository);

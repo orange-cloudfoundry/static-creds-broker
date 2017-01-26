@@ -15,10 +15,10 @@
 
 package com.orange.servicebroker.staticcreds.service;
 
-import com.orange.servicebroker.staticcreds.CreateServiceBinding;
 import com.orange.servicebroker.staticcreds.domain.CatalogSettings;
 import com.orange.servicebroker.staticcreds.domain.Plan;
 import com.orange.servicebroker.staticcreds.domain.Service;
+import com.orange.servicebroker.staticcreds.stories.tags.CreateServiceBinding;
 import com.tngtech.jgiven.junit.SimpleScenarioTest;
 import org.junit.Test;
 import org.springframework.cloud.servicebroker.model.CreateServiceInstanceAppBindingResponse;
@@ -83,8 +83,6 @@ public class CreateLogDrainServiceBindingTest extends SimpleScenarioTest<CreateL
     public void create_service_binding_with_static_syslog_drain_url_set_at_service_level() throws Exception {
         given().syslog_drain_url_set_in_catalog(catalog_syslog_drain_url_at_service_level_with_requires_field_set());
         when().cloud_controller_requests_to_create_a_service_instance_binding_for_plan_id("dev-id");
-        Map<String, Object> credentials = new HashMap<>();
-        credentials.put("URI", "http://my-api.org");
         then().it_should_be_returned_with_syslog_drain_url(new CreateServiceInstanceAppBindingResponse()
                 .withSyslogDrainUrl("syslog://log.example.com:5000")
                 .withCredentials(Collections.unmodifiableMap(Stream.of(
@@ -96,8 +94,6 @@ public class CreateLogDrainServiceBindingTest extends SimpleScenarioTest<CreateL
     public void create_service_binding_with_static_syslog_drain_url_set_at_service_plan_level() throws Exception {
         given().syslog_drain_url_set_in_catalog(catalog_syslog_drain_url_at_service_plan_level_with_requires_field_set());
         when().cloud_controller_requests_to_create_a_service_instance_binding_for_plan_id("dev-id");
-        Map<String, Object> credentials = new HashMap<>();
-        credentials.put("URI", "http://my-api.org");
         then().it_should_be_returned_with_syslog_drain_url(new CreateServiceInstanceAppBindingResponse()
                 .withSyslogDrainUrl("syslog://log.dev.com:5000")
                 .withCredentials(Collections.unmodifiableMap(Stream.of(

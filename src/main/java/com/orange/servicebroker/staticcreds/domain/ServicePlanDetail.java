@@ -27,7 +27,7 @@ import java.util.Optional;
 @ToString
 @EqualsAndHashCode
 @Builder
-public class PlanSummary {
+public class ServicePlanDetail {
 
     /**
      * The URL to which Cloud Foundry should drain logs for the bound application.
@@ -39,5 +39,10 @@ public class PlanSummary {
      */
     @Singular
     private Map<String, Object> credentials;
+
+    /**
+     * The URL of a web-based management user interface for the service instance.
+     */
+    private Optional<String> dashboardUrl;
 
 }

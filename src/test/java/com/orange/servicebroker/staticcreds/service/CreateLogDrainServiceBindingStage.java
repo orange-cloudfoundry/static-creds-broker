@@ -15,10 +15,10 @@
 
 package com.orange.servicebroker.staticcreds.service;
 
-import com.orange.servicebroker.staticcreds.JSON;
-import com.orange.servicebroker.staticcreds.YAML;
 import com.orange.servicebroker.staticcreds.domain.CatalogSettings;
-import com.orange.servicebroker.staticcreds.infrastructure.SpringConfigPlanSummaryRepository;
+import com.orange.servicebroker.staticcreds.infrastructure.SpringConfigServicePlanDetailRepository;
+import com.orange.servicebroker.staticcreds.stories.formatter.CatalogYAML;
+import com.orange.servicebroker.staticcreds.stories.formatter.CreateServiceBindingResponseJSON;
 import com.tngtech.jgiven.Stage;
 import org.assertj.core.api.Assertions;
 import org.springframework.cloud.servicebroker.model.CreateServiceInstanceAppBindingResponse;
@@ -39,20 +39,13 @@ public class CreateLogDrainServiceBindingStage extends Stage<CreateLogDrainServi
         return self();
     }
 
-    public CreateLogDrainServiceBindingStage syslog_drain_url_set_in_catalog(@YAML CatalogSettings catalog) {
-        SpringConfigPlanSummaryRepository planSummaryRepository = new SpringConfigPlanSummaryRepository(catalog);
+    public CreateLogDrainServiceBindingStage syslog_drain_url_set_in_catalog(@CatalogYAML CatalogSettings catalog) {
+        SpringConfigServicePlanDetailRepository planSummaryRepository = new SpringConfigServicePlanDetailRepository(catalog);
         instanceBindingService = new CredsServiceInstanceBindingService(planSummaryRepository);
         return self();
     }
 
-
-    public CreateLogDrainServiceBindingStage it_should_be_returned_with_syslog_drain_url(String syslogDrainUrl) {
-        Assertions.assertThat(response).isInstanceOf(CreateServiceInstanceAppBindingResponse.class);
-        Assertions.assertThat(((CreateServiceInstanceAppBindingResponse) response).getSyslogDrainUrl()).isEqualTo(syslogDrainUrl);
-        return self();
-    }
-
-    public CreateLogDrainServiceBindingStage it_should_be_returned_with_syslog_drain_url(@JSON CreateServiceInstanceAppBindingResponse expected) {
+    public CreateLogDrainServiceBindingStage it_should_be_returned_with_syslog_drain_url(@CreateServiceBindingResponseJSON CreateServiceInstanceAppBindingResponse expected) {
         Assertions.assertThat(response).isInstanceOf(CreateServiceInstanceAppBindingResponse.class);
         Assertions.assertThat(response).isEqualTo(expected);
         return self();
