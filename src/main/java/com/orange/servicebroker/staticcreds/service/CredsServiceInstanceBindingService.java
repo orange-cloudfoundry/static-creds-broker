@@ -1,7 +1,7 @@
 package com.orange.servicebroker.staticcreds.service;
 
-import com.orange.servicebroker.staticcreds.domain.PlanSummary;
-import com.orange.servicebroker.staticcreds.domain.PlanSummaryRepository;
+import com.orange.servicebroker.staticcreds.domain.ServicePlanDetail;
+import com.orange.servicebroker.staticcreds.domain.ServicePlanDetailRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,23 +19,23 @@ public class CredsServiceInstanceBindingService implements ServiceInstanceBindin
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CredsServiceInstanceService.class);
 
-    private PlanSummaryRepository planSummaryRepository;
+    private ServicePlanDetailRepository servicePlanDetailRepository;
 
     @Autowired
-    public CredsServiceInstanceBindingService(PlanSummaryRepository planSummaryRepository) {
-        this.planSummaryRepository = planSummaryRepository;
+    public CredsServiceInstanceBindingService(ServicePlanDetailRepository servicePlanDetailRepository) {
+        this.servicePlanDetailRepository = servicePlanDetailRepository;
     }
 
-    private static CreateServiceInstanceBindingResponse toResponse(PlanSummary planSummary) {
+    private static CreateServiceInstanceBindingResponse toResponse(ServicePlanDetail servicePlanDetail) {
         return new CreateServiceInstanceAppBindingResponse()
-                .withCredentials(planSummary.getCredentials())
-                .withSyslogDrainUrl(planSummary.getSyslogDrainUrl().orElse(null));
+                .withCredentials(servicePlanDetail.getCredentials())
+                .withSyslogDrainUrl(servicePlanDetail.getSyslogDrainUrl().orElse(null));
     }
 
     @Override
     public CreateServiceInstanceBindingResponse createServiceInstanceBinding(CreateServiceInstanceBindingRequest request) {
         LOGGER.debug("binding service instance");
-        final Optional<PlanSummary> planSummary = planSummaryRepository.find(request.getPlanId());
+        final Optional<ServicePlanDetail> planSummary = servicePlanDetailRepository.find(request.getPlanId());
         return planSummary
                 .map(CredsServiceInstanceBindingService::toResponse)
                 .orElse(new CreateServiceInstanceAppBindingResponse());

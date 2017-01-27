@@ -13,7 +13,7 @@
  *
  */
 
-package com.orange.servicebroker.staticcreds;
+package com.orange.servicebroker.staticcreds.stories.formatter;
 
 import com.orange.servicebroker.staticcreds.domain.CatalogSettings;
 import com.tngtech.jgiven.format.ArgumentFormatter;

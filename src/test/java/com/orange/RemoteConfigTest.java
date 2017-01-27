@@ -1,20 +1,16 @@
 package com.orange;
 
-import com.orange.servicebroker.staticcreds.domain.PlanSummary;
-import com.orange.servicebroker.staticcreds.domain.PlanSummaryRepository;
+import com.orange.servicebroker.staticcreds.domain.ServicePlanDetail;
+import com.orange.servicebroker.staticcreds.domain.ServicePlanDetailRepository;
 import org.fest.assertions.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.servicebroker.model.Catalog;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Map;
 import java.util.Optional;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -34,7 +30,7 @@ public class RemoteConfigTest {
     String serviceApiDirectoryName;
 
     @Autowired
-    PlanSummaryRepository planSummaryRepository;
+    ServicePlanDetailRepository servicePlanDetailRepository;
 
     @Autowired
     Catalog catalog;
@@ -49,7 +45,7 @@ public class RemoteConfigTest {
 
         //service plan id for plan dev of service API_DIRECTORY, see static-creds-broker.yml
 
-       final Optional<PlanSummary> credentials = planSummaryRepository.find(API_DIRECTORY_SERVICE_PLAN_DEV_ID);
+       final Optional<ServicePlanDetail> credentials = servicePlanDetailRepository.find(API_DIRECTORY_SERVICE_PLAN_DEV_ID);
 
         assertThat(credentials.get().getCredentials()).hasSize(3).includes(entry("HOSTNAME", "http://company.com"),entry("URI", "http://mydev-api.org"), entry("ACCESS_KEY", "devAZERT23456664DFDSFSDFDSF"));
 

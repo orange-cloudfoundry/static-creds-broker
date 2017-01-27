@@ -13,18 +13,20 @@
  *
  */
 
-package com.orange.servicebroker.staticcreds;
+package com.orange.servicebroker.staticcreds.stories.formatter;
 
-import com.tngtech.jgiven.annotation.IsTag;
+import com.tngtech.jgiven.annotation.Format;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-@IsTag(name = "Paas user requests to create a service binding",
-        description = "In order to access a service resource,<br>" +
-                "As a Paas user,<br>" +
-                "I want to get the necessary credentials on service binding.")
+/**
+ * @author Sebastien Bortolussi
+ */
+@Format(value = CreateServiceInstanceResponseFormatter.class)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CreateServiceBinding {
-
+@Target({ElementType.PARAMETER, ElementType.ANNOTATION_TYPE})
+public @interface CreateServiceInstanceResponseJSON {
 }

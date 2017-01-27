@@ -15,7 +15,7 @@
 
 package com.orange.servicebroker.staticcreds.domain;
 
-import com.orange.servicebroker.staticcreds.ConfigureCatalog;
+import com.orange.servicebroker.staticcreds.stories.tags.ConfigureCatalog;
 import com.tngtech.jgiven.junit.SimpleScenarioTest;
 import org.junit.Test;
 

@@ -13,7 +13,7 @@
  *
  */
 
-package com.orange.servicebroker.staticcreds;
+package com.orange.servicebroker.staticcreds.stories.tags;
 
 import com.tngtech.jgiven.annotation.IsTag;
 

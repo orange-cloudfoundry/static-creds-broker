@@ -13,19 +13,18 @@
  *
  */
 
-package com.orange.servicebroker.staticcreds;
+package com.orange.servicebroker.staticcreds.stories.tags;
 
-import com.tngtech.jgiven.annotation.Format;
+import com.tngtech.jgiven.annotation.IsTag;
 
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
-/**
- * @author Sebastien Bortolussi
- */
-@Format( value = CatalogYAMLFormatter.class)
-@Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.PARAMETER, ElementType.ANNOTATION_TYPE } )
-public @interface YAML {}
+@IsTag(name = "Paas user requests to create a service binding",
+        description = "In order to access to an external resource,<br>" +
+                "As a Paas user,<br>" +
+                "I want to create a service instance binding and get the necessary details for accessing the external resource.")
+@Retention(RetentionPolicy.RUNTIME)
+public @interface CreateServiceBinding {
+
+}

@@ -118,6 +118,7 @@ among the cloudfoundry installation to register with (among orgs and spaces).
 as ```tag1,tag2,tag3```, default is ```[]```)
 * SERVICES[{SERVICE_ID}]_REQUIRES (String holding an array-of-strings, multiple requires are separated by comma,
 as ```syslog_drain, route_forwarding```, default is ```[]```). A list of permissions that the user would have to give the service, if they provision it. The only permission currently supported is syslog_drain.
+* SERVICES[{SERVICE_ID}]_DASHBOARD_URL (String, no default). The URL of a web-based management user interface for the service instance.
 * SERVICES[{SERVICE_ID}]_METADATA_DISPLAY_NAME (String, default is SERVICES_ID_NAME). The user-facing name of the service.
 * SERVICES[{SERVICE_ID}]_METADATA_IMAGE_URL (String, default is "")
 * SERVICES[{SERVICE_ID}]_METADATA_SUPPORT_URL (String, default is "")
@@ -130,6 +131,7 @@ Multiple plans are supported. Use the following environment variables to configu
 * SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]_DESCRIPTION (String, default is "Default plan")
 * SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]_METADATA (String holding a JSON object, default is "{}")
 * SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]_FREE (String, default is "true")
+* SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]_DASHBOARD_URL (String, no default). The URL of a web-based management user interface for the service instance.
 
 A number of catalog variables are not configureable, the broker always return the following default value:
 * requires: ```[]``` (empty array)

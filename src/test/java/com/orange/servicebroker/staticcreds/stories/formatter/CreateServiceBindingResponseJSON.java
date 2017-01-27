@@ -13,10 +13,8 @@
  *
  */
 
-package com.orange.servicebroker.staticcreds;
+package com.orange.servicebroker.staticcreds.stories.formatter;
 
-import com.orange.servicebroker.staticcreds.CatalogYAMLFormatter;
-import com.orange.servicebroker.staticcreds.service.CreateServiceBindingResponseFormatter;
 import com.tngtech.jgiven.annotation.Format;
 
 import java.lang.annotation.ElementType;
@@ -30,4 +28,5 @@ import java.lang.annotation.Target;
 @Format( value = CreateServiceBindingResponseFormatter.class)
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.PARAMETER, ElementType.ANNOTATION_TYPE } )
-public @interface JSON {}
+public @interface CreateServiceBindingResponseJSON {
+}

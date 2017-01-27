@@ -52,6 +52,12 @@ public class Plan {
      */
     private String syslogDrainUrl;
 
+    /**
+     * The URL of a web-based management user interface for the service instance. Can be <code>null</code> to indicate
+     * that a management dashboard is not provided.
+     */
+    private String dashboardUrl;
+
     public Plan() {
     }
 
