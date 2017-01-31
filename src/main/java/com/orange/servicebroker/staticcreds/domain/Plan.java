@@ -11,8 +11,7 @@ import org.springframework.boot.json.JsonParserFactory;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Cloud Foundry plan
@@ -58,6 +57,11 @@ public class Plan {
      */
     private String dashboardUrl;
 
+    /**
+     * The details of the volume mounts available to applications.
+     */
+    private List<VolumeMountProperties> volumeMounts = new ArrayList<>();
+
     public Plan() {
     }
 
@@ -65,11 +69,15 @@ public class Plan {
         this.id = id;
     }
 
-    public Map<String, Object> getFullCredentials() {
+    public Optional<Map<String, Object>> getFullCredentials() {
         final Map<String, Object> full = new HashMap<>();
-        full.putAll(credentials);
-        full.putAll(credentialsJson);
-        return full;
+        if (credentials != null) {
+            full.putAll(credentials);
+        }
+        if (credentialsJson != null) {
+            full.putAll(credentialsJson);
+        }
+        return full.isEmpty() ? Optional.empty() : Optional.of(full);
     }
 
     public void setMetadata(String metadataJson) {

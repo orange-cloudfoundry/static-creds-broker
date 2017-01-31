@@ -117,7 +117,7 @@ among the cloudfoundry installation to register with (among orgs and spaces).
 * SERVICES[{SERVICE_ID}]_TAGS (String holding an array-of-strings, multiple tags are separated by comma,
 as ```tag1,tag2,tag3```, default is ```[]```)
 * SERVICES[{SERVICE_ID}]_REQUIRES (String holding an array-of-strings, multiple requires are separated by comma,
-as ```syslog_drain, route_forwarding```, default is ```[]```). A list of permissions that the user would have to give the service, if they provision it. The only permission currently supported is syslog_drain.
+as ```syslog_drain, volume_mount```, default is ```[]```). A list of permissions that the user would have to give the service, if they provision it. The only permission currently supported is syslog_drain.
 * SERVICES[{SERVICE_ID}]_DASHBOARD_URL (String, no default). The URL of a web-based management user interface for the service instance.
 * SERVICES[{SERVICE_ID}]_METADATA_DISPLAY_NAME (String, default is SERVICES_ID_NAME). The user-facing name of the service.
 * SERVICES[{SERVICE_ID}]_METADATA_IMAGE_URL (String, default is "")
@@ -138,9 +138,9 @@ A number of catalog variables are not configureable, the broker always return th
 * plan_updateable: false
 * dashboard_client: ````{}```` (empty)
 
-## Bound credentials
+## credentials binding
 
-The returned credentials are identical for all bound service instances of a specific plan~~, with at least one define~~.
+The returned credentials are identical for all bound service instances of a specific plan.
 
 The credentials could be defined for a service, it will be applied for all plans of the service.
 It is configured by the following environment variables:
@@ -165,9 +165,9 @@ the same format as 'cf cups', e.g. ```'{"username":"admin","password":"pa55woRD"
 
 This is mapped to [spring-cloud-cloudfoundry-service-broker](https://github.com/spring-cloud/spring-cloud-cloudfoundry-service-broker/blob/master/src%2Fmain%2Fjava%2Forg%2Fspringframework%2Fcloud%2Fservicebroker%2Fmodel%2FCreateServiceInstanceBindingResponse.java#L35) 
 
-## Bound syslog_drain_url
+## syslog_drain_url binding
 
-The returned syslog_drain_url is identical for all bound service instances of a specific plan~~, with at least one define~~.
+The returned syslog_drain_url is identical for all bound service instances of a specific plan.
 
 The syslog_drain_url could be defined for a service, it will be applied for all plans of the service.
 It is configured by the following environment variables:
@@ -179,6 +179,31 @@ It is configured by the following environment variables:
 * SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]_SYSLOG_DRAIN_URL String.
 
 If syslog_drain_url has been defined, ```SERVICES[{SERVICE_ID}]_REQUIRES``` property with a value ```syslog_drain``` must be declared in the Catalog endpoint or the service broker would consider the configuration invalid.
+
+## volume_mount binding
+
+The returned volume_mount is identical for all bound service instances of a specific plan.
+
+The volume_mount could be defined for a service, it will be applied for all plans of the service.
+It is configured by the following environment variables:
+* SERVICES[{SERVICE_ID}]\_VOLUME_MOUNT[{INDEX}]_CONTAINER_DIR String.
+* SERVICES[{SERVICE_ID}]\_VOLUME_MOUNT[{INDEX}]_DRIVER String.
+* SERVICES[{SERVICE_ID}]\_VOLUME_MOUNT[{INDEX}]_MODE String.
+* SERVICES[{SERVICE_ID}]\_VOLUME_MOUNT[{INDEX}]_DEVICE_TYPE String.
+* SERVICES[{SERVICE_ID}]\_VOLUME_MOUNT[{INDEX}]_DEVICE_VOLUME_ID String.
+* SERVICES[{SERVICE_ID}]\_VOLUME_MOUNT[{INDEX}]_DEVICE_MOUNT_CONFIG_[{MOUNT_KEY}] String.
+
+The volume_mount could also be defined for a particular plan, if it contains conflict volume_mount key between the service
+volume_mount and plan volume_mount, the values of the plan volume_mount will be taken.
+It is configured by the following environment variables:
+* SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]_VOLUME_MOUNT[{INDEX}]_CONTAINER_DIR String.
+* SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]_VOLUME_MOUNT[{INDEX}]_DRIVER String.
+* SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]_VOLUME_MOUNT[{INDEX}]_MODE String.
+* SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]_VOLUME_MOUNT[{INDEX}]_DEVICE_TYPE String.
+* SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]_VOLUME_MOUNT[{INDEX}]_DEVICE_VOLUME_ID String.
+* SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]_VOLUME_MOUNT[{INDEX}]_DEVICE_MOUNT_CONFIG_[{MOUNT_KEY}] String.
+
+If volume_mount has been defined, ```SERVICES[{SERVICE_ID}]_REQUIRES``` property with a value ```volume_mount``` must be declared in the Catalog endpoint or the service broker would consider the configuration invalid.
 
 ## Authentication
 

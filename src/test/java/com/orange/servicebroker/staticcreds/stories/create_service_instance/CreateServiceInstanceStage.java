@@ -16,7 +16,7 @@
 package com.orange.servicebroker.staticcreds.stories.create_service_instance;
 
 import com.orange.servicebroker.staticcreds.domain.CatalogSettings;
-import com.orange.servicebroker.staticcreds.infrastructure.SpringConfigServicePlanDetailRepository;
+import com.orange.servicebroker.staticcreds.infrastructure.SpringConfigServicePlanBindingRepository;
 import com.orange.servicebroker.staticcreds.service.CredsServiceInstanceService;
 import com.orange.servicebroker.staticcreds.stories.formatter.CatalogYAML;
 import com.orange.servicebroker.staticcreds.stories.formatter.CreateServiceInstanceResponseJSON;
@@ -34,7 +34,7 @@ public class CreateServiceInstanceStage extends Stage<CreateServiceInstanceStage
     private CreateServiceInstanceResponse response;
 
     public CreateServiceInstanceStage catalog(@CatalogYAML CatalogSettings catalog) {
-        SpringConfigServicePlanDetailRepository planSummaryRepository = new SpringConfigServicePlanDetailRepository(catalog);
+        SpringConfigServicePlanBindingRepository planSummaryRepository = new SpringConfigServicePlanBindingRepository(catalog);
         instanceService = new CredsServiceInstanceService(planSummaryRepository);
         return self();
     }

@@ -17,8 +17,10 @@ package com.orange.servicebroker.staticcreds.stories.formatter;
 
 import com.orange.servicebroker.staticcreds.domain.CatalogSettings;
 import com.tngtech.jgiven.format.ArgumentFormatter;
+import org.springframework.cloud.servicebroker.model.SharedVolumeDevice;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.introspector.BeanAccess;
 import org.yaml.snakeyaml.introspector.Property;
 import org.yaml.snakeyaml.nodes.*;
 import org.yaml.snakeyaml.representer.Representer;
@@ -35,8 +37,11 @@ public class CatalogYAMLFormatter implements ArgumentFormatter<CatalogSettings> 
 
         final SkipNullEmptyRepresenter representer = new SkipNullEmptyRepresenter();
         representer.addClassTag(CatalogSettings.class, Tag.MAP);
+        representer.addClassTag(SharedVolumeDevice.class, Tag.MAP);
+
 
         Yaml yaml = new Yaml(representer, options);
+        yaml.setBeanAccess(BeanAccess.FIELD);
         return yaml.dump(catalogSettings);
     }
 

@@ -15,34 +15,8 @@
 
 package com.orange.servicebroker.staticcreds.domain;
 
-import lombok.*;
+import lombok.EqualsAndHashCode;
 
-import java.util.Map;
-import java.util.Optional;
-
-/**
- * Cloud Foundry plan summary
- */
-@Getter
-@ToString
 @EqualsAndHashCode
-@Builder
-public class ServicePlanDetail {
-
-    /**
-     * The URL to which Cloud Foundry should drain logs for the bound application.
-     */
-    private Optional<String> syslogDrainUrl;
-
-    /**
-     * A free-form hash of credentials that the bound application can use to access the service.
-     */
-    @Singular
-    private Map<String, Object> credentials;
-
-    /**
-     * The URL of a web-based management user interface for the service instance.
-     */
-    private Optional<String> dashboardUrl;
-
+public class VolumeDeviceProperties {
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>static-creds-broker</groupId>
 	<artifactId>static-creds-broker</artifactId>
@@ -19,6 +19,7 @@
 		<lombockVersion>1.16.12</lombockVersion>
 		<fest-assert.version>1.4</fest-assert.version>
 		<jgiven.version>0.14.0</jgiven.version>
+        <orika-core.version>1.5.0</orika-core.version>
 	</properties>
 
 	<build>
@@ -85,6 +86,12 @@
 			<artifactId>spring-cloud-cloudfoundry-service-broker</artifactId>
 			<version>${springCloudServiceBrokerVersion}</version>
 		</dependency>
+
+        <dependency>
+            <groupId>ma.glasnost.orika</groupId>
+            <artifactId>orika-core</artifactId>
+            <version>${orika-core.version}</version>
+        </dependency>
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>

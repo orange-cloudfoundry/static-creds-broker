@@ -5,15 +5,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.cloud.servicebroker.model.ServiceDefinitionRequires;
 
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Cloud Foundry Service
@@ -70,6 +68,12 @@ public class Service {
      * that a management dashboard is not provided.
      */
     private String dashboardUrl;
+
+    /**
+     * The details of the volume mounts available to applications.
+     */
+    @NestedConfigurationProperty
+    private List<VolumeMountProperties> volumeMounts = new ArrayList<>();
 
     public Service() {
     }
