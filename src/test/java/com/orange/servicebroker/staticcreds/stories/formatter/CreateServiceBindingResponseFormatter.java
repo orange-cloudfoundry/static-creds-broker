@@ -18,15 +18,15 @@ package com.orange.servicebroker.staticcreds.stories.formatter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tngtech.jgiven.format.ArgumentFormatter;
-import org.springframework.cloud.servicebroker.model.CreateServiceInstanceAppBindingResponse;
+import org.springframework.cloud.servicebroker.model.CreateServiceInstanceBindingResponse;
 
 /**
  * General formatter to format catalog values to yaml.
  */
-public class CreateServiceBindingResponseFormatter implements ArgumentFormatter<CreateServiceInstanceAppBindingResponse> {
+public class CreateServiceBindingResponseFormatter implements ArgumentFormatter<CreateServiceInstanceBindingResponse> {
 
     @Override
-    public String format(CreateServiceInstanceAppBindingResponse response, String... strings) {
+    public String format(CreateServiceInstanceBindingResponse response, String... strings) {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.writer().withDefaultPrettyPrinter().writeValueAsString(response);

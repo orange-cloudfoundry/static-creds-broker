@@ -2,6 +2,7 @@ package com.orange.servicebroker.staticcreds.domain;
 
 import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.servicebroker.model.ServiceDefinitionRequires;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -22,7 +23,6 @@ import java.util.function.Predicate;
 public class CatalogSettings {
 
     public static final String NO_SERVICE_ERROR = "Invalid configuration. No service has been defined";
-    public static final String SYSLOG_DRAIN_REQUIRES = "syslog_drain";
     @NotNull
     @Size(min = 1, message = NO_SERVICE_ERROR)
     @Valid
@@ -52,10 +52,11 @@ public class CatalogSettings {
         setDefaultPlanDescriptions();
         assertPlanCredentialsExists();
         assertSyslogDrainUrlRequiresExists();
+        assertVolumeMountRequiresExists();
     }
 
     private void assertPlanCredentialsExists() {
-        final Predicate<Plan> planWithoutCredential = plan -> plan.getFullCredentials() == null || plan.getFullCredentials().isEmpty();
+        final Predicate<Plan> planWithoutCredential = plan -> !plan.getFullCredentials().isPresent();
         final Predicate<Service> serviceWithoutCredential = service -> !service.getFullCredentials().isPresent();
 
         services.values().stream()
@@ -77,12 +78,29 @@ public class CatalogSettings {
                 });
     }
 
+    private void assertVolumeMountRequiresExists() {
+        services.values().stream()
+                .flatMap(service -> service.getPlans().values().stream().filter(plan -> volumeMountExists(service, plan) && requiresVolumeMountNotPresent(service)))
+                .findFirst()
+                .ifPresent(plan -> {
+                    throw new InvalidVolumeMountException(services);
+                });
+    }
+
     private boolean syslogDrainUrlHasText(Service service, Plan plan) {
         return plan.getSyslogDrainUrl() != null || service.getSyslogDrainUrl() != null;
     }
 
     private boolean requiresSyslogDrainUrlNotPresent(Service service) {
-        return service.getRequires() == null || !service.getRequires().contains(SYSLOG_DRAIN_REQUIRES);
+        return service.getRequires() == null || !service.getRequires().contains(ServiceDefinitionRequires.SERVICE_REQUIRES_SYSLOG_DRAIN.toString());
+    }
+
+    private boolean volumeMountExists(Service service, Plan plan) {
+        return (plan.getVolumeMounts() != null && !plan.getVolumeMounts().isEmpty()) || (service.getVolumeMounts() != null && !service.getVolumeMounts().isEmpty());
+    }
+
+    private boolean requiresVolumeMountNotPresent(Service service) {
+        return service.getRequires() == null || !service.getRequires().contains(ServiceDefinitionRequires.SERVICE_REQUIRES_VOLUME_MOUNT.toString());
     }
 
     private void setDefaultServiceDisplayName() {
@@ -153,7 +171,7 @@ public class CatalogSettings {
         });
     }
 
-    class NoCredentialException extends IllegalStateException {
+    public class NoCredentialException extends IllegalStateException {
 
 
         public NoCredentialException(Plan plan) {
@@ -161,11 +179,19 @@ public class CatalogSettings {
         }
     }
 
-    class InvalidSyslogDrainUrlException extends IllegalStateException {
+    public class InvalidSyslogDrainUrlException extends IllegalStateException {
 
 
         public InvalidSyslogDrainUrlException(Map<String, Service> services) {
             super(String.format("%s includes a syslog_drain_url but \"requires\":[\"syslog_drain\"] is not present", services));
+        }
+    }
+
+    public class InvalidVolumeMountException extends IllegalStateException {
+
+
+        public InvalidVolumeMountException(Map<String, Service> services) {
+            super(String.format("%s includes a volume_mount but \"requires\":[\"volume_mount\"] is not present", services));
         }
     }
 

@@ -20,11 +20,11 @@ import com.tngtech.jgiven.annotation.IsTag;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-@IsTag(name = "Service Broker configures a catalog",
+@IsTag(name = "Paas ops configures a service broker",
         description = "In order to advertise to the marketplace,<br>" +
-                "As a Service Broker,<br>" +
+                "As a Paas ops,<br>" +
                 "I want to configure a catalog of service offerings and service plans.")
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ConfigureCatalog {
+public @interface ConfigureServiceBroker {
 
 }

@@ -1,7 +1,7 @@
 package com.orange.servicebroker.staticcreds.service;
 
-import com.orange.servicebroker.staticcreds.domain.ServicePlanDetail;
-import com.orange.servicebroker.staticcreds.domain.ServicePlanDetailRepository;
+import com.orange.servicebroker.staticcreds.domain.CredentialsServicePlanBinding;
+import com.orange.servicebroker.staticcreds.domain.ServicePlanBindingRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.servicebroker.model.*;
@@ -13,13 +13,13 @@ public class CredsServiceInstanceService implements ServiceInstanceService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CredsServiceInstanceService.class);
 
-    private final ServicePlanDetailRepository repository;
+    private final ServicePlanBindingRepository repository;
 
-    public CredsServiceInstanceService(ServicePlanDetailRepository repository) {
+    public CredsServiceInstanceService(ServicePlanBindingRepository repository) {
         this.repository = repository;
     }
 
-    private static CreateServiceInstanceResponse toResponse(ServicePlanDetail servicePlanDetail) {
+    private static CreateServiceInstanceResponse toResponse(CredentialsServicePlanBinding servicePlanDetail) {
         return new CreateServiceInstanceResponse()
                 .withDashboardUrl(servicePlanDetail.getDashboardUrl().orElse(null));
     }
@@ -28,6 +28,8 @@ public class CredsServiceInstanceService implements ServiceInstanceService {
     public CreateServiceInstanceResponse createServiceInstance(CreateServiceInstanceRequest request) {
         LOGGER.debug("creating service instance");
         return repository.find(request.getPlanId())
+                .filter(CredentialsServicePlanBinding.class::isInstance)
+                .map(CredentialsServicePlanBinding.class::cast)
                 .map(CredsServiceInstanceService::toResponse)
                 .orElse(new CreateServiceInstanceResponse());
     }

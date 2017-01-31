@@ -13,40 +13,41 @@
  *
  */
 
-package com.orange.servicebroker.staticcreds.service;
+package com.orange.servicebroker.staticcreds.stories.create_service_instance_binding;
 
 import com.orange.servicebroker.staticcreds.domain.CatalogSettings;
 import com.orange.servicebroker.staticcreds.infrastructure.SpringConfigServicePlanBindingRepository;
+import com.orange.servicebroker.staticcreds.service.CredsServiceInstanceBindingService;
 import com.orange.servicebroker.staticcreds.stories.formatter.CatalogYAML;
 import com.orange.servicebroker.staticcreds.stories.formatter.CreateServiceBindingResponseJSON;
 import com.tngtech.jgiven.Stage;
 import org.assertj.core.api.Assertions;
-import org.springframework.cloud.servicebroker.model.CreateServiceInstanceAppBindingResponse;
 import org.springframework.cloud.servicebroker.model.CreateServiceInstanceBindingRequest;
 import org.springframework.cloud.servicebroker.model.CreateServiceInstanceBindingResponse;
+import org.springframework.cloud.servicebroker.model.CreateServiceInstanceVolumeBindingResponse;
 
 /**
  * @author Sebastien Bortolussi
  */
-public class CreateLogDrainServiceBindingStage extends Stage<CreateLogDrainServiceBindingStage> {
+public class CreateServiceInstanceVolumeBindingStage extends Stage<CreateServiceInstanceVolumeBindingStage> {
 
     private CredsServiceInstanceBindingService instanceBindingService;
     private CreateServiceInstanceBindingResponse response;
 
-    public CreateLogDrainServiceBindingStage cloud_controller_requests_to_create_a_service_instance_binding_for_plan_id(String servicePlanId) {
+    public CreateServiceInstanceVolumeBindingStage cloud_controller_requests_to_create_a_service_instance_binding_for_plan_id(String servicePlanId) {
         final CreateServiceInstanceBindingRequest request = new CreateServiceInstanceBindingRequest("myservice-id", servicePlanId, "app-id", null);
         response = instanceBindingService.createServiceInstanceBinding(request);
         return self();
     }
 
-    public CreateLogDrainServiceBindingStage syslog_drain_url_set_in_catalog(@CatalogYAML CatalogSettings catalog) {
+    public CreateServiceInstanceVolumeBindingStage catalog_with_volume_mount(@CatalogYAML CatalogSettings catalog) {
         SpringConfigServicePlanBindingRepository planSummaryRepository = new SpringConfigServicePlanBindingRepository(catalog);
         instanceBindingService = new CredsServiceInstanceBindingService(planSummaryRepository);
         return self();
     }
 
-    public CreateLogDrainServiceBindingStage it_should_be_returned_with_syslog_drain_url(@CreateServiceBindingResponseJSON CreateServiceInstanceAppBindingResponse expected) {
-        Assertions.assertThat(response).isInstanceOf(CreateServiceInstanceAppBindingResponse.class);
+    public CreateServiceInstanceVolumeBindingStage it_should_be_returned_with_volume_mount(@CreateServiceBindingResponseJSON CreateServiceInstanceVolumeBindingResponse expected) {
+        Assertions.assertThat(response).isInstanceOf(CreateServiceInstanceVolumeBindingResponse.class);
         Assertions.assertThat(response).isEqualTo(expected);
         return self();
     }

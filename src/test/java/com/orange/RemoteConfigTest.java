@@ -1,7 +1,8 @@
 package com.orange;
 
-import com.orange.servicebroker.staticcreds.domain.ServicePlanDetail;
-import com.orange.servicebroker.staticcreds.domain.ServicePlanDetailRepository;
+import com.orange.servicebroker.staticcreds.domain.CredentialsServicePlanBinding;
+import com.orange.servicebroker.staticcreds.domain.ServicePlanBinding;
+import com.orange.servicebroker.staticcreds.domain.ServicePlanBindingRepository;
 import org.fest.assertions.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +22,7 @@ import static org.fest.assertions.MapAssert.entry;
  */
 @RunWith(SpringRunner.class)
 //"native" profile in the Config Server will not use Git, but just loads the config files from the local classpath or file system
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"security.user.password=pass","spring.profiles.active=native","spring.cloud.config.server.native.searchLocations=classpath:/remote-config"})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"security.user.password=pass", "spring.profiles.active=native", "spring.cloud.config.server.native.searchLocations=classpath:/remote-config"})
 public class RemoteConfigTest {
 
     public static final String API_DIRECTORY_SERVICE_PLAN_DEV_ID = "f7ae3ff9-85ed-3515-bef9-2e4d2f572422";
@@ -30,7 +31,7 @@ public class RemoteConfigTest {
     String serviceApiDirectoryName;
 
     @Autowired
-    ServicePlanDetailRepository servicePlanDetailRepository;
+    ServicePlanBindingRepository servicePlanBindingRepository;
 
     @Autowired
     Catalog catalog;
@@ -40,14 +41,18 @@ public class RemoteConfigTest {
         Assertions.assertThat(serviceApiDirectoryName).isEqualTo("API_DIRECTORY_test_Service");
     }
 
-   @Test
+    @Test
     public void should_find_a_service_plan() {
 
         //service plan id for plan dev of service API_DIRECTORY, see static-creds-broker.yml
 
-       final Optional<ServicePlanDetail> credentials = servicePlanDetailRepository.find(API_DIRECTORY_SERVICE_PLAN_DEV_ID);
+        final Optional<ServicePlanBinding> servicePlanBinding = servicePlanBindingRepository.find(API_DIRECTORY_SERVICE_PLAN_DEV_ID);
 
-        assertThat(credentials.get().getCredentials()).hasSize(3).includes(entry("HOSTNAME", "http://company.com"),entry("URI", "http://mydev-api.org"), entry("ACCESS_KEY", "devAZERT23456664DFDSFSDFDSF"));
+        assertThat(servicePlanBinding
+                .map(CredentialsServicePlanBinding.class::cast)
+                .get().getCredentials()
+        )
+                .hasSize(3).includes(entry("HOSTNAME", "http://company.com"), entry("URI", "http://mydev-api.org"), entry("ACCESS_KEY", "devAZERT23456664DFDSFSDFDSF"));
 
     }
 

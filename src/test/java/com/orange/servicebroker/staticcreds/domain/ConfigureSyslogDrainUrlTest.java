@@ -15,7 +15,7 @@
 
 package com.orange.servicebroker.staticcreds.domain;
 
-import com.orange.servicebroker.staticcreds.stories.tags.ConfigureCatalog;
+import com.orange.servicebroker.staticcreds.stories.tags.ConfigureServiceBroker;
 import com.tngtech.jgiven.junit.SimpleScenarioTest;
 import org.junit.Test;
 
@@ -26,7 +26,7 @@ import java.util.Map;
 /**
  * @author Sebastien Bortolussi
  */
-@ConfigureCatalog
+@ConfigureServiceBroker
 public class ConfigureSyslogDrainUrlTest extends SimpleScenarioTest<ConfigureSyslogDrainUrlStage> {
 
     public static final String SYSLOG_DRAIN_REQUIRES = "syslog_drain";
