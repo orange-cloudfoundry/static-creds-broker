@@ -13,17 +13,17 @@ import java.util.Optional;
 @Component
 public class SpringConfigServicePlanBindingRepository implements ServicePlanBindingRepository {
 
-    private final CatalogSettings catalog;
+    private final ServiceBrokerProperties properties;
 
     @Autowired
-    public SpringConfigServicePlanBindingRepository(CatalogSettings catalogSettings) {
-        this.catalog = catalogSettings;
+    public SpringConfigServicePlanBindingRepository(ServiceBrokerProperties serviceBrokerProperties) {
+        this.properties = serviceBrokerProperties;
     }
 
 
     @Override
     public Optional<ServicePlanBinding> find(String servicePlanId) {
-        return catalog.getServices().values()
+        return properties.getServices().values()
                 .stream()
                 .flatMap(service -> service.getPlans().values().stream()
                         .filter(plan -> servicePlanId.equals(plan.getId()))
@@ -32,32 +32,32 @@ public class SpringConfigServicePlanBindingRepository implements ServicePlanBind
                 .findFirst();
     }
 
-    private ServicePlanBinding toServicePlanBinding(Service service, Plan plan) {
-        if (isVolumeMountService(service)) {
-            return toVolumeServicePlanDetail(service, plan);
+    private ServicePlanBinding toServicePlanBinding(ServiceProperties serviceProperties, PlanProperties planProperties) {
+        if (isVolumeMountService(serviceProperties)) {
+            return toVolumeServicePlanDetail(serviceProperties, planProperties);
         } else {
-            return toCredentialsServicePlanBinding(service, plan);
+            return toCredentialsServicePlanBinding(serviceProperties, planProperties);
         }
     }
 
-    private boolean isVolumeMountService(Service service) {
-        return service.getRequires() == null ? Boolean.FALSE : service.getRequires().contains(ServiceDefinitionRequires.SERVICE_REQUIRES_VOLUME_MOUNT.toString());
+    private boolean isVolumeMountService(ServiceProperties serviceProperties) {
+        return serviceProperties.getRequires() == null ? Boolean.FALSE : serviceProperties.getRequires().contains(ServiceDefinitionRequires.SERVICE_REQUIRES_VOLUME_MOUNT.toString());
     }
 
-    private VolumeServicePlanBinding toVolumeServicePlanDetail(Service service, Plan plan) {
+    private VolumeServicePlanBinding toVolumeServicePlanDetail(ServiceProperties serviceProperties, PlanProperties planProperties) {
         final VolumeServicePlanBinding.VolumeServicePlanBindingBuilder builder = VolumeServicePlanBinding.builder();
-        service.getVolumeMounts().forEach(builder::volumeMount);
-        plan.getVolumeMounts().forEach(builder::volumeMount);
+        serviceProperties.getVolumeMounts().forEach(builder::volumeMount);
+        planProperties.getVolumeMounts().forEach(builder::volumeMount);
 
         return builder.build();
     }
 
-    private CredentialsServicePlanBinding toCredentialsServicePlanBinding(Service service, Plan plan) {
+    private CredentialsServicePlanBinding toCredentialsServicePlanBinding(ServiceProperties serviceProperties, PlanProperties planProperties) {
         final CredentialsServicePlanBinding.CredentialsServicePlanBindingBuilder builder = CredentialsServicePlanBinding.builder();
-        builder.syslogDrainUrl(Optional.ofNullable(plan.getSyslogDrainUrl()).map(Optional::of).orElse(Optional.ofNullable(service.getSyslogDrainUrl())));
-        builder.dashboardUrl(Optional.ofNullable(plan.getDashboardUrl()).map(Optional::of).orElse(Optional.ofNullable(service.getDashboardUrl())));
-        service.getFullCredentials().map(builder::credentials);
-        plan.getFullCredentials().map(builder::credentials);
+        builder.syslogDrainUrl(Optional.ofNullable(planProperties.getSyslogDrainUrl()).map(Optional::of).orElse(Optional.ofNullable(serviceProperties.getSyslogDrainUrl())));
+        builder.dashboardUrl(Optional.ofNullable(planProperties.getDashboardUrl()).map(Optional::of).orElse(Optional.ofNullable(serviceProperties.getDashboardUrl())));
+        serviceProperties.getFullCredentials().map(builder::credentials);
+        planProperties.getFullCredentials().map(builder::credentials);
 
         return builder.build();
     }

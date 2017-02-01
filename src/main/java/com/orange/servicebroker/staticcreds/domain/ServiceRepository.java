@@ -7,6 +7,6 @@ import java.util.List;
  */
 public interface ServiceRepository {
 
-    List<Service> findAll();
+    List<ServiceProperties> findAll();
 
 }
