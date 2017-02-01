@@ -186,22 +186,22 @@ The returned volume_mount is identical for all bound service instances of a spec
 
 The volume_mount could be defined for a service, it will be applied for all plans of the service.
 It is configured by the following environment variables:
-* SERVICES[{SERVICE_ID}]\_VOLUME_MOUNT[{INDEX}]_CONTAINER_DIR String.
-* SERVICES[{SERVICE_ID}]\_VOLUME_MOUNT[{INDEX}]_DRIVER String.
-* SERVICES[{SERVICE_ID}]\_VOLUME_MOUNT[{INDEX}]_MODE String.
-* SERVICES[{SERVICE_ID}]\_VOLUME_MOUNT[{INDEX}]_DEVICE_TYPE String.
-* SERVICES[{SERVICE_ID}]\_VOLUME_MOUNT[{INDEX}]_DEVICE_VOLUME_ID String.
-* SERVICES[{SERVICE_ID}]\_VOLUME_MOUNT[{INDEX}]_DEVICE_MOUNT_CONFIG_[{MOUNT_KEY}] String.
+* SERVICES[{SERVICE_ID}]\_VOLUME_MOUNT[{INDEX}]\_CONTAINER_DIR String.
+* SERVICES[{SERVICE_ID}]\_VOLUME_MOUNT[{INDEX}]\_DRIVER String.
+* SERVICES[{SERVICE_ID}]\_VOLUME_MOUNT[{INDEX}]\_MODE String.
+* SERVICES[{SERVICE_ID}]\_VOLUME_MOUNT[{INDEX}]\_DEVICE_TYPE String.
+* SERVICES[{SERVICE_ID}]\_VOLUME_MOUNT[{INDEX}]\_DEVICE_VOLUME_ID String.
+* SERVICES[{SERVICE_ID}]\_VOLUME_MOUNT[{INDEX}]\_DEVICE_MOUNT_CONFIG_[{MOUNT_KEY}] String.
 
 The volume_mount could also be defined for a particular plan, if it contains conflict volume_mount key between the service
 volume_mount and plan volume_mount, the values of the plan volume_mount will be taken.
 It is configured by the following environment variables:
-* SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]_VOLUME_MOUNT[{INDEX}]_CONTAINER_DIR String.
-* SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]_VOLUME_MOUNT[{INDEX}]_DRIVER String.
-* SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]_VOLUME_MOUNT[{INDEX}]_MODE String.
-* SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]_VOLUME_MOUNT[{INDEX}]_DEVICE_TYPE String.
-* SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]_VOLUME_MOUNT[{INDEX}]_DEVICE_VOLUME_ID String.
-* SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]_VOLUME_MOUNT[{INDEX}]_DEVICE_MOUNT_CONFIG_[{MOUNT_KEY}] String.
+* SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]\_VOLUME_MOUNT[{INDEX}]\_CONTAINER_DIR String.
+* SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]\_VOLUME_MOUNT[{INDEX}]\_DRIVER String.
+* SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]\_VOLUME_MOUNT[{INDEX}]\_MODE String.
+* SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]\_VOLUME_MOUNT[{INDEX}]\_DEVICE_TYPE String.
+* SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]\_VOLUME_MOUNT[{INDEX}]\_DEVICE_VOLUME_ID String.
+* SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]\_VOLUME_MOUNT[{INDEX}]\_DEVICE_MOUNT_CONFIG_[{MOUNT_KEY}] String.
 
 If volume_mount has been defined, ```SERVICES[{SERVICE_ID}]_REQUIRES``` property with a value ```volume_mount``` must be declared in the Catalog endpoint or the service broker would consider the configuration invalid.
 
