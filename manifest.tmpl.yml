@@ -16,25 +16,26 @@ applications:
     # Note: - At least one service is required to be defined.
     #       - For each service defined, its 'NAME' and 'DESCRIPTION' is required.
     #       - For each plan defined, at least one credential property is required. (Service credential definitions are automatically applied to all its plans.)
-    SERVICES[TRIPADVISOR]_NAME: TRIPADVISOR_test_Service1
-    SERVICES[TRIPADVISOR]_DESCRIPTION: My existing service
-    SERVICES[TRIPADVISOR]_CREDENTIALS[URI]: http://....
+    #credentials services
+    SERVICES[my_credentials_service]_NAME: my_credentials_service_test_Service1
+    SERVICES[my_credentials_service]_DESCRIPTION: My existing service
+    SERVICES[my_credentials_service]_CREDENTIALS[URI]: http://....
 
-    SERVICES[API_DIRECTORY]_NAME: API_DIRECTORY_test_Service1
-    SERVICES[API_DIRECTORY]_DESCRIPTION: My existing service
-    SERVICES[API_DIRECTORY]_METADATA_LONG_DESCRIPTION: A long description for my service
-    SERVICES[API_DIRECTORY]_CREDENTIALS[HOSTNAME]: http://company.com
-    SERVICES[API_DIRECTORY]_PLANS[DEV]_NAME: dev
-    SERVICES[API_DIRECTORY]_PLANS[DEV]_CREDENTIALS[URI]: http://mydev-api.org
-    SERVICES[API_DIRECTORY]_PLANS[DEV]_CREDENTIALS[ACCESS_KEY]: devAZERT23456664DFDSFSDFDSF
-    SERVICES[API_DIRECTORY]_PLANS[PREPROD]_NAME: preprod
-    SERVICES[API_DIRECTORY]_PLANS[PREPROD]_CREDENTIALS[URI]: http://mypreprod-api.org
-    SERVICES[API_DIRECTORY]_PLANS[PREPROD]_CREDENTIALS[ACCESS_KEY]: preprodAZERT23456664DFDSFSDFDSF
-    SERVICES[API_DIRECTORY]_PLANS[PROD]_NAME: prod
-    SERVICES[API_DIRECTORY]_PLANS[PROD]_CREDENTIALS[URI]: http://myprod-api.org
-    SERVICES[API_DIRECTORY]_PLANS[PROD]_CREDENTIALS[ACCESS_KEY]: prodAZERT23456664DFDSFSDFDSF
+    SERVICES[my_credentials_service_2]_NAME: my_credentials_service_2_test_Service1
+    SERVICES[my_credentials_service_2]_DESCRIPTION: My existing service
+    SERVICES[my_credentials_service_2]_METADATA_LONG_DESCRIPTION: A long description for my service
+    SERVICES[my_credentials_service_2]_CREDENTIALS[HOSTNAME]: http://company.com
+    SERVICES[my_credentials_service_2]_PLANS[DEV]_NAME: dev
+    SERVICES[my_credentials_service_2]_PLANS[DEV]_CREDENTIALS[URI]: http://mydev-api.org
+    SERVICES[my_credentials_service_2]_PLANS[DEV]_CREDENTIALS[ACCESS_KEY]: devAZERT23456664DFDSFSDFDSF
+    SERVICES[my_credentials_service_2]_PLANS[PREPROD]_NAME: preprod
+    SERVICES[my_credentials_service_2]_PLANS[PREPROD]_CREDENTIALS[URI]: http://mypreprod-api.org
+    SERVICES[my_credentials_service_2]_PLANS[PREPROD]_CREDENTIALS[ACCESS_KEY]: preprodAZERT23456664DFDSFSDFDSF
+    SERVICES[my_credentials_service_2]_PLANS[PROD]_NAME: prod
+    SERVICES[my_credentials_service_2]_PLANS[PROD]_CREDENTIALS[URI]: http://myprod-api.org
+    SERVICES[my_credentials_service_2]_PLANS[PROD]_CREDENTIALS[ACCESS_KEY]: prodAZERT23456664DFDSFSDFDSF
     # Credential value for particular plan will override the value which is set for whole service
-    SERVICES[API_DIRECTORY]_PLANS[PROD]_CREDENTIALS[HOSTNAME]: http://prod.company.com
+    SERVICES[my_credentials_service_2]_PLANS[PROD]_CREDENTIALS[HOSTNAME]: http://prod.company.com
 
     SERVICES[ID]_NAME: static-creds-service-test1
     SERVICES[ID]_DESCRIPTION: static-creds service for test
@@ -53,3 +54,17 @@ applications:
     SERVICES[ID]_CREDENTIALS[uri]: mysql://USERNAME:PASSWORD@HOSTNAME:PORT/NAME
     SERVICES[ID]_CREDENTIALS[HOSTNAME]: us-cdbr-east-03.cleardb.com
     SERVICES[ID]_CREDENTIALS_JSON: '{"username":"admin","password":"pa55woRD"}' #if same key defined SERVICES[ID]_CREDENTIALS_MYOWNKEY, value will replace that in SERVICES[ID]_CREDENTIALS_MYOWNKEY
+
+    #volume service
+    SERVICES[my_volume_service]_NAME: static-nfs-share
+    SERVICES[my_volume_service]_DESCRIPTION: an existing NFS share with media images
+    SERVICES[my_volume_service]_CREDENTIALS[hostname]: http://dummy.com
+    SERVICES[my_volume_service]_REQUIRES: volume_mount
+    SERVICES[my_volume_service]_VOLUME_MOUNTS[0]_CONTAINER_DIR: /data/images
+    SERVICES[my_volume_service]_VOLUME_MOUNTS[0]_DRIVER: nfsdriverv3
+    SERVICES[my_volume_service]_VOLUME_MOUNTS[0]_MODE: READ_ONLY
+    SERVICES[my_volume_service]_VOLUME_MOUNTS[0]_DEVICE_TYPE: shared
+    SERVICES[my_volume_service]_VOLUME_MOUNTS[0]_DEVICE_VOLUME_ID: myteam-my-image-unique-id
+    SERVICES[my_volume_service]_VOLUME_MOUNTS[0]_DEVICE_MOUNT_CONFIG[source]: nfs://1.2.3.4:25840/my/share/to/mount?uid=1004&gid=1004&auto_cache&multithread&default_permissions
+    SERVICES[my_volume_service]_VOLUME_MOUNTS[0]_DEVICE_MOUNT_CONFIG[attr_timeout]: 0
+    SERVICES[my_volume_service]_VOLUME_MOUNTS[0]_DEVICE_MOUNT_CONFIG[negative_timeout]: 2
