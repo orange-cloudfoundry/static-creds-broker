@@ -1,6 +1,6 @@
 package com.orange.servicebroker.staticcreds.config;
 
-import com.orange.servicebroker.staticcreds.domain.Service;
+import com.orange.servicebroker.staticcreds.domain.ServiceProperties;
 import com.orange.servicebroker.staticcreds.domain.ServiceRepository;
 import com.orange.servicebroker.staticcreds.infrastructure.ServiceMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +19,8 @@ public class CatalogConfig {
 
     @Bean
     public Catalog catalog() {
-        final List<Service> services = serviceRepository.findAll();
-        final List<ServiceDefinition> serviceDefinitions = ServiceMapper.toServiceDefinitions(services);
+        final List<ServiceProperties> serviceProperties = serviceRepository.findAll();
+        final List<ServiceDefinition> serviceDefinitions = ServiceMapper.toServiceDefinitions(serviceProperties);
         return new Catalog(serviceDefinitions);
     }
 

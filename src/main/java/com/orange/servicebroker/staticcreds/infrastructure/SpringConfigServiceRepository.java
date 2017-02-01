@@ -1,7 +1,7 @@
 package com.orange.servicebroker.staticcreds.infrastructure;
 
-import com.orange.servicebroker.staticcreds.domain.CatalogSettings;
-import com.orange.servicebroker.staticcreds.domain.Service;
+import com.orange.servicebroker.staticcreds.domain.ServiceBrokerProperties;
+import com.orange.servicebroker.staticcreds.domain.ServiceProperties;
 import com.orange.servicebroker.staticcreds.domain.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,17 +16,17 @@ import java.util.stream.Collectors;
 @Component
 public class SpringConfigServiceRepository implements ServiceRepository {
 
-    private CatalogSettings catalogSettings;
+    private ServiceBrokerProperties serviceBrokerProperties;
 
     @Autowired
-    public SpringConfigServiceRepository(CatalogSettings catalogSettings) {
-        this.catalogSettings = catalogSettings;
+    public SpringConfigServiceRepository(ServiceBrokerProperties serviceBrokerProperties) {
+        this.serviceBrokerProperties = serviceBrokerProperties;
     }
 
 
     @Override
-    public List<Service> findAll() {
-        return catalogSettings.getServices().entrySet().stream()
+    public List<ServiceProperties> findAll() {
+        return serviceBrokerProperties.getServices().entrySet().stream()
                                                        .map(Map.Entry::getValue)
                                                        .collect(Collectors.toList());
     }

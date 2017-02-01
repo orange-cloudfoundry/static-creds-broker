@@ -15,7 +15,7 @@
 
 package com.orange.servicebroker.staticcreds.stories.formatter;
 
-import com.orange.servicebroker.staticcreds.domain.CatalogSettings;
+import com.orange.servicebroker.staticcreds.domain.ServiceBrokerProperties;
 import com.tngtech.jgiven.format.ArgumentFormatter;
 import org.springframework.cloud.servicebroker.model.SharedVolumeDevice;
 import org.yaml.snakeyaml.DumperOptions;
@@ -28,21 +28,21 @@ import org.yaml.snakeyaml.representer.Representer;
 /**
  * General formatter to format catalog values to yaml.
  */
-public class CatalogYAMLFormatter implements ArgumentFormatter<CatalogSettings> {
+public class CatalogYAMLFormatter implements ArgumentFormatter<ServiceBrokerProperties> {
 
     @Override
-    public String format(CatalogSettings catalogSettings, String... strings) {
+    public String format(ServiceBrokerProperties serviceBrokerProperties, String... strings) {
         DumperOptions options = new DumperOptions();
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
 
         final SkipNullEmptyRepresenter representer = new SkipNullEmptyRepresenter();
-        representer.addClassTag(CatalogSettings.class, Tag.MAP);
+        representer.addClassTag(ServiceBrokerProperties.class, Tag.MAP);
         representer.addClassTag(SharedVolumeDevice.class, Tag.MAP);
 
 
         Yaml yaml = new Yaml(representer, options);
         yaml.setBeanAccess(BeanAccess.FIELD);
-        return yaml.dump(catalogSettings);
+        return yaml.dump(serviceBrokerProperties);
     }
 
     private class SkipNullEmptyRepresenter extends Representer {

@@ -43,7 +43,7 @@ public class CatalogTest {
     public void fail_to_set_config_with_no_service() {
         this.context.register(TestConfiguration.class);
         this.thrown.expect(BeanCreationException.class);
-        this.thrown.expectMessage(CatalogSettings.NO_SERVICE_ERROR);
+        this.thrown.expectMessage(ServiceBrokerProperties.NO_SERVICE_ERROR);
         this.context.refresh();
     }
 
