@@ -18,7 +18,7 @@ package com.orange.servicebroker.staticcreds.stories.get_volume_mount_details;
 import com.orange.servicebroker.staticcreds.domain.*;
 import com.tngtech.jgiven.junit.SimpleScenarioTest;
 import org.junit.Test;
-import org.springframework.cloud.servicebroker.model.CreateServiceInstanceVolumeBindingResponse;
+import org.springframework.cloud.servicebroker.model.CreateServiceInstanceAppBindingResponse;
 import org.springframework.cloud.servicebroker.model.ServiceDefinitionRequires;
 import org.springframework.cloud.servicebroker.model.SharedVolumeDevice;
 import org.springframework.cloud.servicebroker.model.VolumeMount;
@@ -102,7 +102,8 @@ public class CreateServiceInstanceVolumeBindingTest extends SimpleScenarioTest<C
     public void create_volume_service_binding_with_volume_mount_set_for_all_service_plans() throws Exception {
         given().catalog_with_volume_mount(catalog_with_same_volume_mount_for_all_service_plans());
         when().cloud_controller_requests_to_create_a_service_instance_binding_for_plan_id("dev-id");
-        then().it_should_be_returned_with_volume_mount(new CreateServiceInstanceVolumeBindingResponse()
+        then().it_should_be_returned_with_volume_mount(new CreateServiceInstanceAppBindingResponse()
+                .withCredentials(uriCredentials())
                 .withVolumeMounts(Arrays.asList(expectedNfsv3SharedVolumeMount())));
     }
 
@@ -110,7 +111,8 @@ public class CreateServiceInstanceVolumeBindingTest extends SimpleScenarioTest<C
     public void create_volume_service_binding_with_volume_mount_set_for_a_service_plan() throws Exception {
         given().catalog_with_volume_mount(catalog_with_volume_mount_set_for_a_service_plan());
         when().cloud_controller_requests_to_create_a_service_instance_binding_for_plan_id("dev-id");
-        then().it_should_be_returned_with_volume_mount(new CreateServiceInstanceVolumeBindingResponse()
+        then().it_should_be_returned_with_volume_mount(new CreateServiceInstanceAppBindingResponse()
+                .withCredentials(uriCredentials())
                 .withVolumeMounts(Arrays.asList(expectedNfsv3SharedVolumeMount())));
     }
 

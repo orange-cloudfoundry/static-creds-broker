@@ -2,7 +2,6 @@ package com.orange.servicebroker.staticcreds.infrastructure;
 
 import com.orange.servicebroker.staticcreds.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.servicebroker.model.ServiceDefinitionRequires;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -33,32 +32,13 @@ public class SpringConfigServicePlanBindingRepository implements ServicePlanBind
     }
 
     private ServicePlanBinding toServicePlanBinding(ServiceProperties serviceProperties, PlanProperties planProperties) {
-        if (isVolumeMountService(serviceProperties)) {
-            return toVolumeServicePlanDetail(serviceProperties, planProperties);
-        } else {
-            return toCredentialsServicePlanBinding(serviceProperties, planProperties);
-        }
-    }
-
-    private boolean isVolumeMountService(ServiceProperties serviceProperties) {
-        return serviceProperties.getRequires() == null ? Boolean.FALSE : serviceProperties.getRequires().contains(ServiceDefinitionRequires.SERVICE_REQUIRES_VOLUME_MOUNT.toString());
-    }
-
-    private VolumeServicePlanBinding toVolumeServicePlanDetail(ServiceProperties serviceProperties, PlanProperties planProperties) {
-        final VolumeServicePlanBinding.VolumeServicePlanBindingBuilder builder = VolumeServicePlanBinding.builder();
-        serviceProperties.getVolumeMounts().forEach(builder::volumeMount);
-        planProperties.getVolumeMounts().forEach(builder::volumeMount);
-
-        return builder.build();
-    }
-
-    private CredentialsServicePlanBinding toCredentialsServicePlanBinding(ServiceProperties serviceProperties, PlanProperties planProperties) {
         final CredentialsServicePlanBinding.CredentialsServicePlanBindingBuilder builder = CredentialsServicePlanBinding.builder();
         builder.syslogDrainUrl(Optional.ofNullable(planProperties.getSyslogDrainUrl()).map(Optional::of).orElse(Optional.ofNullable(serviceProperties.getSyslogDrainUrl())));
         builder.dashboardUrl(Optional.ofNullable(planProperties.getDashboardUrl()).map(Optional::of).orElse(Optional.ofNullable(serviceProperties.getDashboardUrl())));
         serviceProperties.getFullCredentials().map(builder::credentials);
         planProperties.getFullCredentials().map(builder::credentials);
-
+        Optional.ofNullable(serviceProperties.getVolumeMounts()).ifPresent(volumeMountProperties -> volumeMountProperties.stream().forEach(builder::volumeMount));
+        Optional.ofNullable(planProperties.getVolumeMounts()).ifPresent(volumeMountProperties -> volumeMountProperties.stream().forEach(builder::volumeMount));
         return builder.build();
     }
 

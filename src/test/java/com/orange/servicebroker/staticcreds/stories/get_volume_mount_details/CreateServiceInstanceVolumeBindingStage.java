@@ -22,9 +22,9 @@ import com.orange.servicebroker.staticcreds.stories.formatter.CatalogYAML;
 import com.orange.servicebroker.staticcreds.stories.formatter.CreateServiceBindingResponseJSON;
 import com.tngtech.jgiven.Stage;
 import org.assertj.core.api.Assertions;
+import org.springframework.cloud.servicebroker.model.CreateServiceInstanceAppBindingResponse;
 import org.springframework.cloud.servicebroker.model.CreateServiceInstanceBindingRequest;
 import org.springframework.cloud.servicebroker.model.CreateServiceInstanceBindingResponse;
-import org.springframework.cloud.servicebroker.model.CreateServiceInstanceVolumeBindingResponse;
 
 /**
  * @author Sebastien Bortolussi
@@ -46,8 +46,8 @@ public class CreateServiceInstanceVolumeBindingStage extends Stage<CreateService
         return self();
     }
 
-    public CreateServiceInstanceVolumeBindingStage it_should_be_returned_with_volume_mount(@CreateServiceBindingResponseJSON CreateServiceInstanceVolumeBindingResponse expected) {
-        Assertions.assertThat(response).isInstanceOf(CreateServiceInstanceVolumeBindingResponse.class);
+    public CreateServiceInstanceVolumeBindingStage it_should_be_returned_with_volume_mount(@CreateServiceBindingResponseJSON CreateServiceInstanceBindingResponse expected) {
+        Assertions.assertThat(response).isInstanceOf(CreateServiceInstanceAppBindingResponse.class);
         Assertions.assertThat(response).isEqualTo(expected);
         return self();
     }
