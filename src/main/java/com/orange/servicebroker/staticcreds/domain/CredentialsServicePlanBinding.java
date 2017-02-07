@@ -17,6 +17,7 @@ package com.orange.servicebroker.staticcreds.domain;
 
 import lombok.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -45,5 +46,11 @@ public class CredentialsServicePlanBinding extends ServicePlanBinding {
      * The URL of a web-based management user interface for the service instance.
      */
     private Optional<String> dashboardUrl;
+
+    /**
+     * The details of the volume mounts available to applications.
+     */
+    @Singular
+    private List<VolumeMountProperties> volumeMounts;
 
 }

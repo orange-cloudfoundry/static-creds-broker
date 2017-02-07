@@ -1,9 +1,7 @@
 package com.orange.servicebroker.staticcreds.service;
 
 import com.orange.servicebroker.staticcreds.domain.CredentialsServicePlanBinding;
-import com.orange.servicebroker.staticcreds.domain.ServicePlanBinding;
 import com.orange.servicebroker.staticcreds.domain.ServicePlanBindingRepository;
-import com.orange.servicebroker.staticcreds.domain.VolumeServicePlanBinding;
 import com.orange.servicebroker.staticcreds.infrastructure.VolumeMountMapper;
 import ma.glasnost.orika.MapperFacade;
 import org.slf4j.Logger;
@@ -13,7 +11,6 @@ import org.springframework.cloud.servicebroker.model.*;
 import org.springframework.cloud.servicebroker.service.ServiceInstanceBindingService;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -31,38 +28,23 @@ public class CredsServiceInstanceBindingService implements ServiceInstanceBindin
         this.servicePlanBindingRepository = servicePlanBindingRepository;
     }
 
-    private static CreateServiceInstanceBindingResponse toResponse(CredentialsServicePlanBinding credentialsServicePlanBinding) {
+    private CreateServiceInstanceBindingResponse toResponse(CredentialsServicePlanBinding credentialsServicePlanBinding) {
         return new CreateServiceInstanceAppBindingResponse()
-                .withCredentials(credentialsServicePlanBinding.getCredentials())
-                .withSyslogDrainUrl(credentialsServicePlanBinding.getSyslogDrainUrl().orElse(null));
-    }
-
-    private CreateServiceInstanceBindingResponse toResponse(VolumeServicePlanBinding volumeServicePlanDetail) {
-        return new CreateServiceInstanceVolumeBindingResponse()
-                .withVolumeMounts(volumeServicePlanDetail.getVolumeMounts().stream()
+                .withCredentials(credentialsServicePlanBinding.getCredentials() == null || credentialsServicePlanBinding.getCredentials().isEmpty() ? null : credentialsServicePlanBinding.getCredentials())
+                .withSyslogDrainUrl(credentialsServicePlanBinding.getSyslogDrainUrl().orElse(null))
+                .withVolumeMounts(Optional.ofNullable(credentialsServicePlanBinding.getVolumeMounts()).filter(volumeMounts -> !volumeMounts.isEmpty()).map(volumeMounts -> volumeMounts.stream()
                         .map(volumeMount -> volumeMountMapper.map(volumeMount, VolumeMount.class))
-                        .collect(Collectors.toList()));
+                        .collect(Collectors.toList())).orElse(null));
     }
 
     @Override
     public CreateServiceInstanceBindingResponse createServiceInstanceBinding(CreateServiceInstanceBindingRequest request) {
         LOGGER.debug("binding service instance");
-        final Optional<ServicePlanBinding> servicePlanBinding = servicePlanBindingRepository.find(request.getPlanId());
-
-        final Optional<CreateServiceInstanceBindingResponse> createServiceInstanceVolumeBindingResponse = servicePlanBinding
-                .filter(VolumeServicePlanBinding.class::isInstance)
-                .map(VolumeServicePlanBinding.class::cast)
-                .map(this::toResponse);
-
-        final Optional<CreateServiceInstanceBindingResponse> createServiceInstanceAppBindingResponse = servicePlanBinding
-                .filter(CredentialsServicePlanBinding.class::isInstance)
+        return servicePlanBindingRepository
+                .find(request.getPlanId())
                 .map(CredentialsServicePlanBinding.class::cast)
-                .map(CredsServiceInstanceBindingService::toResponse);
-
-        return Arrays.asList(createServiceInstanceVolumeBindingResponse, createServiceInstanceAppBindingResponse).stream()
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .findFirst().orElse(new CreateServiceInstanceBindingResponse());
+                .map(this::toResponse)
+                .orElse(new CreateServiceInstanceBindingResponse());
     }
 
     @Override
