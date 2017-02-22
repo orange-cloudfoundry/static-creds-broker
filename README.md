@@ -269,7 +269,7 @@ Some service provider teams (or app teams needing to expose services) might find
 
 # Future work/backlog
 
-See github issues for the list of future features planned, with associated milestones reflecting relative priority (see convenient https://huboard.com/orange-cloudfoundry/static-creds-broker for contributors to reorder priorities). Comments and refinements are welcomed. 
+See github issues for the list of future features planned, with associated milestones reflecting relative priority (see convenient [huboard](https://huboard.com/orange-cloudfoundry/static-creds-broker#/milestones) for contributors to reorder priorities). Comments and refinements are welcomed. 
 
 Please suggest more ideas by submitting new issues.
 
