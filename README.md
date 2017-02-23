@@ -1,4 +1,4 @@
-# static-creds-broker [![Build Status](https://travis-ci.org/Orange-OpenSource/static-creds-broker.svg?branch=master)](https://travis-ci.org/Orange-OpenSource/static-creds-broker)
+# static-creds-broker [![Build Status](https://travis-ci.org/orange-cloudfoundry/static-creds-broker.svg?branch=master)](https://travis-ci.org/orange-cloudfoundry/static-creds-broker)
 
 A CloudFoundry service broker to ease exposition of static credentials in the CF marketplace, without requiring software development.
 
