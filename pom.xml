@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>static-creds-broker</groupId>
 	<artifactId>static-creds-broker</artifactId>
-	<version>2.1.0.BUILD-SNAPSHOT</version>
+	<version>2.1.0.RELEASE</version>
 	<packaging>jar</packaging>
 
 	<parent>
