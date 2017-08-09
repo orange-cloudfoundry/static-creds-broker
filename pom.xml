@@ -15,8 +15,7 @@
 	</parent>
 	
 	<properties>
-		<springCloudServiceBrokerVersion>31_Move_volume_mounts_field_into_CreateServiceInstanceAppBindingResponse
-		</springCloudServiceBrokerVersion>
+		<springCloudServiceBrokerVersion>1.0.1.RELEASE</springCloudServiceBrokerVersion>
 		<lombockVersion>1.16.12</lombockVersion>
 		<fest-assert.version>1.4</fest-assert.version>
 		<jgiven.version>0.14.0</jgiven.version>
@@ -83,7 +82,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.github.orange-cloudfoundry</groupId>
+			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-cloudfoundry-service-broker</artifactId>
 			<version>${springCloudServiceBrokerVersion}</version>
 		</dependency>
@@ -101,7 +100,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.github.orange-cloudfoundry</groupId>
+            <groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-cloudfoundry-service-broker</artifactId>
 			<version>${springCloudServiceBrokerVersion}</version>
 			<classifier>tests</classifier>
@@ -160,6 +159,14 @@
 			<url>https://repo.spring.io/snapshot/</url>
 			<snapshots>
 				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>spring-releases</id>
+			<name>Spring Releases</name>
+			<url>https://repo.spring.io/release/</url>
+			<snapshots>
+				<enabled>false</enabled>
 			</snapshots>
 		</repository>
 		<repository>
