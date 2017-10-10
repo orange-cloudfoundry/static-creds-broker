@@ -13,20 +13,18 @@
  *
  */
 
-package com.orange.servicebroker.staticcreds.stories.formatter;
+package com.orange.servicebroker.staticcreds.stories.support_route_services;
 
-import com.tngtech.jgiven.annotation.Format;
+import com.tngtech.jgiven.annotation.IsTag;
 
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
-/**
- * @author Sebastien Bortolussi
- */
-@Format(value = CatalogYAMLFormatter.class)
+@IsTag(name = "Add route service",
+        description = "In order to apply transformation or processing to requests before they reach my application,<br>" +
+                "As an app ops,<br>" +
+                "I want to add a route service.")
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.ANNOTATION_TYPE})
-public @interface CatalogYAML {
+public @interface AddRouteService {
+
 }

@@ -1,6 +1,6 @@
 package com.orange.servicebroker.staticcreds.service;
 
-import com.orange.servicebroker.staticcreds.domain.CredentialsServicePlanBinding;
+import com.orange.servicebroker.staticcreds.domain.AppServiceInstanceBinding;
 import com.orange.servicebroker.staticcreds.domain.ServicePlanBindingRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,7 @@ public class CredsServiceInstanceService implements ServiceInstanceService {
         this.repository = repository;
     }
 
-    private static CreateServiceInstanceResponse toResponse(CredentialsServicePlanBinding servicePlanDetail) {
+    private static CreateServiceInstanceResponse toResponse(AppServiceInstanceBinding servicePlanDetail) {
         return new CreateServiceInstanceResponse()
                 .withDashboardUrl(servicePlanDetail.getDashboardUrl().orElse(null));
     }
@@ -28,8 +28,8 @@ public class CredsServiceInstanceService implements ServiceInstanceService {
     public CreateServiceInstanceResponse createServiceInstance(CreateServiceInstanceRequest request) {
         LOGGER.debug("creating service instance");
         return repository.find(request.getPlanId())
-                .filter(CredentialsServicePlanBinding.class::isInstance)
-                .map(CredentialsServicePlanBinding.class::cast)
+                .filter(AppServiceInstanceBinding.class::isInstance)
+                .map(AppServiceInstanceBinding.class::cast)
                 .map(CredsServiceInstanceService::toResponse)
                 .orElse(new CreateServiceInstanceResponse());
     }

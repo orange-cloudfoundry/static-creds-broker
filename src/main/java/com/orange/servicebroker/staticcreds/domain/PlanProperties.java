@@ -62,6 +62,11 @@ public class PlanProperties {
      */
     private List<VolumeMountProperties> volumeMounts = new ArrayList<>();
 
+    /**
+     * A URL to which Cloud Foundry should proxy requests for the bound route. Can be <code>null</code>.
+     */
+    private String routeServiceUrl;
+
     public PlanProperties() {
     }
 

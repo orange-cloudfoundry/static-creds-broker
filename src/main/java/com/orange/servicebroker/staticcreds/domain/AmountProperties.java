@@ -12,14 +12,14 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class AmountProperties {
     private float usd;
-	private float eur;
+    private float eur;
 
     public AmountProperties() {
     }
 
     public AmountProperties(float usd, float eur) {
         this.usd = usd;
-		this.eur = eur;
-	}
+        this.eur = eur;
+    }
 
 }

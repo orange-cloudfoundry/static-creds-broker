@@ -33,13 +33,13 @@ public class PlanPropertiesTest {
     }
 
     @Test
-    public void plan_is_free_by_default(){
+    public void plan_is_free_by_default() {
         PlanProperties defaultPlanProperties = new PlanProperties();
         Assertions.assertThat(defaultPlanProperties.getFree()).isTrue();
     }
 
     @Test
-    public void plan_has_a_default_name(){
+    public void plan_has_a_default_name() {
         PlanProperties defaultPlanProperties = new PlanProperties();
         Assertions.assertThat(defaultPlanProperties.getName()).isNotEmpty();
         Assertions.assertThat(defaultPlanProperties.getName()).isEqualTo("default");

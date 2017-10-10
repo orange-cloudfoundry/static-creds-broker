@@ -13,10 +13,16 @@
  *
  */
 
-package com.orange.servicebroker.staticcreds.domain;
+package com.orange.servicebroker.staticcreds.stories.support_route_services;
 
-/**
- * @author Sebastien Bortolussi
- */
-public class ServicePlanBinding {
+import com.tngtech.jgiven.annotation.IsTag;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+@IsTag(name = "Issue #32",
+        description = "<a target=\"_blank\" href=\"https://github.com/orange-cloudfoundry/static-creds-broker/issues/31\">Issue #32 / Support route services</a>")
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Issue_32 {
+
 }

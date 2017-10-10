@@ -1,6 +1,7 @@
 package com.orange.servicebroker.staticcreds.service;
 
-import com.orange.servicebroker.staticcreds.domain.CredentialsServicePlanBinding;
+import com.orange.servicebroker.staticcreds.domain.AppServiceInstanceBinding;
+import com.orange.servicebroker.staticcreds.domain.RouteServiceInstanceBinding;
 import com.orange.servicebroker.staticcreds.domain.ServicePlanBindingRepository;
 import com.orange.servicebroker.staticcreds.infrastructure.VolumeMountMapper;
 import ma.glasnost.orika.MapperFacade;
@@ -28,13 +29,18 @@ public class CredsServiceInstanceBindingService implements ServiceInstanceBindin
         this.servicePlanBindingRepository = servicePlanBindingRepository;
     }
 
-    private CreateServiceInstanceBindingResponse toResponse(CredentialsServicePlanBinding credentialsServicePlanBinding) {
+    private CreateServiceInstanceBindingResponse toResponse(AppServiceInstanceBinding appServiceInstanceBinding) {
         return new CreateServiceInstanceAppBindingResponse()
-                .withCredentials(credentialsServicePlanBinding.getCredentials() == null || credentialsServicePlanBinding.getCredentials().isEmpty() ? null : credentialsServicePlanBinding.getCredentials())
-                .withSyslogDrainUrl(credentialsServicePlanBinding.getSyslogDrainUrl().orElse(null))
-                .withVolumeMounts(Optional.ofNullable(credentialsServicePlanBinding.getVolumeMounts()).filter(volumeMounts -> !volumeMounts.isEmpty()).map(volumeMounts -> volumeMounts.stream()
+                .withCredentials(appServiceInstanceBinding.getCredentials() == null || appServiceInstanceBinding.getCredentials().isEmpty() ? null : appServiceInstanceBinding.getCredentials())
+                .withSyslogDrainUrl(appServiceInstanceBinding.getSyslogDrainUrl().orElse(null))
+                .withVolumeMounts(Optional.ofNullable(appServiceInstanceBinding.getVolumeMounts()).filter(volumeMounts -> !volumeMounts.isEmpty()).map(volumeMounts -> volumeMounts.stream()
                         .map(volumeMount -> volumeMountMapper.map(volumeMount, VolumeMount.class))
                         .collect(Collectors.toList())).orElse(null));
+    }
+
+    private CreateServiceInstanceBindingResponse toResponse(RouteServiceInstanceBinding routeServiceInstanceBinding) {
+        return new CreateServiceInstanceRouteBindingResponse()
+                .withRouteServiceUrl(routeServiceInstanceBinding.getRouteServiceUrl());
     }
 
     @Override
@@ -42,8 +48,13 @@ public class CredsServiceInstanceBindingService implements ServiceInstanceBindin
         LOGGER.debug("binding service instance");
         return servicePlanBindingRepository
                 .find(request.getPlanId())
-                .map(CredentialsServicePlanBinding.class::cast)
-                .map(this::toResponse)
+                .map(binding -> {
+                    if (binding instanceof AppServiceInstanceBinding) {
+                        return toResponse(AppServiceInstanceBinding.class.cast(binding));
+                    } else {
+                        return toResponse(RouteServiceInstanceBinding.class.cast(binding));
+                    }
+                })
                 .orElse(new CreateServiceInstanceBindingResponse());
     }
 
