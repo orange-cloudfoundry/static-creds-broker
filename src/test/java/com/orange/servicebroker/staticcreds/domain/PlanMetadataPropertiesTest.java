@@ -26,7 +26,7 @@ public class PlanMetadataPropertiesTest {
 
         final Map<String, Object> res = planMetadataProperties.toMap();
 
-        assertThat(res).hasSize(3).includes(entry("displayName", "very expensive"),entry("bullets", BULLETS),entry("costs", COSTS));
+        assertThat(res).hasSize(3).includes(entry("displayName", "very expensive"), entry("bullets", BULLETS), entry("costs", COSTS));
 
     }
 

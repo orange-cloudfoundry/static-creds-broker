@@ -10,15 +10,15 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import static org.springframework.cloud.servicebroker.model.BrokerApiVersion.API_VERSION_ANY;
 
 @EnableGlobalMethodSecurity
-@SpringBootApplication(scanBasePackages = { "com.orange.servicebroker.staticcreds" })
+@SpringBootApplication(scanBasePackages = {"com.orange.servicebroker.staticcreds"})
 @RefreshScope
 public class Application {
-	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
 
-	@Bean
-	public BrokerApiVersion brokerApiVersion() {
-		return new BrokerApiVersion(API_VERSION_ANY);
-	}
+    @Bean
+    public BrokerApiVersion brokerApiVersion() {
+        return new BrokerApiVersion(API_VERSION_ANY);
+    }
 }

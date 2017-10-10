@@ -53,6 +53,8 @@ public class ServiceBrokerProperties {
         assertPlanCredentialsExists();
         assertSyslogDrainUrlRequiresExists();
         assertVolumeMountRequiresExists();
+        assertRequiresRouteForwardingExists();
+
     }
 
     private void assertPlanCredentialsExists() {
@@ -87,6 +89,15 @@ public class ServiceBrokerProperties {
                 });
     }
 
+    private void assertRequiresRouteForwardingExists() {
+        services.values().stream()
+                .flatMap(service -> service.getPlans().values().stream().filter(plan -> hasRouteServiceUrl(service, plan) && requiresRouteForwardingNotPresent(service)))
+                .findFirst()
+                .ifPresent(plan -> {
+                    throw new InvalidRouteServiceException(services);
+                });
+    }
+
     private boolean syslogDrainUrlHasText(ServiceProperties serviceProperties, PlanProperties planProperties) {
         return planProperties.getSyslogDrainUrl() != null || serviceProperties.getSyslogDrainUrl() != null;
     }
@@ -99,8 +110,16 @@ public class ServiceBrokerProperties {
         return (planProperties.getVolumeMounts() != null && !planProperties.getVolumeMounts().isEmpty()) || (serviceProperties.getVolumeMounts() != null && !serviceProperties.getVolumeMounts().isEmpty());
     }
 
+    private boolean hasRouteServiceUrl(ServiceProperties serviceProperties, PlanProperties planProperties) {
+        return (planProperties.getRouteServiceUrl() != null && !planProperties.getRouteServiceUrl().isEmpty()) || (serviceProperties.getRouteServiceUrl() != null && !serviceProperties.getRouteServiceUrl().isEmpty());
+    }
+
     private boolean requiresVolumeMountNotPresent(ServiceProperties serviceProperties) {
         return serviceProperties.getRequires() == null || !serviceProperties.getRequires().contains(ServiceDefinitionRequires.SERVICE_REQUIRES_VOLUME_MOUNT.toString());
+    }
+
+    private boolean requiresRouteForwardingNotPresent(ServiceProperties serviceProperties) {
+        return serviceProperties.getRequires() == null || !serviceProperties.getRequires().contains(ServiceDefinitionRequires.SERVICE_REQUIRES_ROUTE_FORWARDING.toString());
     }
 
     private void setDefaultServiceDisplayName() {
@@ -192,6 +211,14 @@ public class ServiceBrokerProperties {
 
         public InvalidVolumeMountException(Map<String, ServiceProperties> services) {
             super(String.format("%s includes a volume_mount but \"requires\":[\"volume_mount\"] is not present", services));
+        }
+    }
+
+    public class InvalidRouteServiceException extends IllegalStateException {
+
+
+        public InvalidRouteServiceException(Map<String, ServiceProperties> services) {
+            super(String.format("%s includes a route_service_url but \"requires\":[\"route_forwarding\"] is not present", services));
         }
     }
 

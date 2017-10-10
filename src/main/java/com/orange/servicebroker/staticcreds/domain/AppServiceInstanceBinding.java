@@ -22,14 +22,14 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Cloud Foundry plan summary
+ * App service details to be returned on service binding
  */
 @Getter
 @ToString
 @EqualsAndHashCode
 @Builder
 @AllArgsConstructor
-public class CredentialsServicePlanBinding extends ServicePlanBinding {
+public class AppServiceInstanceBinding extends ServiceInstanceBinding {
 
     /**
      * The URL to which Cloud Foundry should drain logs for the bound application.

@@ -207,6 +207,21 @@ For example. you could specify ```SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]\_VOL
 
 If volume_mount has been defined, ```SERVICES[{SERVICE_ID}]_REQUIRES``` property with a value ```volume_mount``` must be declared in the Catalog endpoint or the service broker would consider the configuration invalid.
 
+## route service binding
+
+The returned route service url is identical for all bound service instances of a specific plan.
+
+The route service url could be defined for a service, it will be applied for all plans of the service.
+It is configured by the following environment variables:
+* SERVICES[{SERVICE_ID}]\_ROUTE_SERVICE_URL (String).
+
+The route service url could also be defined for a particular plan, if it contains conflict route service url key between the service
+route_service_url and plan route_service_url, the values of the plan route_service_url will be taken.
+It is configured by the following environment variables:
+* SERVICES[{SERVICE_ID}]\_PLANS\[{PLAN_ID}]\_ROUTE_SERVICE_URL (String).
+
+If route_service_url has been defined, ```SERVICES[{SERVICE_ID}]_REQUIRES``` property with a value ```route_forwarding``` must be declared in the Catalog endpoint or the service broker would consider the configuration invalid.
+
 ## Authentication
 
 The service broker authenticates calls coming from Cloud Foundry through basic auth

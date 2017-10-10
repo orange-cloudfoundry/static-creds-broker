@@ -7,6 +7,6 @@ import java.util.Optional;
  */
 public interface ServicePlanBindingRepository {
 
-    Optional<ServicePlanBinding> find(String servicePlanId);
+    Optional<ServiceInstanceBinding> find(String servicePlanId);
 
 }

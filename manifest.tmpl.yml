@@ -68,3 +68,10 @@ applications:
     SERVICES[my_volume_service]_VOLUME_MOUNTS[0]_DEVICE_MOUNT_CONFIG[source]: nfs://1.2.3.4:25840/my/share/to/mount?uid=1004&gid=1004&auto_cache&multithread&default_permissions
     SERVICES[my_volume_service]_VOLUME_MOUNTS[0]_DEVICE_MOUNT_CONFIG[attr_timeout]: 0
     SERVICES[my_volume_service]_VOLUME_MOUNTS[0]_DEVICE_MOUNT_CONFIG[negative_timeout]: 2
+
+    #volume service
+    SERVICES[my_logging_service]_NAME: my_logging_service
+    SERVICES[my_logging_service]_DESCRIPTION: a logging route service
+    SERVICES[my_logging_service]_CREDENTIALS[hostname]: http://dummy.com
+    SERVICES[my_logging_service]_REQUIRES: route_forwarding
+    SERVICES[my_logging_service]_ROUTE_SERVICE_URL: https://myloggingservice.org/path

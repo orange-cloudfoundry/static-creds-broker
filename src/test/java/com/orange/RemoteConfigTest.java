@@ -1,7 +1,7 @@
 package com.orange;
 
-import com.orange.servicebroker.staticcreds.domain.CredentialsServicePlanBinding;
-import com.orange.servicebroker.staticcreds.domain.ServicePlanBinding;
+import com.orange.servicebroker.staticcreds.domain.AppServiceInstanceBinding;
+import com.orange.servicebroker.staticcreds.domain.ServiceInstanceBinding;
 import com.orange.servicebroker.staticcreds.domain.ServicePlanBindingRepository;
 import org.fest.assertions.Assertions;
 import org.junit.Test;
@@ -46,10 +46,10 @@ public class RemoteConfigTest {
 
         //service plan id for plan dev of service API_DIRECTORY, see static-creds-broker.yml
 
-        final Optional<ServicePlanBinding> servicePlanBinding = servicePlanBindingRepository.find(API_DIRECTORY_SERVICE_PLAN_DEV_ID);
+        final Optional<ServiceInstanceBinding> servicePlanBinding = servicePlanBindingRepository.find(API_DIRECTORY_SERVICE_PLAN_DEV_ID);
 
         assertThat(servicePlanBinding
-                .map(CredentialsServicePlanBinding.class::cast)
+                .map(AppServiceInstanceBinding.class::cast)
                 .get().getCredentials()
         )
                 .hasSize(3).includes(entry("HOSTNAME", "http://company.com"), entry("URI", "http://mydev-api.org"), entry("ACCESS_KEY", "devAZERT23456664DFDSFSDFDSF"));

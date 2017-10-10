@@ -61,7 +61,7 @@ public class PlanPropertiesMapperTest {
 
         org.springframework.cloud.servicebroker.model.Plan res = PlanMapper.toServiceBrokerPlan(planProperties);
 
-        assertThat(res.getMetadata()).as("toServiceDefinition plan metadata").hasSize(3).includes(entry("displayName","Big Bunny"));
+        assertThat(res.getMetadata()).as("toServiceDefinition plan metadata").hasSize(3).includes(entry("displayName", "Big Bunny"));
         //TODO assert bullets mapping
         //TODO assert costs mapping
     }

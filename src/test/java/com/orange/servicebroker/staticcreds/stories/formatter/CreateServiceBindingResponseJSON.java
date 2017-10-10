@@ -25,8 +25,8 @@ import java.lang.annotation.Target;
 /**
  * @author Sebastien Bortolussi
  */
-@Format( value = CreateServiceBindingResponseFormatter.class)
-@Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.PARAMETER, ElementType.ANNOTATION_TYPE } )
+@Format(value = CreateServiceBindingResponseFormatter.class)
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER, ElementType.ANNOTATION_TYPE})
 public @interface CreateServiceBindingResponseJSON {
 }

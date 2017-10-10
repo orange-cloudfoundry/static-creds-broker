@@ -22,7 +22,7 @@ public class CostProperties {
 
     public CostProperties(AmountProperties amount, String unit) {
         this.amount = amount;
-		this.unit = unit;
-	}
+        this.unit = unit;
+    }
 
 }

@@ -13,20 +13,10 @@
  *
  */
 
-package com.orange.servicebroker.staticcreds.stories.formatter;
-
-import com.tngtech.jgiven.annotation.Format;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package com.orange.servicebroker.staticcreds.domain;
 
 /**
  * @author Sebastien Bortolussi
  */
-@Format(value = CatalogYAMLFormatter.class)
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.ANNOTATION_TYPE})
-public @interface CatalogYAML {
+public class ServiceInstanceBinding {
 }

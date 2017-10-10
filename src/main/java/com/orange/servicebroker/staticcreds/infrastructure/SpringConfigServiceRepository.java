@@ -27,7 +27,7 @@ public class SpringConfigServiceRepository implements ServiceRepository {
     @Override
     public List<ServiceProperties> findAll() {
         return serviceBrokerProperties.getServices().entrySet().stream()
-                                                       .map(Map.Entry::getValue)
-                                                       .collect(Collectors.toList());
+                .map(Map.Entry::getValue)
+                .collect(Collectors.toList());
     }
 }

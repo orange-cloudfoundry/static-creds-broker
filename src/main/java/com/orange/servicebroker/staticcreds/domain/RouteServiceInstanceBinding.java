@@ -13,20 +13,22 @@
  *
  */
 
-package com.orange.servicebroker.staticcreds.stories.formatter;
+package com.orange.servicebroker.staticcreds.domain;
 
-import com.tngtech.jgiven.annotation.Format;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import lombok.*;
 
 /**
- * @author Sebastien Bortolussi
+ * Route service details to be returned on service binding
  */
-@Format(value = CatalogYAMLFormatter.class)
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.ANNOTATION_TYPE})
-public @interface CatalogYAML {
+@Getter
+@ToString
+@EqualsAndHashCode
+@Builder
+@AllArgsConstructor
+public class RouteServiceInstanceBinding extends ServiceInstanceBinding {
+    /**
+     * A URL to which Cloud Foundry should proxy requests for the bound route.
+     */
+    private String routeServiceUrl;
+
 }
