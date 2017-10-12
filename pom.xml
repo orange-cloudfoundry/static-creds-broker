@@ -43,6 +43,28 @@
                     <format>html</format>
                 </configuration>
             </plugin>
+            <plugin>
+                <!-- Repackage jar and copy /src/main/resources/.profile at the root of the JAR file,
+                so that it can be used by Cloud Foundry as a pre-runtime hook -->
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>addFileOnRootLevel</id>
+                        <phase>package</phase>
+                        <configuration>
+                            <target>
+                                <zip destfile="${project.build.directory}/${project.artifactId}-${project.version}.jar"
+                                     update="yes" compress="false">
+                                    <fileset file="${project.basedir}/src/main/resources/.profile"/>
+                                </zip>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
         <pluginManagement>
             <plugins>

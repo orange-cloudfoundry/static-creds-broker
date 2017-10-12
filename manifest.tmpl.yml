@@ -2,7 +2,7 @@
 applications:
 - name: <broker_app_name>
   instances: 1
-  memory: 256M
+  memory: 512M
   host: <broker_hostname>
   domain: <my-admin-domain.cf.io>
   path: static-creds-broker-<LATEST_RELEASE_VERSION>.jar
@@ -17,25 +17,25 @@ applications:
     #       - For each service defined, its 'NAME' and 'DESCRIPTION' is required.
     #       - For each plan defined, at least one credential property is required. (Service credential definitions are automatically applied to all its plans.)
     #credentials services
-    SERVICES[my_credentials_service]_NAME: my_credentials_service_test_Service1
-    SERVICES[my_credentials_service]_DESCRIPTION: My existing service
-    SERVICES[my_credentials_service]_CREDENTIALS[URI]: http://....
+    SERVICES[TRIPADVISOR]_NAME: TRIPADVISOR_test_Service1
+    SERVICES[TRIPADVISOR]_DESCRIPTION: My existing service
+    SERVICES[TRIPADVISOR]_CREDENTIALS[URI]: http://....
 
-    SERVICES[my_credentials_service_2]_NAME: my_credentials_service_2_test_Service1
-    SERVICES[my_credentials_service_2]_DESCRIPTION: My existing service
-    SERVICES[my_credentials_service_2]_METADATA_LONG_DESCRIPTION: A long description for my service
-    SERVICES[my_credentials_service_2]_CREDENTIALS[HOSTNAME]: http://company.com
-    SERVICES[my_credentials_service_2]_PLANS[DEV]_NAME: dev
-    SERVICES[my_credentials_service_2]_PLANS[DEV]_CREDENTIALS[URI]: http://mydev-api.org
-    SERVICES[my_credentials_service_2]_PLANS[DEV]_CREDENTIALS[ACCESS_KEY]: devAZERT23456664DFDSFSDFDSF
-    SERVICES[my_credentials_service_2]_PLANS[PREPROD]_NAME: preprod
-    SERVICES[my_credentials_service_2]_PLANS[PREPROD]_CREDENTIALS[URI]: http://mypreprod-api.org
-    SERVICES[my_credentials_service_2]_PLANS[PREPROD]_CREDENTIALS[ACCESS_KEY]: preprodAZERT23456664DFDSFSDFDSF
-    SERVICES[my_credentials_service_2]_PLANS[PROD]_NAME: prod
-    SERVICES[my_credentials_service_2]_PLANS[PROD]_CREDENTIALS[URI]: http://myprod-api.org
-    SERVICES[my_credentials_service_2]_PLANS[PROD]_CREDENTIALS[ACCESS_KEY]: prodAZERT23456664DFDSFSDFDSF
+    SERVICES[API_DIRECTORY]_NAME: API_DIRECTORY_test_Service1
+    SERVICES[API_DIRECTORY]_DESCRIPTION: My existing service
+    SERVICES[API_DIRECTORY]_METADATA_LONG_DESCRIPTION: A long description for my service
+    SERVICES[API_DIRECTORY]_CREDENTIALS[HOSTNAME]: http://company.com
+    SERVICES[API_DIRECTORY]_PLANS[DEV]_NAME: dev
+    SERVICES[API_DIRECTORY]_PLANS[DEV]_CREDENTIALS[URI]: http://mydev-api.org
+    SERVICES[API_DIRECTORY]_PLANS[DEV]_CREDENTIALS[ACCESS_KEY]: devAZERT23456664DFDSFSDFDSF
+    SERVICES[API_DIRECTORY]_PLANS[PREPROD]_NAME: preprod
+    SERVICES[API_DIRECTORY]_PLANS[PREPROD]_CREDENTIALS[URI]: http://mypreprod-api.org
+    SERVICES[API_DIRECTORY]_PLANS[PREPROD]_CREDENTIALS[ACCESS_KEY]: preprodAZERT23456664DFDSFSDFDSF
+    SERVICES[API_DIRECTORY]_PLANS[PROD]_NAME: prod
+    SERVICES[API_DIRECTORY]_PLANS[PROD]_CREDENTIALS[URI]: http://myprod-api.org
+    SERVICES[API_DIRECTORY]_PLANS[PROD]_CREDENTIALS[ACCESS_KEY]: prodAZERT23456664DFDSFSDFDSF
     # Credential value for particular plan will override the value which is set for whole service
-    SERVICES[my_credentials_service_2]_PLANS[PROD]_CREDENTIALS[HOSTNAME]: http://prod.company.com
+    SERVICES[API_DIRECTORY]_PLANS[PROD]_CREDENTIALS[HOSTNAME]: http://prod.company.com
 
     SERVICES[ID]_NAME: static-creds-service-test1
     SERVICES[ID]_DESCRIPTION: static-creds service for test

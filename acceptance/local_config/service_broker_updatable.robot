@@ -31,9 +31,9 @@ Update service broker configured by remote yaml configuration file
 
 Update service broker configured by yaml configuration file
 	[Documentation] 	Change service broker local configuration file application.yml, then re-push the broker.
-	${BINARY_JAR_EXPLODED_PATH}=	Get directory path ${DEPLOY_PATH} static-creds-broker-exploded
-	${YAML_CONFIG_PATH}=		Get file path ${BINARY_JAR_EXPLODED_PATH} application.yml
-	Replace "HOSTNAME: http://prod.company.com" with "" in the file ${YAML_CONFIG_PATH}
+	${MANIFEST_PATH}= 	Get file path ${DEPLOY_PATH} manifest.yml
+    Create manifest file ${MANIFEST_PATH} based on manifest.tmpl.yaml-config.yml
+	Replace "HOSTNAME: http://prod.company.com" with "" in the file ${MANIFEST_PATH}
 	${result}=	Execute:     cf push    current_working_directory=${DEPLOY_PATH}
     Log	    ${result}
     Should Not Contain  ${result}   FAILED
