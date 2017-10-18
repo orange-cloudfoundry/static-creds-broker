@@ -52,13 +52,13 @@ Create manifest file ${MANIFEST_PATH} based on manifest.tmpl.yml
     Replace "<LATEST_RELEASE_VERSION>" with ${BROKER_RELEASE_VERSION} in the file ${MANIFEST_PATH}
     Replace "<broker_password>" with ${BROKER_PASSWORD} in the file ${MANIFEST_PATH}
 
-Create manifest file ${MANIFEST_PATH} based on manifest.tmpl.yaml-config.yml with <binary_jar_exploded_path> ${BINARY_JAR_EXPLODED_PATH}
+Create manifest file ${MANIFEST_PATH} based on manifest.tmpl.yaml-config.yml
     [Documentation]     create the manifest.yml based on template ${MANIFEST_TMPL_YAML_CONFIG_PATH} and adapt it to the running environment
     Execute command: 	cp ${MANIFEST_TMPL_YAML_CONFIG_PATH} ${MANIFEST_PATH}
     Replace "<broker_app_name>" with ${BROKER_APP_NAME} in the file ${MANIFEST_PATH}
     Replace "<broker_hostname>" with ${BROKER_HOSTNAME} in the file ${MANIFEST_PATH}
     Replace "<my-admin-domain.cf.io>" with ${BROKER_DOMAIN} in the file ${MANIFEST_PATH}
-    Replace "<binary_jar_exploded_path>" with "${BINARY_JAR_EXPLODED_PATH}" in the file ${MANIFEST_PATH}
+    Replace "<LATEST_RELEASE_VERSION>" with ${BROKER_RELEASE_VERSION} in the file ${MANIFEST_PATH}
     Replace "<broker_password>" with ${BROKER_PASSWORD} in the file ${MANIFEST_PATH}
 
 Create yaml configuration file ${YAML_CONFIG_PATH} based on template ${YAML_CONFIG_TMPL_PATH}
@@ -92,12 +92,8 @@ Prepare deployment of service broker configured by environment variables
     Create manifest file ${MANIFEST_PATH} based on manifest.tmpl.yml
 
 Prepare deployment of service broker configured by yaml configuration file
-    ${BINARY_JAR_EXPLODED_PATH}=	Get directory path ${DEPLOY_PATH} static-creds-broker-exploded
-    Execute command: 	unzip ${BINARY_JAR_PATH} -d ${BINARY_JAR_EXPLODED_PATH}
-    ${YAML_CONFIG_PATH}=		Get file path ${BINARY_JAR_EXPLODED_PATH} application.yml
-    Create yaml configuration file ${YAML_CONFIG_PATH} based on template ${YAML_CONFIG_TMPL_PATH}
     ${MANIFEST_PATH}= 	Get file path ${DEPLOY_PATH} manifest.yml
-    Create manifest file ${MANIFEST_PATH} based on manifest.tmpl.yaml-config.yml with <binary_jar_exploded_path> ${BINARY_JAR_EXPLODED_PATH}
+    Create manifest file ${MANIFEST_PATH} based on manifest.tmpl.yaml-config.yml
 
 Prepare deployment of service broker configured by remote yaml configuration file
     ${MANIFEST_PATH}=   Get file path ${DEPLOY_PATH} manifest.yml
