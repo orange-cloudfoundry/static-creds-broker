@@ -16,7 +16,7 @@
 
     <properties>
         <springCloudServiceBrokerVersion>1.0.1.RELEASE</springCloudServiceBrokerVersion>
-        <lombockVersion>1.16.12</lombockVersion>
+        <lombockVersion>1.18.8</lombockVersion>
         <fest-assert.version>1.4</fest-assert.version>
         <jgiven.version>0.14.0</jgiven.version>
         <orika-core.version>1.5.0</orika-core.version>
