@@ -15,7 +15,7 @@
     </parent>
 
     <properties>
-        <springCloudServiceBrokerVersion>1.0.1.RELEASE</springCloudServiceBrokerVersion>
+        <springCloudServiceBrokerVersion>1.0.4.RELEASE</springCloudServiceBrokerVersion>
         <lombockVersion>1.16.12</lombockVersion>
         <fest-assert.version>1.4</fest-assert.version>
         <jgiven.version>0.14.0</jgiven.version>
